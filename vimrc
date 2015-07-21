@@ -26,8 +26,7 @@ set fileencoding=utf-8		"可以不用设置
 autocmd filetype txt set spell			"对txt文档的英文进行语法检查
 "set spell								"开启拼写检查
 		"没明白的设置
-"filetype on		"侦测文件类型
-filetype off
+filetype on		"侦测文件类型
 
 "===========================================================
 "gvim的设置在.gvimrc中
@@ -107,7 +106,7 @@ exec "!gdb %<"
 endfunc
 
 
-"使用vundle来管理插件
+"使用vbundle来管理插件
 filetype plugin indent on     "必须的
 set rtp+=~/.vim/bundle/vundle/  
 call vundle#rc()  
@@ -115,19 +114,22 @@ call vundle#rc()
 Bundle 'gmarik/vundle'  
 "original repos on github
 Bundle 'tpope/vim-fugitive'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+""快速移动
+"Bundle 'Lokaltog/vim-easymotion'
 Bundle 'tpope/vim-rails.git'
 "vim-scripts repos
 Bundle 'L9'
 Bundle 'FuzzyFinder'
-"non github repos
-"Bundle 'git://git.wincent.com/command-t.git'
-"powerline
+""powerline
 "Bundle 'https://github.com/Lokaltog/vim-powerline.git'
 "vim-airline 一个简化的powerline
-Bundle 'bling/vim-airline'
-Bundle 'https://github.com/oplatek/Conque-Shell'
+Bundle 'bling/vim-airline'		
+""vim中打开终端，没什么用:(
+"Bundle 'https://github.com/oplatek/Conque-Shell'
+"HTML自动补全
+Bundle 'HTML-AutoCloseTag'
+"emmet html/css补全
+Bundle 'mattn/emmet-vim'
 "...
 "下面是vundle使用命令
 ":BundleList			--list configured bundles
@@ -135,14 +137,11 @@ Bundle 'https://github.com/oplatek/Conque-Shell'
 ":BundleSearch(!) foo	--search(or refresh cache first) for foo
 ":BundleClean(!)		--confirm(or auto-approve) removal of unused bundles
 "see ':h vundle' for more details or wiki for FAQ
-"NOTE: comment after Bundle command are not allowed..
-"==========================end vundle================
 
 
 "taglist插件
 let Tlist_Show_One_File=1
 let Tlist_Exit_OnlyWindow=2
-"====end taglist插件===
 "使用winmanager把TagList和netrw整合起来
 let g:winManagerWindowLayout='FileExplorer|TagList'
 nmap wm :WMToggle<cr>
@@ -168,9 +167,7 @@ endif
 "nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 ""===end cscope===
 
-"要先打开 filetype plugin indent on 
-"关闭预览
-set completeopt=longest,menu
+"set completeopt=longest,menu
 "下面是使用了supertab插件来优化补全
 "let g:SuperTabRetainCompletionType=2
 " 0 - 不记录上次的补全方式
@@ -207,6 +204,12 @@ set t_Co=256
 "<F10> 	将当前所有文本发送到Conque-Shell中
 "<F11> 	如果当前编辑文件可执行，则打开新的Conque-Shell并运行
 "		但是会有快捷键冲突
+
+"emmet配置和使用
+let g:user_emmet_install_global=0
+autocmd Filetype html,css "EmmetInstall
+"USE:
+"使用方法在http://blog.wpjam.com/m/emmet-grammar/
 
 "c语言模板插入
 iab chead #include <stdio.h><CR><CR>int main(int argc, char **argv)<CR>{<CR>return 0;<CR>}<CR>
