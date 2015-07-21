@@ -166,5 +166,10 @@ update-ppa()
 {
 	sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/$1.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
 }
-
 #tmux
+#修改history命令的显示格式
+HISTTIMEFORMAT="%y/%m/%d %T "
+#bash使用vi风格的使用
+set -o vi
+#设置vi模式下的ctrl+l为清屏
+#在~/.inputrc下
