@@ -8,3 +8,4 @@
 使用make来安装
 默认的make就是全部配置文件安装，也可以make foo来安装foo（某一配置）。
 并且提供了make Unfoo来卸载这些配置恢复到原来状态
+但是firefox插件有个目录与系统不同而不同，\*.default目录，这个目录下的searchplugins就是搜索i引擎插件目录
