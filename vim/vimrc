@@ -25,6 +25,11 @@ set fileencoding=utf-8		"可以不用设置
 "set encoding=utf-8			"设置状态栏的编码，可以不设置
 autocmd filetype txt set spell			"对txt文档的英文进行语法检查
 "set spell								"开启拼写检查
+" 基于缩进或语法进行折叠
+"set foldmethod=indent
+set foldmethod=syntax
+"启动vim时关闭代码折叠
+"set nofoldenable
 		"没明白的设置
 filetype on		"侦测文件类型
 
@@ -39,7 +44,7 @@ set cindent					"C语言缩进
 "set list listchars=tab:>-	"可视化tab键
 set noexpandtab				"不用空格替代tab,(%retab!空格转换为tab)
 set autoindent				"继承上一缩进
-set si						" 智能缩进
+set si						"智能缩进
 set tabstop=4 shiftwidth=4	"shiftwidth自动tab宽度
 autocmd filetype xhtml set tabstop=2 shiftwidth=2
 autocmd filetype html set tabstop=2 shiftwidth=2
@@ -48,6 +53,7 @@ autocmd filetype lisp set nocindent autoindent si
 "autocmd filetype h set tabstop=4 shiftwidth=4
 "autocmd filetype c++ set tabstop=4 shiftwidth=4
 "autocmd filetype py set noexpandtab tabstop=4 shiftwidth=4
+set completeopt=menu		"补全不显示草稿窗口
 
 "<F3>实现sdcv快捷查询
 function! Mydict()
@@ -66,48 +72,87 @@ nmap <F3> :call Mydict()<CR>
 "<F4>编译"
 map <F4> : call Compile()<CR>
 func! Compile()
-exec "w"
-exec "!clear"
-exec "!gcc -o %< % -ansi -Wall -lm"
+	exec "w"
+	if &filetype == 'c'
+		exec "!clear"
+		exec "!gcc -o %< % -ansi -Wall -lm"
+	elseif &filetype == 'java'
+		exec "!clear"
+		exec "!javac %"
+	elseif &filetype == 'cs'
+		exec "!clear!"
+		exec "!gmcs %"
+	else
+		exec ""
+	endif
 endfunc
 
 
 "<F5>编译运行"
 map <F5> : call CompileRun()<CR>
 func! CompileRun()
-exec "w"
-if &filetype == 'xhtml' || &filetype == 'html'
-	exec "!clear"
-	exec "!firefox %"
-elseif &filetype == 'c'
-	exec "!clear"
-	exec "!gcc -o %< % -Wall -ansi -lm"
-	exec "! ./%<"
-else
-	exec ""
-endif
+	exec "w"
+	if &filetype == 'xhtml' || &filetype == 'html'	"html
+		exec "!clear"
+		exec "!firefox %"
+	elseif &filetype == 'c'		"c
+		exec "!clear"
+		exec "!gcc -o %< % -Wall -ansi -lm"
+		exec "! ./%<"
+	elseif &filetype == 'java'	"java
+		exec "!clear"
+		exec "!javac %"
+		exec "!java %<"
+	elseif &filetype == 's'	"汇编
+		exec "!clear"
+	elseif &filetype == 'cs'
+		exec "!clear"
+		exec "!gmcs %"
+		exec "!./%<.exe"
+	else
+		exec ""
+	endif
 endfunc
 
 "<F6>运行"
 map <F6> : call Run()<CR>
 func! Run()
 	exec "w"
-	exec "!clear"
-	exec "!./%<"
+	if &filetype == 'c'
+		exec "!clear"
+		exec "!./%<"
+	elseif &filetype == 'java'
+		exec "!clear"
+		exec "!java %<"
+	else
+		exec ""
+	endif
 endfunc
 
 "C语言调试"
 map <F7> : call GDB()<CR>
 func! GDB()
-exec "w"
-exec "!clear"
-exec "!gcc -o %< % -g -ansi -lm"
-exec "!gdb %<"
+	exec "w"
+	if &filetype == 'c'
+		exec "!clear"
+		exec "!gcc -o %< % -g -ansi -lm"
+		exec "!gdb %<"
+	elseif &filetype == 'java'
+		exec ""
+	else 
+		exec ""
+	endif
 endfunc
 
+"生成tags和cscope
+map <F8> : call C_ctags_cs()<CR>
+func! C_ctags_cs()
+	exec "!ctags -R"
+endfunc
 
 "使用vbundle来管理插件
-filetype plugin indent on     "必须的
+"启动智能补全
+filetype plugin indent on     
 set rtp+=~/.vim/bundle/vundle/  
 call vundle#rc()  
 "required!   
@@ -130,6 +175,10 @@ Bundle 'bling/vim-airline'
 Bundle 'HTML-AutoCloseTag'
 "emmet html/css补全
 Bundle 'mattn/emmet-vim'
+"NERD commenter,下面的AuthorInfo需要
+Bundle 'https://github.com/scrooloose/nerdcommenter'
+"添加作者信息
+Bundle 'https://github.com/vim-scripts/AuthorInfo'
 "...
 "下面是vundle使用命令
 ":BundleList			--list configured bundles
@@ -140,6 +189,7 @@ Bundle 'mattn/emmet-vim'
 
 
 "taglist插件
+let Tlist_Compact_Format=1	"不显示<F1>to display help
 let Tlist_Show_One_File=1
 let Tlist_Exit_OnlyWindow=2
 "使用winmanager把TagList和netrw整合起来
@@ -211,5 +261,20 @@ autocmd Filetype html,css "EmmetInstall
 "USE:
 "使用方法在http://blog.wpjam.com/m/emmet-grammar/
 
+"NERD_commenter 配置和使用
+"let loaded_nerd_comments=1
+"let mapleader='\'
+"let g:mapleader='\'
+"上面还不会使用:(
+
+"AuthorInfo使用,<F2>添加
+let g:vimrc_author='leetking'
+let g:vimrc_email='li_Tking@163.com'
+let g:vimrc_homepage=''
+nmap <F2> :AuthorInfoDetect<cr>
+
 "c语言模板插入
 iab chead #include <stdio.h><CR><CR>int main(int argc, char **argv)<CR>{<CR>return 0;<CR>}<CR>
+iab cshead using System;<CR>using System.Collections.Generic;<CR>using System.Text;<CR>
+
+

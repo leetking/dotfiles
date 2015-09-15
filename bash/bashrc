@@ -77,3 +77,6 @@ HISTTIMEFORMAT="%y/%m/%d %T "
 set -o vi
 #设置vi模式下的ctrl+l为清屏
 #在~/.inputrc下
+
+#启动tmux
+#tmux
