@@ -73,15 +73,18 @@ nmap <F3> :call Mydict()<CR>
 map <F4> : call Compile()<CR>
 func! Compile()
 	exec "w"
-	if &filetype == 'c'
+	if &filetype == 'c'				"c
 		exec "!clear"
-		exec "!gcc -o %< % -ansi -Wall -lm"
-	elseif &filetype == 'java'
+		exec "!gcc -o '%<' '%' -ansi -Wall -lm"
+	elseif &filetype == 'java'		"java
 		exec "!clear"
-		exec "!javac %"
-	elseif &filetype == 'cs'
+		exec "!javac '%'"
+	elseif &filetype == 'asm'		"汇编
+		exec "!clear"
+		exec "!as '%' -o '%<.o' && ld '%<.o' -o '%<'"
+	elseif &filetype == 'cs'		"c_sharp
 		exec "!clear!"
-		exec "!gmcs %"
+		exec "!gmcs '%'"
 	else
 		exec ""
 	endif
@@ -94,21 +97,23 @@ func! CompileRun()
 	exec "w"
 	if &filetype == 'xhtml' || &filetype == 'html'	"html
 		exec "!clear"
-		exec "!firefox %"
+		exec "!firefox '%'"
 	elseif &filetype == 'c'		"c
 		exec "!clear"
-		exec "!gcc -o %< % -Wall -ansi -lm"
+		exec "!gcc -o '%<' '%' -Wall -ansi -lm"
 		exec "! ./%<"
 	elseif &filetype == 'java'	"java
 		exec "!clear"
-		exec "!javac %"
-		exec "!java %<"
-	elseif &filetype == 's'	"汇编
+		exec "!javac '%'"
+		exec "!java '%<'"
+	elseif &filetype == 'asm'	"汇编
 		exec "!clear"
-	elseif &filetype == 'cs'
+		exec "!as '%' -o '%<.o' && ld '%<.o' -o '%<'"
+		exec "!./'%<'"
+	elseif &filetype == 'cs'	"c_sharp
 		exec "!clear"
-		exec "!gmcs %"
-		exec "!./%<.exe"
+		exec "!gmcs '%'"
+		exec "!./'%<.exe'"
 	else
 		exec ""
 	endif
@@ -118,12 +123,16 @@ endfunc
 map <F6> : call Run()<CR>
 func! Run()
 	exec "w"
-	if &filetype == 'c'
+	"C或者汇编
+	if &filetype == 'c' || &filetype == 'asm'
 		exec "!clear"
-		exec "!./%<"
-	elseif &filetype == 'java'
+		exec "!./'%<'"
+	elseif &filetype == 'java'	"java
 		exec "!clear"
-		exec "!java %<"
+		exec "!java '%<'"
+	elseif &filetype == 'cs'	"c_sharp
+		exec "!clear"
+		exec "!./'%<.exe'"
 	else
 		exec ""
 	endif
@@ -133,12 +142,18 @@ endfunc
 map <F7> : call GDB()<CR>
 func! GDB()
 	exec "w"
-	if &filetype == 'c'
+	if &filetype == 'c'			"c
 		exec "!clear"
 		exec "!gcc -o %< % -g -ansi -lm"
 		exec "!gdb %<"
-	elseif &filetype == 'java'
-		exec ""
+	elseif &filetype == 'asm'	"汇编
+		exec "!clear"
+		exec "!as % -g -o %<.o && ld %<.o -o %<"
+		exec "!gdb %<"
+	elseif &filetype == 'java'	"java
+		exec "!clear"
+		exec "!javac -g '%'"
+		exec "!jdb '%<'"
 	else 
 		exec ""
 	endif
@@ -147,7 +162,9 @@ endfunc
 "生成tags和cscope
 map <F8> : call C_ctags_cs()<CR>
 func! C_ctags_cs()
-	exec "!ctags -R"
+	if &filetype == 'c'			"只对c实行生成ctags
+		exec "!ctags -R"
+	endif
 endfunc
 
 "使用vbundle来管理插件
