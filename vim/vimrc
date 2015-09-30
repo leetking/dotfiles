@@ -83,7 +83,7 @@ func! Compile()
 		exec "!clear"
 		exec "!as '%' -o '%<.o' && ld '%<.o' -o '%<'"
 	elseif &filetype == 'cs'		"c_sharp
-		exec "!clear!"
+		exec "!clear"
 		exec "!gmcs '%'"
 	else
 		exec ""
@@ -114,6 +114,9 @@ func! CompileRun()
 		exec "!clear"
 		exec "!gmcs '%'"
 		exec "!./'%<.exe'"
+	elseif &filetype == 'python' "python
+		exec "!clear"
+		exec "!python '%'"
 	else
 		exec ""
 	endif
@@ -154,6 +157,8 @@ func! GDB()
 		exec "!clear"
 		exec "!javac -g '%'"
 		exec "!jdb '%<'"
+	elseif &filetype == 'cs'	"c_sharp
+		exec "!clear"
 	else 
 		exec ""
 	endif
@@ -292,6 +297,10 @@ nmap <F2> :AuthorInfoDetect<cr>
 
 "c语言模板插入
 iab chead #include <stdio.h><CR><CR>int main(int argc, char **argv)<CR>{<CR>return 0;<CR>}<CR>
-iab cshead using System;<CR>using System.Collections.Generic;<CR>using System.Text;<CR>
+iab cshead using System;<CR>using System.Collections.Generic;<CR>using System.Text;<CR>namespace xx {<CR>}<CR>
+iab pyhead #!/usr/bin/env python<CR>#-*-coding:utf-8-*-<CR>
 
-
+"添加库函数gtk补全的路径
+set path+=/usr/include/gtk-2.0/
+"设置行长80字符自动换行
+set textwidth=80 fo+=Mm
