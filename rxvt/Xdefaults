@@ -1,0 +1,57 @@
+URxvt.preeditType: Root
+
+!! background and foreground
+!set the artificial transparency
+!URxvt.perl-ext-common: ..., default, ...
+URxvt.depth: 32
+URxvt.transparent: true
+URxvt.shading: 55
+URxvt.background: #555555
+URxvt.foreground: white
+
+!url opare
+URxvt.colorBd: yellow
+URxvt.colorUL: green
+
+!scrollBar
+URxvt.scrollBar: false
+
+!border
+URxvt.borderLess: false
+
+!cursor
+URxvt.cursorBlink: true
+
+!history lines
+URxvt.savelines: 3000
+
+!font set
+Xft.dpi: 96
+URxvt.multichar_encoding: utf-8
+URxvt.imLocale: zh_CN,UTF-8
+URxvt.font: xft: Ubuntu Mono derivative Powerline: size=12, xft: 文泉驿微米黑
+URxvt.boldFont: xft: Ubuntu Mono derivative Powerline: size=12: Bold, xft: 文泉驿微米黑-25: Bold
+URxvt.italicFont: xft: Ubuntu Mono derivative Powerline: size=12:italic, xft: 文泉驿微米黑: size=20: italic
+URxvt.bolditalicFont: xft: Ubuntu Mono derivative Powerline: size=12:italic, xft: 文泉驿微米黑: size=20: Bold italic
+
+!输入法设置, cannt work
+inputMethod:fcitx
+
+
+!color
+!URxvt.color0: black
+!URxvt.color1: red
+!URxvt.color2: #3a5da3
+!URxvt.color3: #4b76cc
+!URxvt.color4: RoyalBlue4
+!URxvt.color5: magenta
+!URxvt.color6: #a1b5dd
+!URxvt.color7: #8a95aa
+!URxvt.color8: #616668
+!URxvt.color9: #075982
+!URxvt.color10: #0f82bc
+!URxvt.color11: #13a9f4
+!URxvt.color12: SkyBlue2
+!URxvt.color13: #63c2f2
+!URxvt.color14: #6caccc
+!URxvt.color15: #dbeff9

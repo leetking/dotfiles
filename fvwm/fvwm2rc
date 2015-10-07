@@ -1,0 +1,140 @@
+###预设一些东西
+#设置环境变量先
+SetEnv fvwm_home	$[HOME]/.fvwm
+SetEnv fvwm_imgs	$[fvwm_home]/imgs
+SetEnv fvwm_icons	$[fvwm_home]/icons
+SetEnv fvwm_scripts	$[fvwm_home]/scripts
+SetEnv fvwm_wallpapers	$[fvwm_imgs]/wallpapers
+#设置应用程序先
+SetEnv fvwm_webbrower	/usr/bin/firefox
+SetEnv fvwm_term		/usr/bin/gnome-terminal
+SetEnv fvwm_editer		/usr/bin/gvim
+#SetEnv fvwm_img_viewer	/
+#SetEnv fvwm_img_editer	/
+#SetEnv fvwm_font_viewer	/
+#SetEnv fvwm_mail		/some/path
+#SetEnv fvwm_media_player	/
+#SetEnv fvwm_video_player	/
+#etc...
+
+#设置图片的查询路径
+ImagePath $[fvwm_imgs]:$[fvwm_icons]:+
+
+###虚拟桌面
+#每个虚拟桌面(3x3的9个格子)
+DesktopSize	2x1	
+#定义一个虚拟桌面的名字
+DesktopName 0 Main
+DesktopName 1 Work
+DesktopName 2 Code
+DesktopName 3 Video
+#定义鼠标移动到屏幕边缘时，屏幕滚动的百分比。这里表示100%滚到下一个屏幕
+EdgeScroll 100 100
+#EdgeResistance scrolling moving
+#这是用来设定当滑鼠游标碰触到萤幕的边界的时候，FVWM应该要如
+#何动作。scrolling 是告诉FVWM当滑鼠游标碰触到萤幕边界多少
+#milliseconds之後，才会移动目前的工作桌面。moving则是设定当
+#视窗超出画面多少像点之後，才要切换目前的工作桌面到别的桌面
+#上。
+EdgeResistance 150 150
+#设置鼠标靠近屏幕边缘的距离小于某个值。
+EdgeThickness 1
+
+###鼠标和聚焦行为
+#fvwm考虑鼠标click的时间，按下与弹出之间大于350ms，认为是hold.小于350ms就是click.
+ClickTime 350
+#控制移动窗口和图标的拖动操作的灵敏度。 该资源值是移动操作触发前定位器按下按钮移动的像素量。 这用于防止单击或双击时的窗口和图标的移动，这里的移动是指按钮按下时无意识的指针移动
+MoveThreshold 3
+
+#Style stylename options
+#其中stylename是你的窗口的名字，窗口的class名字，或者窗口的resource名字。
+#stylename 里可以有 "*" 作为通配符。比如你可以说
+#	Style *term TitleAtLeft
+#options 是你想让满足条件的窗口以什么样的方式存在。options 的种类非常之多。比如：BorderWidth, HandleWidth, FocusFollowsMouse, TileCascadePlacement, ... 它们有的需要参数，比如 BorderWidth 7, 指定边框宽度为7个像素。有些不需要参数，比如 FocusFollowsMouse/ SloppyFocus/ NeverFocus/ ClickToFocus 指明了几种互相排斥的键盘聚焦方式。
+#这里SloppyFocus指，当鼠标移动到那个窗口时，窗口被激活（不包括root window)。
+#这里MouseFocusClickRaises表示，当鼠标点击一个激活的窗口时，这个窗口会上升到最高层。
+Style * SloppyFocus, MouseFocusClickRaises
+
+#EwmhBaseStructs left right top bottom
+#这里的值用来指定窗口的最大化的位置的位置值
+EwmhBaseStructs 62 162 0 48
+#你可以忽略某些键盘控制键。这将影响到你的鼠标和键盘热键定义。
+IgnoreModifiers	L25
+
+###全局样式的选项
+#HandleWidth 窗口边框
+Style * BorderWidth 5, HandleWidth 1, DepressableBorder
+#Style * Icon kcmkwm.png
+Style * MWMFunctions, MWMDecor, MWMButtons, HintOverride
+Style * DecorateTransient, NoPPosition
+Style * SloppyFocus, MouseFocusClickRaises
+#Style * SmartPlacement
+#Style * IconFont -*-simsun-medium-r-*-*-12-*-*-*-*-*-*-*
+Style * HilightFore black, HilightBack gainsboro
+Style * IconBox 360x200+1-1, IconFill left bottom
+Style * WindowShadeShrinks, WindowShadeSteps 100
+
+###简单配置
+MenuStyle * Font "xft: WenQuanYi Micro Hei:pixelsize=12"
+Style * Font "xft: WenQuanYi Micro Hei:Bold:pixelsize=14"
+Style * IconFont "xft: WenQuanYi Micro Hei:Bold:pixelsize=14"
+
+#您可以用“Key X Context Modifier Action”绑定一个触键到一个动作，
+#也可以用“Mouse X Context Modifier Action”绑定鼠标到一个动作。
+#X	
+#Context	鼠标位置
+#Modifier	A,C,S,M,N的组合？
+#Key F1 A M MenuFvwmRoot	##fvwm根窗口
+Mouse 0 1 A Close
+Mouse 0 5 A Maximize
+Mouse 0 3 A Iconify
+Mouse 0 I A Iconify off
+
+##窗口装饰
+#定义颜色结构
+Colorset 3 fg #101060, bg #e6e7d7
+Colorset 4 fg Black, bg #a6a797
+Colorset 5 fg White, bg Black
+#标题栏，按钮，边框修饰
+ButtonStyle 1 ActiveUp Vector 4 30x30@3 60x60@3 60x30@3 30x60@3 -- Flat
+ButtonStyle 1 ActiveDown Vector 4 30x30@3 60x60@3 60x30@3 30x60@3 -- Flat
+ButtonStyle 1 Inactive Vector 4 30x30@3 60x60@3 60x30@3 30x60@3 -- Flat
+ButtonStyle 3 ActiveUp Vector 5 30x60@3 60x60@3 60x50@3 30x50@3 30x60@3 -- Flat
+ButtonStyle 3 ActiveDown Vector 5 30x60@3 60x60@3 60x50@3 30x50@3 30x60@3 -- Flat
+ButtonStyle 3 Inactive Vector 5 30x60@3 60x60@3 60x50@3 30x50@3 30x60@3 -- Flat
+ButtonStyle 5 ActiveUp Vector 7 30x30@3 30x60@3 60x60@3 60x30@3 30x30@3 30x35@3 60x35@3 -- Flat
+ButtonStyle 5 ActiveDown Vector 7 30x30@3 30x60@3 60x60@3 60x30@3 30x30@3 30x35@3 60x35@3 -- Flat
+ButtonStyle 5 Inactive Vector 7 30x30@3 30x60@3 60x60@3 60x30@3 30x30@3 30x35@3 60x35@3 -- Flat
+
+###杂项
+#F2呼出调试fvwm窗口
+Key F2 A A Module FvwmConsole -g 60x10+200+0 -fg black -bg green3 
+#c-a-r重启fvwm
+Key R A CM Restart
+#c-a-t
+key R A CM exec fvwm_term
+#一个不知名函数,添加背景图
+DestroyFunc StartFunction
+AddToFunc StartFunction         
+#+ I Module FvwmButtons MainPanel
+#+ I Module FvwmAuto 500 Raise Nop
+#+ I Module FvwmAnimate
+#+ I Module FvwmTaskBar
++ I Exec exec fvwm-root --dither $[fvwm_wallpapers]/opensuse.png
++ I Exec exec fvwm_term
+#+ I Exec exec gnome-terminal
+
+##键盘
+#A	任何键
+#C	Ctrl
+#S	shift
+#M	Meta键,就是alt？？
+#N	没有按键
+#Tab	tab键
+#Super_L	左边的super键
+#F1～12		F键
+##按钮分布
+#+--------------------------------------------------+
+#| 1 | 3 | 5 | 7 | 9 			| 0 | 8 | 6 | 4 | 2 |
+#+--------------------------------------------------+
+#

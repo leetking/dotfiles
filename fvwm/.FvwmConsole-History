@@ -1,0 +1,96 @@
+DesktopSize 1x1
+exec exec gnome-termainal
+exec exec gnome-termainal &
+exec exec gnome-terminal
+exec fvwm-root --dither $[HOME]/.fvwm/imgs/wallpapers/opensuse.png
+DesktopSize 2x2
+Key R A CM Restart
+Key R A CM Restart
+Key CM R A Restart
+MenuStyle * Font "xft: Ubuntu:size=14:
+MenuStyle * Font "xft: Ubuntu:size=14"
+MenuStyle * Font "xft: Ubuntu:size=12"
+MenuStyle * Font "xft: Ubuntu:size=12:encoding=iso8859-1"
+MenuStyle * Font "xft: Ubuntu:size=12:encoding=iso8859-1,xft:WenQuanYi Micro Hei:size=12"
+MenuStyle * Font "xft: Ubuntu:size=12"
+exec exec gnome-terminal
+MenuStyle * Font "xft: Ubuntu:size=12, xft:WenQuanYi Micro Hei:size=12"
+MenuStyle * Font "xft: Ubuntu:size=12; xft:WenQuanYi Micro Hei:size=12"
+MenuStyle * Font "xft: Ubuntu:size=12; WenQuanYi Micro Hei:size=12"
+MenuStyle * Font "xft: WenQuanYi Micro Hei"
+MenuStyle * Font 2 "xft: WenQuanYi Micro Hei"
+MenuStyle * Font "xft: 2 WenQuanYi Micro Hei"
+MenuStyle * Shadow=2 Font "xft: 2 WenQuanYi Micro Hei"
+D
+exec exec shutdown -h now2
+exec exec shutdown -h now
+exec exec gnome-terminal
+Style * Font "xft: Ubuntu:size=17"
+Style * Font "xft: Ubuntu:size=12"
+Style * Font "xft: Ubuntu:Bold:size=12"
+Style * Font "xft: Ubuntu:Bold:size=12; WenQuanYi Micro Hei:size=12"
+Style * Font "xft: WenQuanYi Micro Hei:size=12"
+Style * Font "xft: mono:Bold:size=12"
+Style * Font "xft: sans:Bold:size=12"
+Style * Font "xft: Mono:Bold:size=12"
+exec exec xfe
+exec exec gnome-terminal
+EdgeThickness 5
+EdgeThickness 2
+EdgeThickness 0
+EdgeThickness 1
+EwmhBaseStruts 62 162 0 48
+EwmhBaseStruts 0 0 0 0
+Style * BorderWidth 1
+Style * BorderWidth 1, HandleWidth 1
+Style * BorderWidth 1, HandleWidth 0
+exec exec gnome-terminal
+Style * BorderWidth 1, HandleWidth 1
+Style * BorderWidth 20, HandleWidth 1
+Style * BorderWidth 20, HandleWidth 1, DepressableBorder
+ 1, HandleWidth 0
+Style * BorderWidth 1, HandleWidth 1
+Style * BorderWidth 20, HandMouse 0 1 A Close
+Mouse 0 1 A Close
+exec exec firefox
+Key F1 A M Menu MenuFvwmRoot
+Colorset 3 fg Red, bg green
+Colorset 4 fg Red, bg green
+Colorset 5 fg Red, bg green
+Colorset 5 fg Red, bg Green
+Colorset 2 fg Red, bg Green
+TitleStyle LeftJustified Height 18
+TitleStyle CentertJustified Height 18
+ButtonStyle 1 ActiveUp Vector 4 30x30@3 60x60@3 60x30@4 30x60@3 -- Flat
+Colorset 3 fg #101060, bg #e6e7d7
+Colorset 4 fg Black, bg #a6a697
+Colorset 5 fg White, bg Black
+ButtonStyle 1 ActiveUp Vector 4 30x30@3 60x60@3 60x30@4 30x60@3 -- Flat
+ButtonStyle 1 ActiveDown Vector 4 30x30@3 60x60@3 60x30@4 30x60@3 -- Flat
+ButtonStyle 1 Inactive Vector 4 30x30@3 60x60@3 60x30@4 30x60@3 -- Flat
+Style * RoundedCornersTop
+Style * RoundedCornersTop
+Style * ClickToFouces
+Style * ClickToFocus
+Style * MouseFocusClickRaises
+Colorset 7 fg Black, bg #e6e7d7, sh Black, hi #202070
+Colorset 8 fg DarkRed, bg #e6e7d7, sh Black, hi #202070
+MenuStyle * PopupDelayed, PopupDelay 300, PopdownImmediately
+MenuStyle * PopupOffset -5 100, TitleWarpOff
+exec exec gnome-terminal
+exec exec gnome-terminal
+exec exec gnome-terminal
+exec exec gnome-terminal
+gnome-terminal
+gnome-terminal &
+utxv
+gnome-terminal
+urvxt
+rvxt
+rxvt
+urxvt
+uterm	
+exec gnome-terminal
+exec gnome-terminal 
+exec gnome-terminal
+exec gnome-terminal

@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 CURR_PATH=`pwd -P`
 INSTALL_PATH=~/.myconfigures
 BACKUP_PATH=$(INSTALL_PATH)/backups
