@@ -9,8 +9,10 @@ INSTALLED_PATH=$(INSTALL_PATH)/installed
 
 # 定义安装卸载vim，bash，tmux等的函数
 define install_vim
-	@mkdir -p $(BACKUP_PATH)/vim
-	@mkdir -p $(INSTALL_PATH)/vim
+	@mkdir -p $(BACKUP_PATH)/vim/vim
+	@mkdir -p $(BACKUP_PATH)/vim/vim/bundle
+	@mkdir -p $(INSTALL_PATH)/vim/vim
+	@mkdir -p $(INSTALL_PATH)/vim/vim/bundle
 	@mkdir -p $(INSTALLED_PATH)
 	@# 备份文件
 	@-if [ ! -L ~/.vim ] ; then \
@@ -38,7 +40,8 @@ define install_vim
 	fi
 	@# 安装
 	@-cp -r $(CURR_PATH)/vim/*vimrc	$(INSTALL_PATH)/vim/
-	@-tar -Jxf $(CURR_PATH)/vim/vim.tar.xz -C $(INSTALL_PATH)/vim/
+	@-tar -Jxf $(CURR_PATH)/vim/vim/plugin.tar.xz -C $(INSTALL_PATH)/vim/vim/
+	@-tar -Jxf $(CURR_PATH)/vim/vim/vundle.tar.xz -C $(INSTALL_PATH)/vim/vim/
 	@ln -sf $(INSTALL_PATH)/vim/vim ~/.vim
 	@ln -sf $(INSTALL_PATH)/vim/gvimrc ~/.gvimrc
 	@ln -sf $(INSTALL_PATH)/vim/vimrc ~/.vimrc

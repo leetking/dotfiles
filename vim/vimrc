@@ -7,7 +7,7 @@ set matchtime=5		"高亮的时间
 syntax enable		"语法高亮
 set history=500  	"vim记住的历史操作的数量，默认的是20
 set go=
-set wildmenu		
+set wildmenu
 set nofen
 set fdl=10			 "始终启用鼠标
 set mouse=a
@@ -159,7 +159,7 @@ func! GDB()
 		exec "!jdb '%<'"
 	elseif &filetype == 'cs'	"c_sharp
 		exec "!clear"
-	else 
+	else
 		exec ""
 	endif
 endfunc
@@ -167,40 +167,40 @@ endfunc
 "生成tags和cscope
 map <F8> : call C_ctags_cs()<CR>
 func! C_ctags_cs()
-	if &filetype == 'c'			"只对c实行生成ctags
+	if &filetype == 'c' || &filetype == 'h'	"只对c实行生成ctags
 		exec "!ctags -R"
 	endif
 endfunc
 
 "使用vbundle来管理插件
 "启动智能补全
-filetype plugin indent on     
-set rtp+=~/.vim/bundle/vundle/  
-call vundle#rc()  
-"required!   
-Bundle 'gmarik/vundle'  
+filetype plugin indent on
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+"required!
+Bundle 'gmarik/vundle'
 "original repos on github
 Bundle 'tpope/vim-fugitive'
-""快速移动
-"Bundle 'Lokaltog/vim-easymotion'
 Bundle 'tpope/vim-rails.git'
 "vim-scripts repos
 Bundle 'L9'
 Bundle 'FuzzyFinder'
-""powerline
-"Bundle 'https://github.com/Lokaltog/vim-powerline.git'
-"vim-airline 一个简化的powerline
-Bundle 'bling/vim-airline'		
-""vim中打开终端，没什么用:(
-"Bundle 'https://github.com/oplatek/Conque-Shell'
+"vim-airline
+Bundle 'bling/vim-airline'
 "HTML自动补全
 Bundle 'HTML-AutoCloseTag'
+"css3语法高亮
+Bundle 'hail2u/vim-css3-syntax'
 "emmet html/css补全
 Bundle 'mattn/emmet-vim'
 "NERD commenter,下面的AuthorInfo需要
 Bundle 'https://github.com/scrooloose/nerdcommenter'
 "添加作者信息
 Bundle 'https://github.com/vim-scripts/AuthorInfo'
+"补全软件
+Bundle 'Shougo/neocomplete'
+"buffer line
+Bundle 'bling/vim-bufferline'
 "...
 "下面是vundle使用命令
 ":BundleList			--list configured bundles
@@ -254,12 +254,6 @@ endif
 " 	:help compl-omni
 "===end 补全===
 
-"powerline-status配置
-"set laststatus=2
-"set t_Co=256
-"let g:Powerline_symbols = 'unicode'
-""let g:Powerline_symbols = 'fancy'
-
 "下面是vim-airline的配置
 if !exists('g:airlne_symbols')
 	let g:airline_symbols = {}
@@ -269,13 +263,6 @@ let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
 set laststatus=2
 set t_Co=256
-
-"ConqueTerm控制台
-"NOTE:	没有使用
-"<F9> 	将选中文本发送到Conque-Shell
-"<F10> 	将当前所有文本发送到Conque-Shell中
-"<F11> 	如果当前编辑文件可执行，则打开新的Conque-Shell并运行
-"		但是会有快捷键冲突
 
 "emmet配置和使用
 let g:user_emmet_install_global=0
@@ -295,12 +282,89 @@ let g:vimrc_email='li_Tking@163.com'
 let g:vimrc_homepage=''
 nmap <F2> :AuthorInfoDetect<cr>
 
+"neocomplete 配置
+"Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+
+" Define dictionary.
+let g:neocomplete#sources#dictionary#dictionaries = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'scheme' : $HOME.'/.gosh_completions'
+        \ }
+
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+	return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+	" For no inserting <CR> key.
+	"return pumvisible() ? "\<C-y>" : "\<CR>"
+endfunction
+" <TAB>: completion.
+"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+" Close popup by <Space>.
+"inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+
+" AutoComplPop like behavior.
+let g:neocomplete#enable_auto_select = 1
+
+" Shell like behavior(not recommended).
+"set completeopt+=longest
+"let g:neocomplete#enable_auto_select = 1
+"let g:neocomplete#disable_auto_complete = 1
+"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+" For perlomni.vim setting.
+" https://github.com/c9s/perlomni.vim
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+"neocomplete补全配置结束
+
 "c语言模板插入
 iab chead #include <stdio.h><CR><CR>int main(int argc, char **argv)<CR>{<CR>return 0;<CR>}<CR>
-iab cshead using System;<CR>using System.Collections.Generic;<CR>using System.Text;<CR>namespace xx {<CR>}<CR>
+iab cshead using System;<CR>using System.Collections.Generic;<CR>using System.Text;<CR>using System.Collections;<CR>namespace xx {<CR>}<CR>
 iab pyhead #!/usr/bin/env python<CR>#-*-coding:utf-8-*-<CR>
 
 "添加库函数gtk补全的路径
 set path+=/usr/include/gtk-2.0/
 "设置行长80字符自动换行
 set textwidth=80 fo+=Mm
+"对于markdown文档的行末空格进行高亮,现在的写法还有问题！！！
+highlight WhitespaceEOF ctermbg=cyan guibg=cyan
+match WhitespaceEOF /\(^\)@! \ \+$/

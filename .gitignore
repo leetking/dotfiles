@@ -1,0 +1,4 @@
+!.gitignore
+!vim/vim/vundle.tar.xz
+!vim/vim/plugin.tar.xz
+vim/vim
