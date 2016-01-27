@@ -10,6 +10,7 @@ VIM_PATH=$INSTALL_PATH/vim
 VUNDLE_PATH=$INSTALL_PATH/vim/vim/bundle
 BACKUP_PATH=$INSTALL_PATH/backups/vim
 STATES_PATH=$INSTALL_PATH/states/vim
+INSTALL_SCRIPT=$INSTALL_PATH/install/vim.sh
 Help() {
 	echo "Usage: $0 [-i]|[-r]|[-h]"
 	echo "\t-i install, 安装"
@@ -41,6 +42,9 @@ Install() {
 	mkdir -P $VUNDLE_PATH 2> /dev/null
 	echo "clone vundle..."
 	git clone https://github.com/gmarik/vundle -C $VUNDLE_PATH || echo "没能clone vundle，请手动安装"
+	mkdir -P $INSTALL_PATH/install 2> /dev/null
+	cp $CURR_PATH/install/vim.sh $INSTALL_SCRIPT
+	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	#生成安装信息
 	touch $STATES_PATH
 	echo "安装vim配置文件成功!"
@@ -57,6 +61,7 @@ Remove() {
 	mv $BACKUP_PATH/vimrc ~/.vimrc 2> /dev/null
 	mv $BACKUP_PATH/gvimrc ~/.gvimrc 2> /dev/null
 	mv $BACKUP_PATH/vim ~/.vim 2> /dev/null
+	rm -f $INSTALL_SCRIPT
 	#删除安装状态
 	rm -r $STATES_PATH
 	echo "vim配置文件卸载成功"

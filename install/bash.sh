@@ -9,6 +9,7 @@ source ../vars.sh
 BASH_PATH=$INSTALL_PATH/bash
 BACKUP_PATH=$INSTALL_PATH/backups/bash
 STATES_PATH=$INSTALL_PATH/states/bash
+INSTALL_SCRIPT=$INSTALL_PATH/install/bash.sh
 Help() {
 	echo "Usage: $0 [-i]|[-r]|[-h]"
 	echo "\t-i install, 安装"
@@ -30,15 +31,24 @@ Install() {
 	ln -sf $BASH_PATH/inputrc ~/.inputrc
 	#生成安装信息
 	touch $STATES_PATH
+	#复制安装脚本
+	mkdir -P $INSTALL_PATH/install 2> /dev/null
+	cp $CURR_PATH/install/bash.sh $INSTALL_SCRIPT
+	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	echo "bash完成"
 }
 Remove() {
 	echo "开始卸载bash配置文件..."
 	hash ed || echo "ERROR: 没有找到ed"; exit 1
+	if [ ! -e $STATES_PATH ]; then
+		echo "没有安装过bash配置文件"
+		exit 1
+	fi
 	rm -rf $BASH_PATH
 	mv -f $BACKUP_PATH/inputrc ~/.inputrc
 	(echo '/#own/d'; echo 'wq') | ed -s ~/.bashrc
 	rm $STATES_PATH
+	rm $INSTALL_SCRIPT
 	echo "bash配置文件卸载完成"
 }
 if [2 -ne $#]; then

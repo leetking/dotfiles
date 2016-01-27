@@ -2,6 +2,9 @@
 
 #install.sh [-a{i|r}] [-b{i|r}] [-v{i|r}] [-fo{i|r}] [-fv{i|r}] [-t{|r}] [-r{i|r}]
 
+#引入环境变量
+source vars.sh
+
 Help()
 {
 	echo "Usage: $0 [-a{i|r}] [-b{i|r}] [-v{i|r}]"
@@ -21,6 +24,10 @@ Installall()
 	install/fvwm.sh $1
 	install/tmux.sh $1
 	install/rxvt.sh $1
+	if [ $1 == "r" ]; then
+		rm -rf $INSTALL_PATH
+		echo "全部卸载完成"
+	fi
 }
 
 #目前只支持全部安装或卸载，或者某一个安装或卸载，不支持如bash或vim同时安装或卸载

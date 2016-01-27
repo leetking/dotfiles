@@ -9,6 +9,7 @@ source ../vars.sh
 FONTS_PATH=$INSTALL_PATH/fonts
 #BACKUP_PATH=$INSTALL_PATH/backups/fonts
 STATES_PATH=$INSTALL_PATH/states/fonts
+INSTALL_SCRIPT=$INSTALL_PATH/install/fonts.sh
 Help() {
 	echo "Usage: $0 [-i]|[-r]|[-h]"
 	echo "\t-i install, 安装"
@@ -28,6 +29,9 @@ Install() {
 	cp -rf $CURR_PATH/fonts $INSTALL_PATH/fonts
 	#解压出来并设置好
 	$INSTALL_PATH/fonts/tarxf.sh
+	mkdir -P $INSTALL_PATH/install 2> /dev/null
+	cp $CURR_PATH/install/fonts.sh $INSTALL_SCRIPT
+	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	echo "字体安装完成"
 }
 Remove() {
@@ -37,6 +41,8 @@ Remove() {
 		exit 1
 	fi
 	$INSTALL_PATH/fonts/tarcf.sh -r
+	rm $STATES_PATH
+	rm $INSTALL_SCRIPT
 	echo "字体卸载成功"
 }
 if [2 -ne $#]; then

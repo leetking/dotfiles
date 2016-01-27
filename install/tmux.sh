@@ -9,6 +9,7 @@ source ../vars.sh
 TMUX_PATH=$INSTALL_PATH/tmux
 BACKUP_PATH=$INSTALL_PATH/backups/tmux
 STATES_PATH=$INSTALL_PATH/states/tmux
+INSTALL_SCRIPT=$INSTALL_PATH/install/tmux.sh
 Help() {
 	echo "Usage: $0 [-i]|[-r]|[-h]"
 	echo "\t-i install, 安装"
@@ -26,6 +27,9 @@ Install() {
 	cp -rf ~/.tmux.conf $BACKUP_PATH/tmux.conf 2> /dev/null
 	cp -rf $CURR_PATH/tmux $INSTALL_PATH/tmux
 	ln -sf $TMUX_PATH/tmux.conf ~/.tmux.conf
+	mkdir -P $INSTALL_PATH/install 2> /dev/null
+	cp $CURR_PATH/install/tmux.sh $INSTALL_SCRIPT
+	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	touch $STATES_PATH
 	echo "tmux配置文件安装完成"
 }
@@ -38,6 +42,7 @@ Remove() {
 	rm -rf $TMUX_PATH
 	rm -rf ~/.tmux.conf
 	mv $BACKUP_PATH/tmux.conf ~/.tmux.conf
+	rm $INSTALL_SCRIPT
 	rm $STATES_PATH
 	echo "tmux配置文件卸载完成"
 }
