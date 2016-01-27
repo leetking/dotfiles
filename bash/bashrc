@@ -63,7 +63,7 @@ normal=$'\[\e[m\]'
 #修改ps1
 export PS1="$white[$magenta\u$white@$green\h$white:$cyan\w$yellow\$git_branch$white]"'\$'" $normal"
 #PS4
-export PS4="$black+$cyan"'$BASH_SOURCE'"$normal:$red"'$LINENO'"$normal: "
+export PS4="$black+$cyan"'${BASH_SOURCE##*/}'"$normal:$red"'$LINENO'"$normal: "
 
 # 使键盘映射启用
 #xmodmap ~/.Xmodmap

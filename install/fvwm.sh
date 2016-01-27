@@ -4,8 +4,9 @@
 # -r卸载
 # -h帮助
 
-#获取INSTALL_PATH和CURR_PATH的值
-source ../vars.sh
+hash dirname || { echo "ERROR: 需要安装dirname"; exit 1; }
+INSTALL_PATH=~/.myconfigures
+CURR_PATH=`dirname $0`/..
 FVWM_PATH=$INSTALL_PATH/fvwm
 BACKUP_PATH=$INSTALL_PATH/backups/fvwm
 STATES_PATH=$INSTALL_PATH/states/fvwm
@@ -35,6 +36,7 @@ Install() {
 	cp $CURR_PATH/install/fvwm.sh $INSTALL_SCRIPT
 	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	#生成安装信息
+	mkdir -p $INSTALL_PATH/states 2> /dev/null
 	touch $STATES_PATH
 	echo "fvwm配置完成"
 }
@@ -42,8 +44,8 @@ Remove() {
 	echo "开始卸载fvwm配置文件..."
 	rm -rf $FVWM_PATH
 	rm ~/.fvwm ~/.fvwm2rc 2> /dev/null
-	mv -f $BACKUP_PATH/fvwm ~/.fvwm 2> /dev/null
-	mv -f $BACKUP_PATH/fvwm2rc ~/.fvwm2rc 2> /dev/null
+	mv $BACKUP_PATH/fvwm ~/.fvwm 2> /dev/null
+	mv $BACKUP_PATH/fvwm2rc ~/.fvwm2rc 2> /dev/null
 	rm $STATES_PATH
 	rm $INSTALL_SCRIPT
 	echo "fvwm配置卸载完成"

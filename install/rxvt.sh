@@ -1,11 +1,13 @@
 #!/bin/bash
+
 #安装、卸载rxvt的配置文件
 # -i安装
 # -r卸载
 # -h帮助
 
-#获取INSTALL_PATH和CURR_PATH的值
-source ../vars.sh
+hash dirname || { echo "ERROR: 需要安装dirname"; exit 1; }
+INSTALL_PATH=~/.myconfigures
+CURR_PATH=`dirname $0`/..
 RXVT_PATH=$INSTALL_PATH/rxvt
 BACKUP_PATH=$INSTALL_PATH/backups/rxvt
 STATES_PATH=$INSTALL_PATH/states/rxvt
@@ -29,21 +31,22 @@ Install() {
 	mkdir -P $INSTALL_PATH/install 2> /dev/null
 	cp $CURR_PATH/install/rxvt.sh $INSTALL_SCRIPT
 	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
+	mkdir -p $INSTALL_PATH/states 2> /dev/null
+	touch $STATES_PATH
 	echo "rxvt配置文件安装成功"
 }
 Remove() {
-	if [ ! -e $STATES_PATH ]; then
-		echo "没有安装rxvt的配置文件"
-		exit 0
+	echo "开始卸载rxvt的配置文件..."
+	if [ -e $STATES_PATH ]; then
+		rm -rf $RXVT_PATH
+		#恢复备份文件
+		mv $BACKUP_PATH/Xdefaults ~/.Xdefaults 2> /dev/null
+		rm $INSTALL_SCRIPT
+		rm $STATES_PATH
 	fi
-	rm -rf $RXVT_PATH
-	#恢复备份文件
-	mv $BACKUP_PATH/Xdefaults ~/.Xdefaults 2> /dev/null
-	rm $INSTALL_SCRIPT
-	rm $STATES_PATH
 	echo "rxvt配置文件卸载成功"
 }
-if [2 -ne $#]; then
+if [ 1 -ne $# ]; then
 	Help
 	exit 1
 fi

@@ -4,8 +4,9 @@
 # -r卸载
 # -h帮助
 
-#获取INSTALL_PATH和CURR_PATH的值
-source ../vars.sh
+hash dirname || { echo "ERROR: 需要安装dirname"; exit 1; }
+INSTALL_PATH=~/.myconfigures
+CURR_PATH=`dirname $0`/..
 VIM_PATH=$INSTALL_PATH/vim
 VUNDLE_PATH=$INSTALL_PATH/vim/vim/bundle
 BACKUP_PATH=$INSTALL_PATH/backups/vim
@@ -20,7 +21,7 @@ Help() {
 Install() {
 	echo "开始安装vim配置文件..."
 	if [ -f $STATES_PATH ]; then
-		echo "vim的配置文件已经安置好了"
+		echo "安装vim配置文件成功!"
 		exit 0
 	fi
 	#检测工具
@@ -41,32 +42,31 @@ Install() {
 	#安装vundle
 	mkdir -P $VUNDLE_PATH 2> /dev/null
 	echo "clone vundle..."
-	git clone https://github.com/gmarik/vundle -C $VUNDLE_PATH || echo "没能clone vundle，请手动安装"
+	git clone https://github.com/gmarik/vundle -C $VUNDLE_PATH || echo "WARN: 没能clone vundle，请手动安装"
 	mkdir -P $INSTALL_PATH/install 2> /dev/null
 	cp $CURR_PATH/install/vim.sh $INSTALL_SCRIPT
 	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	#生成安装信息
+	mkdir -p $INSTALL_PATH/states 2> /dev/null
 	touch $STATES_PATH
 	echo "安装vim配置文件成功!"
 }
 Remove() {
 	echo "开始卸载vim配置文件..."
-	if [ ! -e $STATES_PATH ]; then
-		echo "没有安装过vim配置文件"
-		exit 1
+	if [ -e $STATES_PATH ]; then
+		#删除
+		rm -rf $VIM_PATH
+		#恢复配置文件
+		mv $BACKUP_PATH/vimrc ~/.vimrc 2> /dev/null
+		mv $BACKUP_PATH/gvimrc ~/.gvimrc 2> /dev/null
+		mv $BACKUP_PATH/vim ~/.vim 2> /dev/null
+		rm -f $INSTALL_SCRIPT
+		#删除安装状态
+		rm -r $STATES_PATH
 	fi
-	#删除
-	rm -rf $VIM_PATH
-	#恢复配置文件
-	mv $BACKUP_PATH/vimrc ~/.vimrc 2> /dev/null
-	mv $BACKUP_PATH/gvimrc ~/.gvimrc 2> /dev/null
-	mv $BACKUP_PATH/vim ~/.vim 2> /dev/null
-	rm -f $INSTALL_SCRIPT
-	#删除安装状态
-	rm -r $STATES_PATH
-	echo "vim配置文件卸载成功"
+	echo "vim配置文件卸载成功!"
 }
-if [ 2 -ne $# ]; then
+if [ 1 -ne $# ]; then
 	Help
 	exit 1
 fi
