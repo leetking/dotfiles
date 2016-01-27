@@ -1,4 +1,3 @@
-!.gitignore
-!vim/vim/vundle.tar.xz
-!vim/vim/plugin.tar.xz
+.gitignore
 vim/vim
+csdatabase/

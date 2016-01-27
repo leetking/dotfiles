@@ -12,8 +12,8 @@ set nofen
 set fdl=10			 "始终启用鼠标
 set mouse=a
 		" 状态条，显示字节数，列数，行数，当前行等信息	
-"set statusline=%F%m%r%h%w/ [FORMAT=%{&ff}]/ [TYPE=%Y]/ [ASCII=/%03.3b]/ [HEX=/%02.2B]/ [POS=%04l,%04v][%p%%]/ [LEN=%L]  
-"set laststatus=2 	"always show the status line  
+"set statusline=%F%m%r%h%w/ [FORMAT=%{&ff}]/ [TYPE=%Y]/ [ASCII=/%03.3b]/ [HEX=/%02.2B]/ [POS=%04l,%04v][%p%%]/ [LEN=%L]
+"set laststatus=2 	"always show the status line
 "set shortmess=atI	"去掉欢迎界面
 "set lines=28  columns=200		"窗口大小
 "colorscheme desert				"主题
@@ -76,6 +76,9 @@ func! Compile()
 	if &filetype == 'c'				"c
 		exec "!clear"
 		exec "!gcc -o '%<' '%' -ansi -Wall -lm"
+	elseif &filetype == 'cpp'		"cpp
+		exec "!clear"
+		exec "!g++ -o '%<' '%'"
 	elseif &filetype == 'java'		"java
 		exec "!clear"
 		exec "!javac '%'"
@@ -85,6 +88,10 @@ func! Compile()
 	elseif &filetype == 'cs'		"c_sharp
 		exec "!clear"
 		exec "!gmcs '%'"
+	elseif &filetype == 'tex'		"tex文件
+		exec "!clear"
+		"这里使用texlive的包,以后修改
+		exec "!xelatex '%'"
 	else
 		exec ""
 	endif
@@ -92,7 +99,7 @@ endfunc
 
 
 "<F5>编译运行"
-map <F5> : call CompileRun()<CR>
+map <F5> :call CompileRun()<CR>
 func! CompileRun()
 	exec "w"
 	if &filetype == 'xhtml' || &filetype == 'html'	"html
@@ -101,22 +108,29 @@ func! CompileRun()
 	elseif &filetype == 'c'		"c
 		exec "!clear"
 		exec "!gcc -o '%<' '%' -Wall -ansi -lm"
-		exec "! ./%<"
+		exec "!./%<"
+	elseif &filetype == 'cpp'	"cpp
+		exec "!clear"
+		exec "!g++ -o '%<' '%'"
+		exec "!./%<"
 	elseif &filetype == 'java'	"java
 		exec "!clear"
-		exec "!javac '%'"
-		exec "!java '%<'"
+		exec "!javac '%'; java '%<'"
 	elseif &filetype == 'asm'	"汇编
 		exec "!clear"
 		exec "!as '%' -o '%<.o' && ld '%<.o' -o '%<'"
 		exec "!./'%<'"
 	elseif &filetype == 'cs'	"c_sharp
 		exec "!clear"
-		exec "!gmcs '%'"
-		exec "!./'%<.exe'"
+		exec "!gmcs '%'; ./'%<.exe'"
 	elseif &filetype == 'python' "python
 		exec "!clear"
 		exec "!python '%'"
+	elseif &filetype == 'tex'		"tex文件
+		exec "!clear"
+		exec "!xelatex '%'"
+		"使用evince打开
+		exec "!evince '%<.pdf'"
 	else
 		exec ""
 	endif
@@ -127,7 +141,7 @@ map <F6> : call Run()<CR>
 func! Run()
 	exec "w"
 	"C或者汇编
-	if &filetype == 'c' || &filetype == 'asm'
+	if &filetype == 'c' || &filetype == 'asm' || &filetype == 'cpp'
 		exec "!clear"
 		exec "!./'%<'"
 	elseif &filetype == 'java'	"java
@@ -149,6 +163,10 @@ func! GDB()
 		exec "!clear"
 		exec "!gcc -o %< % -g -ansi -lm"
 		exec "!gdb %<"
+	elseif &filetype == 'cpp'		"cpp
+		exec "!clear"
+		exec "!g++ -o %< % -g"
+		exec "!gdb %<"
 	elseif &filetype == 'asm'	"汇编
 		exec "!clear"
 		exec "!as % -g -o %<.o && ld %<.o -o %<"
@@ -169,66 +187,25 @@ map <F8> : call C_ctags_cs()<CR>
 func! C_ctags_cs()
 	if &filetype == 'c' || &filetype == 'h'	"只对c实行生成ctags
 		exec "!ctags -R"
+		"对cscope生成的数据库就放在这个目录下
+		exec "!cscope -Rkbq"
+		if filereadable("cscope.out")
+			cs add cscope.out
+		elseif "$CSCOPE_DB" != ""
+			cs add "$CSCOPE_DB"
+		endif
 	endif
 endfunc
-
-"使用vbundle来管理插件
-"启动智能补全
-filetype plugin indent on
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-"required!
-Bundle 'gmarik/vundle'
-"original repos on github
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-rails.git'
-"vim-scripts repos
-Bundle 'L9'
-Bundle 'FuzzyFinder'
-"vim-airline
-Bundle 'bling/vim-airline'
-"HTML自动补全
-Bundle 'HTML-AutoCloseTag'
-"css3语法高亮
-Bundle 'hail2u/vim-css3-syntax'
-"emmet html/css补全
-Bundle 'mattn/emmet-vim'
-"NERD commenter,下面的AuthorInfo需要
-Bundle 'https://github.com/scrooloose/nerdcommenter'
-"添加作者信息
-Bundle 'https://github.com/vim-scripts/AuthorInfo'
-"补全软件
-Bundle 'Shougo/neocomplete'
-"buffer line
-Bundle 'bling/vim-bufferline'
-"...
-"下面是vundle使用命令
-":BundleList			--list configured bundles
-":BundleInstall(!)		--install(update) bundles
-":BundleSearch(!) foo	--search(or refresh cache first) for foo
-":BundleClean(!)		--confirm(or auto-approve) removal of unused bundles
-"see ':h vundle' for more details or wiki for FAQ
-
-
-"taglist插件
-let Tlist_Compact_Format=1	"不显示<F1>to display help
-let Tlist_Show_One_File=1
-let Tlist_Exit_OnlyWindow=2
-"使用winmanager把TagList和netrw整合起来
-let g:winManagerWindowLayout='FileExplorer|TagList'
-nmap wm :WMToggle<cr>
-"USE: 在普通模式下输入 vm
-
 "cscope配置
 set cscopequickfix=s-,c-,d-,i-,t-,e-
-"使用同ctags，cscope -Rbq
-"添加数据库
+set cst
+set csto=1	"先搜索ctags文件
 if filereadable("cscope.out")
 	cs add cscope.out
-elseif "$CSCOPE_DB" != ""
-	cs add "$CSCOPE_DB"
 endif
-""USE:
+"使用同ctags，cscope -Rbq
+"添加数据库
+""USE:添加快捷键
 "nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>
 "nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>
 "nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>
@@ -238,6 +215,51 @@ endif
 "nmap <C-@>i :cs find i ^<C-R>=expand("<cword>")<CR>$<CR>
 "nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 ""===end cscope===
+
+"使用vbundle来管理插件
+"启动智能补全
+filetype plugin indent on
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+"required!
+Bundle 'gmarik/vundle'
+Bundle 'bling/vim-airline'
+"Bundle 'Lokaltog/vim-powerline'
+Bundle 'HTML-AutoCloseTag'
+Bundle 'hail2u/vim-css3-syntax'
+Bundle 'mattn/emmet-vim'
+"NERD commenter,下面的AuthorInfo需要
+Bundle 'scrooloose/nerdcommenter'
+"添加作者信息
+Bundle 'vim-scripts/AuthorInfo'
+Bundle 'Shougo/neocomplete'
+Bundle 'bling/vim-bufferline'
+"Bundle 'vim-scripts/VimIM'
+Bundle 'scrooloose/nerdtree'
+Bundle 'majutsushi/tagbar'
+"vim中文帮助
+Bundle 'yianwillis/vimcdoc'
+"java补全
+"Bundle 'artur-shaik/vim-javacomplete2'
+"tex补全
+Bundle 'lervag/vimtex'
+"...
+"下面是vundle使用命令
+":BundleList			--list configured bundles
+":BundleInstall(!)		--install(update) bundles
+":BundleSearch(!) foo	--search(or refresh cache first) for foo
+":BundleClean(!)		--confirm(or auto-approve) removal of unused bundles
+"see ':h vundle' for more details or wiki for FAQ
+
+
+"NOTE 整合
+"左边文件管理，右边tagbar
+"USE: 在普通模式下输入 vm
+nmap wm : call NerdTree_TagBar_Toggle()<cr>
+function! NerdTree_TagBar_Toggle()
+	exec "NERDTreeToggle"
+	exec "TagbarToggle"
+endfunction
 
 "set completeopt=longest,menu
 "下面是使用了supertab插件来优化补全
@@ -255,32 +277,30 @@ endif
 "===end 补全===
 
 "下面是vim-airline的配置
-if !exists('g:airlne_symbols')
-	let g:airline_symbols = {}
-endif
-let g:airline_symbols.space = "\ua0"
+set laststatus=2
 let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
-set laststatus=2
 set t_Co=256
 
 "emmet配置和使用
 let g:user_emmet_install_global=0
-autocmd Filetype html,css "EmmetInstall
+autocmd Filetype html,css EmmetInstall
 "USE:
 "使用方法在http://blog.wpjam.com/m/emmet-grammar/
-
-"NERD_commenter 配置和使用
-"let loaded_nerd_comments=1
-"let mapleader='\'
-"let g:mapleader='\'
-"上面还不会使用:(
 
 "AuthorInfo使用,<F2>添加
 let g:vimrc_author='leetking'
 let g:vimrc_email='li_Tking@163.com'
 let g:vimrc_homepage=''
 nmap <F2> :AuthorInfoDetect<cr>
+
+"vimIM配置
+let g:vimim_cloud = 'sogou, baidu, qq'
+let g:vimim_map = 'tab_as_gi'
+let g:vimim_toggle = 'pinyin, goole, sogou'
+"let g:vimim_mode = 'dynamic'
+"let g:vimim_mycloud = 0
+"let g:vimim_shuangpin = 0
 
 "neocomplete 配置
 "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
@@ -313,26 +333,29 @@ inoremap <expr><C-l>     neocomplete#complete_common_string()
 
 " Recommended key-mappings.
 " <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+	"这个好像影响iab缩写诶
+"inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
 function! s:my_cr_function()
 	return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
 	" For no inserting <CR> key.
 	"return pumvisible() ? "\<C-y>" : "\<CR>"
 endfunction
 " <TAB>: completion.
+" 我不使用tab补全
 "inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 " <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+" TODO 这里设置成ctrl+h删除一个字符，而不是智能删除
+"inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 " Close popup by <Space>.
 "inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
 
-" AutoComplPop like behavior.
+" AutoComplPop like behavior.自动选择
 let g:neocomplete#enable_auto_select = 1
 
 " Shell like behavior(not recommended).
 "set completeopt+=longest
-"let g:neocomplete#enable_auto_select = 1
+let g:neocomplete#enable_auto_select = 1
 "let g:neocomplete#disable_auto_complete = 1
 "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
 
@@ -342,13 +365,19 @@ autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+"添加java补全
+"autocmd FileType java setlocal omnifunc=javacomplete#Complete
+"对于java 导入三方包R.java，可以这么写
+"if filereadable("xxxx.xml")
+"let g:JavaComplete_SourcesPath="xxxx/xxxx/xxx/r"
+"endif
 
 " Enable heavy omni completion.
 if !exists('g:neocomplete#sources#omni#input_patterns')
   let g:neocomplete#sources#omni#input_patterns = {}
 endif
 "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
 "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
 " For perlomni.vim setting.
@@ -358,13 +387,18 @@ let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
 "c语言模板插入
 iab chead #include <stdio.h><CR><CR>int main(int argc, char **argv)<CR>{<CR>return 0;<CR>}<CR>
-iab cshead using System;<CR>using System.Collections.Generic;<CR>using System.Text;<CR>using System.Collections;<CR>namespace xx {<CR>}<CR>
+iab cshead using System;<CR>using System.Collections.Generic;<CR>using System.Text;<CR>using System.Collections;<CR>using System.Runtime.InteropServices;<CR><CR>namespace xx {<CR>}<CR>
 iab pyhead #!/usr/bin/env python<CR>#-*-coding:utf-8-*-<CR>
 
 "添加库函数gtk补全的路径
-set path+=/usr/include/gtk-2.0/
+"set path+=/usr/include/gtk-2.0/
 "设置行长80字符自动换行
-set textwidth=80 fo+=Mm
-"对于markdown文档的行末空格进行高亮,现在的写法还有问题！！！
+"set textwidth=80 fo+=Mm
+"set novisualbell
+"source $HOME/.vim/syntax/hi_tag.vim
+"syntax keyword <group name> <keyword list>
+
+match Todo /\<NOTE\>/
+"对于markdown文档的行末空格进行高亮	等价于(>=\S) +$ 但是目前不知道markdown的类型
 highlight WhitespaceEOF ctermbg=cyan guibg=cyan
-match WhitespaceEOF /\(^\)@! \ \+$/
+2match WhitespaceEOF /\(\S\)\@<=\ \+$/
