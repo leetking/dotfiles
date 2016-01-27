@@ -12,9 +12,9 @@ STATES_PATH=$INSTALL_PATH/states/tmux
 INSTALL_SCRIPT=$INSTALL_PATH/install/tmux.sh
 Help() {
 	echo "Usage: $0 [-i]|[-r]|[-h]"
-	echo "\t-i install, 安装"
-	echo "\t-r remove, 卸载"
-	echo "\t-h 显示这个页面"
+	echo -e "\t-i install, 安装"
+	echo -e "\t-r remove, 卸载"
+	echo -e "\t-h 显示这个页面"
 }
 Install() {
 	echo "现在开始安装tmux的配置文件"

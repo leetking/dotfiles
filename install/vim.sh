@@ -13,9 +13,9 @@ STATES_PATH=$INSTALL_PATH/states/vim
 INSTALL_SCRIPT=$INSTALL_PATH/install/vim.sh
 Help() {
 	echo "Usage: $0 [-i]|[-r]|[-h]"
-	echo "\t-i install, 安装"
-	echo "\t-r remove, 卸载"
-	echo "\t-h 显示这个页面"
+	echo -e "\t-i install, 安装"
+	echo -e "\t-r remove, 卸载"
+	echo -e "\t-h 显示这个页面"
 }
 Install() {
 	echo "开始安装vim配置文件..."
@@ -66,7 +66,7 @@ Remove() {
 	rm -r $STATES_PATH
 	echo "vim配置文件卸载成功"
 }
-if [2 -ne $#]; then
+if [ 2 -ne $# ]; then
 	Help
 	exit 1
 fi

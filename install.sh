@@ -32,8 +32,8 @@ Installall()
 
 #目前只支持全部安装或卸载，或者某一个安装或卸载，不支持如bash或vim同时安装或卸载
 #NOTE
-if [ 1 >= $# ]; then
-	help
+if [ 2 -lt $# ]; then
+	Help
 	exit 1
 fi
 
