@@ -9,6 +9,7 @@ INSTALL_PATH=~/.myconfigures
 CURR_PATH=`dirname $0`/..
 VIM_PATH=$INSTALL_PATH/vim
 VUNDLE_PATH=$INSTALL_PATH/vim/vim/bundle/vundle
+PLUGIN_PATH=$INSTALL_PATH/vim/vim/plugin
 BACKUP_PATH=$INSTALL_PATH/backups/vim
 STATES_PATH=$INSTALL_PATH/states/vim
 INSTALL_SCRIPT=$INSTALL_PATH/install/vim.sh
@@ -39,7 +40,6 @@ Install() {
 	ln -s $VIM_PATH/vimrc ~/.vimrc
 	ln -s $VIM_PATH/gvimrc ~/.gvimrc
 	ln -s $VIM_PATH/vim ~/.vim
-	#安装vundle
 	mkdir -p $VUNDLE_PATH 2> /dev/null
 	echo "clone vundle..."
 	git clone https://github.com/gmarik/vundle $VUNDLE_PATH 2> /dev/null || echo "WARN: 没能clone vundle，请手动安装"

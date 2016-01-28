@@ -1,0 +1,1 @@
+../bundle/AuthorInfo/ftplugin/authorinfo.vim
