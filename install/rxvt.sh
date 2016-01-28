@@ -24,11 +24,11 @@ Install() {
 		echo "rxvt的配置文件已经安装好了"
 		exit 0
 	fi
-	mkdir -P $BACKUP_PATH 2> /dev/null
+	mkdir -p $BACKUP_PATH 2> /dev/null
 	mv ~/.Xdefaults $BACKUP_PATH/Xdefaults 2> /dev/null
 	cp -rf $CURR_PATH/rxvt $INSTALL_PATH/rxvt
 	ln -sf $RXVT_PATH/Xdefaults ~/.Xdefaults
-	mkdir -P $INSTALL_PATH/install 2> /dev/null
+	mkdir -p $INSTALL_PATH/install 2> /dev/null
 	cp $CURR_PATH/install/rxvt.sh $INSTALL_SCRIPT
 	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	mkdir -p $INSTALL_PATH/states 2> /dev/null
@@ -38,8 +38,9 @@ Install() {
 Remove() {
 	echo "开始卸载rxvt的配置文件..."
 	if [ -e $STATES_PATH ]; then
-		rm -rf $RXVT_PATH
+		rm -r $RXVT_PATH
 		#恢复备份文件
+			rm ~/.Xdefaults 2> /dev/null
 		mv $BACKUP_PATH/Xdefaults ~/.Xdefaults 2> /dev/null
 		rm $INSTALL_SCRIPT
 		rm $STATES_PATH

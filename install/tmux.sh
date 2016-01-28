@@ -24,11 +24,11 @@ Install() {
 		exit 0
 	fi
 	#备份
-	mkdir -P $BACKUP_PATH 2> /dev/null
+	mkdir -p $BACKUP_PATH 2> /dev/null
 	cp -rf ~/.tmux.conf $BACKUP_PATH/tmux.conf 2> /dev/null
 	cp -rf $CURR_PATH/tmux $INSTALL_PATH/tmux
 	ln -sf $TMUX_PATH/tmux.conf ~/.tmux.conf
-	mkdir -P $INSTALL_PATH/install 2> /dev/null
+	mkdir -p $INSTALL_PATH/install 2> /dev/null
 	cp $CURR_PATH/install/tmux.sh $INSTALL_SCRIPT
 	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	mkdir -p $INSTALL_PATH/states 2> /dev/null
@@ -40,7 +40,7 @@ Remove() {
 	if [ -e $STATES_PATH ]; then
 		rm -r $TMUX_PATH
 		rm ~/.tmux.conf
-		mv $BACKUP_PATH/tmux.conf ~/.tmux.conf
+		mv $BACKUP_PATH/tmux.conf ~/.tmux.conf 2> /dev/null
 		rm $INSTALL_SCRIPT
 		rm $STATES_PATH
 	fi

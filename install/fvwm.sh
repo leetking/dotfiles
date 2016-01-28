@@ -24,15 +24,15 @@ Install() {
 		exit 0
 	fi
 	#备份
-	mkdir -P $BACKUP_PATH 2> /dev/null
+	mkdir -p $BACKUP_PATH 2> /dev/null
 	mv ~/.fvwm $BACKUP_PATH/fvwm 2> /dev/null
-	mv ~/.fvwm2rc $BACKUP_PATH/fvwm2rc 2> /de/null
+	mv ~/.fvwm2rc $BACKUP_PATH/fvwm2rc 2> /dev/null
 	#复制配置文件
 	cp -r $CURR_PATH/fvwm $INSTALL_PATH/fvwm
 	#建立链接
 	ln -sf $FVWM_PATH ~/.fvwm
 	#复制安装脚本
-	mkdir -P $INSTALL_PATH/install 2> /dev/null
+	mkdir -p $INSTALL_PATH/install 2> /dev/null
 	cp $CURR_PATH/install/fvwm.sh $INSTALL_SCRIPT
 	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	#生成安装信息

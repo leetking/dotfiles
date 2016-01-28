@@ -24,10 +24,11 @@ Install() {
 	hash mkfontdir || echo "WARN: 建议安装mkfontdir"
 	hash fc-cache || echo "WARN: 建议安装fc-cache"
 	if [ ! -f $STATES_PATH ]; then
+		mkdir -p $INSTALL_PATH 2> /dev/null
 		cp -rf $CURR_PATH/fonts $INSTALL_PATH/fonts
 		#解压出来并设置好
 		$INSTALL_PATH/fonts/tarxf.sh
-		mkdir -P $INSTALL_PATH/install 2> /dev/null
+		mkdir -p $INSTALL_PATH/install 2> /dev/null
 		cp $CURR_PATH/install/fonts.sh $INSTALL_SCRIPT
 		cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 		mkdir -p $INSTALL_PATH/states 2> /dev/null
