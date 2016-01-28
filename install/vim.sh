@@ -8,7 +8,7 @@ hash dirname || { echo "ERROR: 需要安装dirname"; exit 1; }
 INSTALL_PATH=~/.myconfigures
 CURR_PATH=`dirname $0`/..
 VIM_PATH=$INSTALL_PATH/vim
-VUNDLE_PATH=$INSTALL_PATH/vim/vim/bundle
+VUNDLE_PATH=$INSTALL_PATH/vim/vim/bundle/vundle
 BACKUP_PATH=$INSTALL_PATH/backups/vim
 STATES_PATH=$INSTALL_PATH/states/vim
 INSTALL_SCRIPT=$INSTALL_PATH/install/vim.sh
@@ -25,7 +25,7 @@ Install() {
 		exit 0
 	fi
 	#检测工具
-	hash git || echo "ERROR: 没有安装git,请手动安装"; exit 1
+	hash git ||{ echo "ERROR: 没有安装git,请手动安装"; exit 1; }
 	hash ctags || echo "WARN: 推荐安装ctags"
 	hash cscope || echo "WARN: 推荐安装cscope"
 	#备份
@@ -34,16 +34,16 @@ Install() {
 	mv ~/.gvimrc $BACKUP_PATH/gvimrc 2> /dev/null
 	mv ~/.vim $BACKUP_PATH/vim 2> /dev/null
 	#复制配置文件
-	cp -rf $CURR_PATH/vim $INSTALL_PATH/vim
+	cp -r $CURR_PATH/vim $INSTALL_PATH/vim
 	#链接到正确的位置
-	ln -sf $VIM_PATH/vimrc ~/.vimrc
-	ln -sf $VIM_PATH/gvimrc ~/.gvimrc
-	ln -sf $VIM_PATH/vim ~/.vim
+	ln -s $VIM_PATH/vimrc ~/.vimrc
+	ln -s $VIM_PATH/gvimrc ~/.gvimrc
+	ln -s $VIM_PATH/vim ~/.vim
 	#安装vundle
-	mkdir -P $VUNDLE_PATH 2> /dev/null
+	mkdir -p $VUNDLE_PATH 2> /dev/null
 	echo "clone vundle..."
-	git clone https://github.com/gmarik/vundle -C $VUNDLE_PATH || echo "WARN: 没能clone vundle，请手动安装"
-	mkdir -P $INSTALL_PATH/install 2> /dev/null
+	git clone https://github.com/gmarik/vundle $VUNDLE_PATH 2> /dev/null || echo "WARN: 没能clone vundle，请手动安装"
+	mkdir -p $INSTALL_PATH/install 2> /dev/null
 	cp $CURR_PATH/install/vim.sh $INSTALL_SCRIPT
 	cp -f $CURR_PATH/install.sh $INSTALL_PATH/install.sh
 	#生成安装信息
@@ -56,6 +56,7 @@ Remove() {
 	if [ -e $STATES_PATH ]; then
 		#删除
 		rm -rf $VIM_PATH
+		rm -rf ~/.vimrc ~/.gvimrc ~/.vim 2> /dev/null
 		#恢复配置文件
 		mv $BACKUP_PATH/vimrc ~/.vimrc 2> /dev/null
 		mv $BACKUP_PATH/gvimrc ~/.gvimrc 2> /dev/null

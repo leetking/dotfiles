@@ -42,15 +42,15 @@ Install() {
 }
 Remove() {
 	echo "开始卸载fvwm配置文件..."
-	rm -rf $FVWM_PATH
+	rm -rf $FVWM_PATH 2> /dev/null
 	rm ~/.fvwm ~/.fvwm2rc 2> /dev/null
 	mv $BACKUP_PATH/fvwm ~/.fvwm 2> /dev/null
 	mv $BACKUP_PATH/fvwm2rc ~/.fvwm2rc 2> /dev/null
-	rm $STATES_PATH
-	rm $INSTALL_SCRIPT
+	rm $STATES_PATH 2> /dev/null
+	rm $INSTALL_SCRIPT 2> /dev/null
 	echo "fvwm配置卸载完成"
 }
-if [2 -ne $#]; then
+if [ 1 -ne $# ]; then
 	Help
 	exit 1
 fi

@@ -20,20 +20,31 @@ Help()
 }
 Installall()
 {
-	$CURR_PATH/install/bash.sh $1
-	$CURR_PATH/install/vim.sh $1
-	$CURR_PATH/install/fonts.sh $1
-	$CURR_PATH/install/fvwm.sh $1
-	$CURR_PATH/install/tmux.sh $1
-	$CURR_PATH/install/rxvt.sh $1
-	if [ $1 == "r" ]; then
+	if [ -e $CURR_PATH/install/bash.sh ]; then
+		$CURR_PATH/install/bash.sh $1
+	fi
+	if [ -e $CURR_PATH/install/vim.sh ]; then
+		$CURR_PATH/install/vim.sh $1
+	fi
+	if [ -e $CURR_PATH/install/fonts.sh ]; then
+		$CURR_PATH/install/fonts.sh $1
+	fi
+	if [ -e $CURR_PATH/install/fvwm.sh ]; then
+		$CURR_PATH/install/fvwm.sh $1
+	fi
+	if [ -e $CURR_PATH/install/tmux.sh ]; then
+		$CURR_PATH/install/tmux.sh $1
+	fi
+	if [ -e $CURR_PATH/install/rxvt.sh ]; then
+		$CURR_PATH/install/rxvt.sh $1
+	fi
+	if [ $1 == "-r" ]; then
 		rm -rf $INSTALL_PATH
 		echo "全部卸载完成"
 	fi
 }
 
-#目前只支持全部安装或卸载，或者某一个安装或卸载，不支持如bash或vim同时安装或卸载
-#NOTE
+#目前只支持全部安装或卸载，或者某一个安装或卸载，不支持选项合并写法
 if [ 2 -lt $# ]; then
 	Help
 	exit 1

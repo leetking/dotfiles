@@ -46,7 +46,7 @@ Remove() {
 	fi
 	echo "tmux配置文件卸载完成"
 }
-if [1 -ne $#]; then
+if [ 1 -ne $# ]; then
 	Help
 	exit 1
 fi

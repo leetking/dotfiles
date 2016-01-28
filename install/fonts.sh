@@ -44,7 +44,7 @@ Remove() {
 	fi
 	echo "字体卸载成功"
 }
-if [2 -ne $#]; then
+if [ 1 -ne $# ]; then
 	Help
 	exit 1
 fi
