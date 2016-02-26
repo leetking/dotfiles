@@ -26,10 +26,15 @@ set fileencoding=utf-8		"可以不用设置
 autocmd filetype txt set spell			"对txt文档的英文进行语法检查
 "set spell								"开启拼写检查
 " 基于缩进或语法进行折叠
-"set foldmethod=indent
-set foldmethod=syntax
+set foldmethod=indent	"基于缩进
+"set foldmethod=syntax|mnual手动
 "启动vim时关闭代码折叠
 "set nofoldenable
+set foldenable
+"空格折叠
+nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+"深入7层自动折叠
+set foldlevel=7
 		"没明白的设置
 filetype on		"侦测文件类型
 
@@ -286,6 +291,7 @@ set t_Co=256
 let g:user_emmet_install_global=0
 autocmd Filetype html,css EmmetInstall
 "USE:
+"默认<C-y>展开，也就是先按ctrl+y然后再按,
 "使用方法在http://blog.wpjam.com/m/emmet-grammar/
 
 "AuthorInfo使用,<F2>添加
