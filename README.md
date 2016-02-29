@@ -1,11 +1,13 @@
-#vim、tmux、bash等的配置文件
+#生产工具的配置文件
 > **包括了:**
 
-- bash  
-- vim  
-- tmux  
-- rxvt  
-- fvwm  
+- [x] bash  
+- [x] vim  
+- [x] tmux  
+- [x] rxvt  
+- [ ] fvwm  
+- [ ] sdcv
+
 
 ###使用说明
 使用install.sh来安装和卸载，文件安装在~/.myconfigures里面
