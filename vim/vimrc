@@ -16,7 +16,6 @@ set mouse=a
 "set laststatus=2 	"always show the status line
 "set shortmess=atI	"去掉欢迎界面
 "set lines=28  columns=200		"窗口大小
-"colorscheme desert				"主题
 "set textwidth=80				"文本行的长度，需要开启自动换行
 "set cursorline					"高亮当前
 		"字符编码"
@@ -47,7 +46,8 @@ filetype on		"侦测文件类型
 		"关于C语言的设置
 set cindent					"C语言缩进
 "set list listchars=tab:>-	"可视化tab键
-set noexpandtab				"不用空格替代tab,(%retab!空格转换为tab)
+set noexpandtab			"不用空格替代tab,(%retab!空格转换为tab)
+"set expandtab
 set autoindent				"继承上一缩进
 set si						"智能缩进
 set tabstop=4 shiftwidth=4	"shiftwidth自动tab宽度
@@ -166,7 +166,7 @@ func! GDB()
 	exec "w"
 	if &filetype == 'c'			"c
 		exec "!clear"
-		exec "!gcc -o %< % -g -ansi -lm"
+		exec "!gcc -o %< % -g -ansi -Wall -lm"
 		exec "!gdb %<"
 	elseif &filetype == 'cpp'		"cpp
 		exec "!clear"
@@ -285,7 +285,14 @@ endfunction
 set laststatus=2
 let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
-set t_Co=256
+"设置256色
+if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
+			\ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
+			\ $TERM == "vte-256color" || $TERM == "screen-256color" ||
+			\ $TERM == "gnome-256color"
+	set t_Co=256
+	colorscheme desert
+endif
 
 "emmet配置和使用
 let g:user_emmet_install_global=0

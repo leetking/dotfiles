@@ -115,7 +115,7 @@ Key R A CM Restart
 key R A CM exec fvwm_term
 #一个不知名函数,添加背景图
 DestroyFunc StartFunction
-AddToFunc StartFunction         
+AddToFunc StartFunction
 #+ I Module FvwmButtons MainPanel
 #+ I Module FvwmAuto 500 Raise Nop
 #+ I Module FvwmAnimate
