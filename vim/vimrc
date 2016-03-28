@@ -22,7 +22,6 @@ set mouse=a
 set fileencodings=utf-8,gbk,gb2312,cp936
 set fileencoding=utf-8		"可以不用设置
 "set encoding=utf-8			"设置状态栏的编码，可以不设置
-autocmd filetype txt set spell			"对txt文档的英文进行语法检查
 "set spell								"开启拼写检查
 " 基于缩进或语法进行折叠
 set foldmethod=indent	"基于缩进
@@ -42,8 +41,6 @@ filetype on		"侦测文件类型
 "===========================================================
 "set guifont=Consolas:h12		"字体中有空格用\来转意,这条是win下的写法
 
-
-		"关于C语言的设置
 set cindent					"C语言缩进
 "set list listchars=tab:>-	"可视化tab键
 set noexpandtab			"不用空格替代tab,(%retab!空格转换为tab)
@@ -51,6 +48,7 @@ set noexpandtab			"不用空格替代tab,(%retab!空格转换为tab)
 set autoindent				"继承上一缩进
 set si						"智能缩进
 set tabstop=4 shiftwidth=4	"shiftwidth自动tab宽度
+autocmd filetype txt set spell	"对txt文档的英文进行语法检查
 autocmd filetype xhtml set tabstop=2 shiftwidth=2
 autocmd filetype html set tabstop=2 shiftwidth=2
 autocmd filetype lisp set nocindent autoindent si
@@ -112,7 +110,7 @@ func! CompileRun()
 		exec "!firefox '%'"
 	elseif &filetype == 'c'		"c
 		exec "!clear"
-		exec "!gcc -o '%<' '%' -Wall -ansi -lm"
+		exec "!gcc -o '%<' '%' -Wall -ansi -lm -DDEBUG"
 		exec "!./%<"
 	elseif &filetype == 'cpp'	"cpp
 		exec "!clear"
@@ -166,7 +164,7 @@ func! GDB()
 	exec "w"
 	if &filetype == 'c'			"c
 		exec "!clear"
-		exec "!gcc -o %< % -g -ansi -Wall -lm"
+		exec "!gcc -o %< % -g -ansi -Wall -lm -DDEBUG"
 		exec "!gdb %<"
 	elseif &filetype == 'cpp'		"cpp
 		exec "!clear"
@@ -353,9 +351,6 @@ function! s:my_cr_function()
 	" For no inserting <CR> key.
 	"return pumvisible() ? "\<C-y>" : "\<CR>"
 endfunction
-" <TAB>: completion.
-" 我不使用tab补全
-"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 " <C-h>, <BS>: close popup and delete backword char.
 " TODO 这里设置成ctrl+h删除一个字符，而不是智能删除
 "inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
@@ -408,10 +403,14 @@ iab pyhead #!/usr/bin/env python<CR>#-*-coding:utf-8-*-<CR>
 "设置行长80字符自动换行
 "set textwidth=80 fo+=Mm
 "set novisualbell
+" 引入其他配置
 "source $HOME/.vim/syntax/hi_tag.vim
-"syntax keyword <group name> <keyword list>
-
-match Todo /\<NOTE\>/
-"对于markdown文档的行末空格进行高亮	等价于(>=\S) +$ 但是目前不知道markdown的类型
+"对于markdown文档的行末空格进行高亮    等价于(>=\S) +$ 但是目前不知道markdown的类型
 highlight WhitespaceEOF ctermbg=cyan guibg=cyan
-2match WhitespaceEOF /\(\S\)\@<=\ \+$/
+match WhitespaceEOF /\(\S\)\@<=\ \+$/
+"对NOTE字和TODO一样
+2match Todo /\<NOTE\>/
+"插入格式如xxxx-xx-xx的日期
+"let mapleader=","
+nmap <leader>d "=strftime("%F")<CR>p
+imap <leader>d <C-R>=strftime("%F")<CR>

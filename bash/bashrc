@@ -84,6 +84,14 @@ export TERM=gnome-256color
 #export TERM=xterm-256color
 #开启可以使用core文件，以便程序崩溃后调试
 ulimit -c unlimited
+#mkd: mkd 用于生成xxxx-xx-xx格式的文件夹
+#mkt函数: mkt name; 用于生成xxxx-xx-xx-name的文件
+alias mkd='mkdir `date "+%Y-%m-%d"`'
+mkt() {
+	for i in $@; do
+		touch `date '+%Y-%m-%d'`-$i
+	done
+}
 
 #启动tmux
 #tmux
