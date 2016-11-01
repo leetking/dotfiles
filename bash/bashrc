@@ -93,5 +93,7 @@ mkt() {
 	done
 }
 
+source /opt/pathsrc
+
 #启动tmux
 #tmux

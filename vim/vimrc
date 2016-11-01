@@ -30,12 +30,15 @@ vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 "1 tab == 4 spaces
 set tabstop=4
 set shiftwidth=4
-set expandtab				"用空格替代tab,(%retab!空格转换为tab)
+set expandtab				"用空格替代tab,(%retab!空格转换为tab) :ret
 set smarttab
 set fileencodings=ucs-bom,utf-8,gbk,gb2312,cp936,default,latin1
 set fileencoding=utf-8		"可以不用设置
 "set encoding=utf-8			"设置状态栏的编码，可以不设置
-set completeopt=longest,menuone
+set completeopt=longest,menuone,preview
+"设置行长80字符自动换行
+"set textwidth=80 fo+=Mm
+"set novisualbell
 
 
 "set shortmess=atI	"去掉欢迎界面
@@ -61,7 +64,6 @@ set cindent					"C语言缩进
 "set list listchars=tab:>-	"可视化tab键
 set autoindent				"继承上一缩进
 set si						"智能缩进
-set tabstop=4 shiftwidth=4	"shiftwidth自动tab宽度
 " 对代码开启不扩展，统一为tab
 autocmd filetype txt set spell	"对txt文档的英文进行语法检查
 autocmd filetype lisp set nocindent autoindent si noexpandtab
@@ -203,15 +205,13 @@ Plugin 'vim-scripts/AuthorInfo'
 Plugin 'bling/vim-bufferline'
 Plugin 'scrooloose/nerdtree'
 Plugin 'majutsushi/tagbar'
-"vim中文帮助
 Plugin 'yianwillis/vimcdoc'
-"java补全
 Plugin 'artur-shaik/vim-javacomplete2'
 "tex补全
 Plugin 'lervag/vimtex'
 "YCM!
 Plugin 'Valloric/YouCompleteMe'
-"C相关
+"C相关 h <-> c
 Plugin 'taxilian/a.vim'
 "...
 call vundle#end()
@@ -240,6 +240,9 @@ endfunction
 autocmd Filetype css setlocal iskeyword+=-
 
 "下面是vim-airline的配置
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
 set laststatus=2
 let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
@@ -261,20 +264,19 @@ let g:vimrc_email='li_Tking@163.com'
 let g:vimrc_homepage=''
 nmap <F2> :AuthorInfoDetect<cr>
 
-let g:JavaComplete_LibsPath="/home/ultk/.gradle/caches/"
+let g:JavaComplete_LibsPath=$HOME"/.gradle/caches/"
 "let g:JavaComplete_BaseDir="/tmp/.java_cache"
 "if filereadable("xxxx.xml")
 "let g:JavaComplete_SourcesPath="xxxx/xxxx/xxx/r"
 
 "YCM配置
-let g:ycm_global_ycm_extra_conf = '/home/ultk/.vim/ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = $HOME"/.vim/ycm_extra_conf.py"
 let g:ycm_error_symbol = 'E>'
-highlight YcmErrorLine guibg=#3f0000
 let g:ycm_warning_symbol = 'W>'
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_complete_in_strings = 1
-"关闭语法检测
+"let g:ycm_python_binary_path = 'python'
 "let g:ycm_show_diagnositcs_ui = 1
 "let g:ycm_enable_diagnostic_signs = 0
 "let g:ycm_enable_diagnostic_hightlighting = 0
@@ -292,9 +294,6 @@ iab pyhead #!/usr/bin/env python3<cr>#-*-coding:utf-8-*-<cr>
 "添加库函数gtk补全的路径
 set path+=/usr/include/gtk-2.0/,/usr/include/gio-unix-2.0/
 set path+=./include,/usr/include/x86_64-linux-gnu/
-"设置行长80字符自动换行
-"set textwidth=80 fo+=Mm
-"set novisualbell
 " 引入其他配置
 "source $HOME/.vim/syntax/hi_tag.vim
 "对于markdown文档的行末空格进行高亮    等价于(>=\S) +$ 但是目前不知道markdown的类型

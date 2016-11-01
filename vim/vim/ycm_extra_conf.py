@@ -31,7 +31,7 @@ flags = [
 #'-DNDEBUG',
 '-DDEBUG',
 '-DLINUX',
-#'-DVERSION',
+'-DVERSION="v0.0.1"',
 # THIS IS IMPORTANT! Without a "-std=<something>" flag, clang won't know which
 # language to use when compiling headers. So it will guess. Badly. So C++
 # headers will be compiled as C headers. You don't want that so ALWAYS specify
@@ -77,6 +77,10 @@ flags = [
 #current dir
 '-I',
 '.',
+'-I',
+'./include',
+'-I',
+'./src/include',
 
 #custom libraries
 '-isystem',
