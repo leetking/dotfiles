@@ -260,19 +260,19 @@ let g:vimrc_email='li_Tking@163.com'
 let g:vimrc_homepage=''
 nmap <F2> :AuthorInfoDetect<cr>
 
-let g:JavaComplete_LibsPath=$HOME"/.gradle/caches/"
+let g:JavaComplete_LibsPath=$HOME.'/.gradle/caches/'
 "let g:JavaComplete_BaseDir="/tmp/.java_cache"
 "if filereadable("xxxx.xml")
 "let g:JavaComplete_SourcesPath="xxxx/xxxx/xxx/r"
 
 "YCM配置
-let g:ycm_global_ycm_extra_conf = $HOME"/.vim/ycm_extra_conf.py"
+let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/ycm_extra_conf.py'
 let g:ycm_error_symbol = 'E>'
 let g:ycm_warning_symbol = 'W>'
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_complete_in_strings = 1
-"let g:ycm_python_binary_path = 'python'
+let g:ycm_python_binary_path = 'python'
 "let g:ycm_show_diagnositcs_ui = 1
 "let g:ycm_enable_diagnostic_signs = 0
 "let g:ycm_enable_diagnostic_hightlighting = 0
