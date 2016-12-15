@@ -25,7 +25,7 @@ makeccpp() {
         fi
     done
     # OK,没有makefile文件，最简单的gcc编译
-    ${_cc} -o "${FILENAME%%.c}" "${FILENAME}" -Wall -lm -g -DDEBUG
+    ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -Wall -lm -g -DDEBUG
     exit 0
 }
 

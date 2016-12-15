@@ -35,7 +35,8 @@ set smarttab
 set fileencodings=ucs-bom,utf-8,gbk,gb2312,cp936,default,latin1
 set fileencoding=utf-8		"可以不用设置
 "set encoding=utf-8			"设置状态栏的编码，可以不设置
-set completeopt=longest,menuone,preview
+"set completeopt=longest,menuone,preview
+set completeopt=longest,menuone
 "设置行长80字符自动换行
 "set textwidth=80 fo+=Mm
 "set novisualbell
@@ -87,6 +88,7 @@ func! SetCCppOptions()
 endfunc
 "对Java文件进行配置
 func! SetJavaOptions()
+    set omnifunc=javacomplete#Complete
     set makeprg=$HOME/.vim/makeprg.sh\ %:p:h:h\ %:p:.
 endfunc
 "对html/xml设置
@@ -223,6 +225,8 @@ filetype plugin indent on
 let g:tagbar_indent = 1
 let g:tagbar_iconchars = ['▸', '▾']
 
+"NERD 配置
+let g:NERDTreeIgnore = ['\~$', '\.pyc', '\.swp$']
 "TODO 整合
 "左边文件管理，右边tagbar
 "USE: 在普通模式下输入 vm
@@ -242,6 +246,8 @@ endif
 set laststatus=2
 let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
 "设置256色
 if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
             \ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
@@ -273,9 +279,6 @@ let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_complete_in_strings = 1
 let g:ycm_python_binary_path = 'python'
-"let g:ycm_show_diagnositcs_ui = 1
-"let g:ycm_enable_diagnostic_signs = 0
-"let g:ycm_enable_diagnostic_hightlighting = 0
 "<cr>接受输入?
 "imap <expr> <cr> pumvisible() ? \"<c-y>" : "<Plug>delimitMateCR"
 "YCM跳转
