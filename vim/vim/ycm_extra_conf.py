@@ -74,6 +74,9 @@ flags = [
 '/usr/include/pixman-1',
 '-isystem',
 '/usr/include/libpng12',
+'-isystem',
+'/usr/include/SDL2',
+'-D_REENTRANT',
 #current dir
 '-I',
 '.',

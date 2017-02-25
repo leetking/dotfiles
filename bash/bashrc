@@ -15,6 +15,7 @@ if [ -x /usr/bin/dircolors ]; then
 	alias fgrep='fgrep --color=auto'
 	alias egrep='egrep --color=auto'
 	alias sdcv='sdcv --color'
+    alias tree='tree --charset=ascii'
 fi
 
 alias ll='ls -l'

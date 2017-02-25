@@ -58,9 +58,8 @@ set foldlevel=9                 "深入9层自动折叠
 "===========================================================
 "gvim的设置在.gvimrc中
 "===========================================================
-"set guifont=Consolas:h12		"字体中有空格用\来转意,这条是win下的写法
 
-set cino=:0
+set cino=:0                 "case与switch对齐
 set cindent					"C语言缩进
 "set list listchars=tab:>-	"可视化tab键
 set autoindent				"继承上一缩进
@@ -83,7 +82,7 @@ autocmd filetype html,xml,xhtml,ant call SetHtmlXml()
 
 "对C/C++文件进行配置
 func! SetCCppOptions()
-    set noexpandtab
+    "set noexpandtab
     set makeprg=$HOME/.vim/makeprg.sh\ %:p:h:h\ %:p:.
 endfunc
 "对Java文件进行配置
@@ -148,7 +147,7 @@ func! Run()
         exec "!clear"
         call Runjava()
     elseif &filetype == 'xhtml' || &filetype == 'html'	"html
-        exec "!firefox '%:t:r'"
+        exec "!firefox '%'"
     elseif &filetype == 'cs'	"c_sharp
         exec "!clear"
         exec "!./'%<.exe'"
@@ -278,9 +277,9 @@ let g:ycm_warning_symbol = 'W>'
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_complete_in_strings = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_python_binary_path = 'python'
-"<cr>接受输入?
-"imap <expr> <cr> pumvisible() ? \"<c-y>" : "<Plug>delimitMateCR"
+"TODO 设置tab不补全
 "YCM跳转
 "<leader>jd 跳到定义
 nnoremap <leader>jd :YcmCompleter GoToDefinition<cr>
