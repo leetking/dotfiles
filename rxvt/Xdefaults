@@ -19,8 +19,9 @@ URxvt.scrollBar: false
 !border
 URxvt.borderLess: false
 
-!cursor
-URxvt.cursorBlink: true
+!cursor-blink
+!URxvt.cursorBlink: true
+URxvt.cursorBlink: false
 
 !history lines
 URxvt.savelines: 3000
@@ -36,7 +37,6 @@ URxvt.bolditalicFont: xft: Ubuntu Mono derivative Powerline: size=12:italic, xft
 
 !输入法设置, cannt work
 inputMethod:fcitx
-
 
 !color
 !URxvt.color0: black

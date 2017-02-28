@@ -98,3 +98,6 @@ source /opt/pathsrc
 
 #启动tmux
 #tmux
+
+#为opt下程序添加启动
+. /opt/pathsrc
