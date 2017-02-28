@@ -8,7 +8,7 @@ hash dirname || { echo "ERROR: 需要安装dirname"; exit 1; }
 INSTALL_PATH=~/.myconfigures
 CURR_PATH=`dirname $0`/..
 VIM_PATH=$INSTALL_PATH/vim
-VUNDLE_PATH=$INSTALL_PATH/vim/vim/bundle/vundle
+VUNDLE_PATH=$INSTALL_PATH/vim/vim/bundle/Vundle.vim
 PLUGIN_PATH=$INSTALL_PATH/vim/vim/plugin
 BACKUP_PATH=$INSTALL_PATH/backups/vim
 STATES_PATH=$INSTALL_PATH/states/vim

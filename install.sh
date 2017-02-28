@@ -9,11 +9,12 @@ CURR_PATH=`dirname $0`
 
 Help()
 {
-	echo "Usage: $0 [-a{i|r}] [-b{i|r}] [-v{i|r}] [-fo{i|r}] [-fv{i|r}] [-t{|r}] [-r{i|r}]"
+	#echo "Usage: $0 [-a{i|r}] [-b{i|r}] [-v{i|r}] [-fo{i|r}] [-fv{i|r}] [-t{|r}] [-r{i|r}]"
+	echo "Usage: $0 [-a{i|r}] [-b{i|r}] [-v{i|r}] [-fv{i|r}] [-t{|r}] [-r{i|r}]"
 	echo -e "\t-a{i|r}    all:    all configures."
 	echo -e "\t-b{i|r}    bashrc: i, install r, remove; -bi or -br."
 	echo -e "\t-v{i|r}    vimrc:  i, install r, remove; -vi or -vr."
-	echo -e "\t-fo{i|r}   fonts:  i, install r, remove; -foi or -for."
+	#echo -e "\t-fo{i|r}   fonts:  i, install r, remove; -foi or -for."
 	echo -e "\t-fv{i|r}   fvwm:   i, install r, remove; -fvi or -fvr."
 	echo -e "\t-t{i|r}    tmux:   i, install r, remove; -ti or -tr."
 	echo -e "\t-r{i|r}    rxvt:   i, install r, remove; -ri or -rr."
