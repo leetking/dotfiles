@@ -1,0 +1,36 @@
+URxvt.preeditType: Root
+
+!! background and foreground
+!set the artificial transparency
+!URxvt.perl-ext-common: ..., default, ...
+URxvt.depth: 32
+URxvt.transparent: true
+URxvt.shading: 55
+URxvt.background: #555555
+URxvt.foreground: white
+
+!url opare
+URxvt.colorBd: yellow
+URxvt.colorUL: green
+
+!scrollBar
+URxvt.scrollBar: false
+
+!border
+URxvt.borderLess: false
+
+!cursor-blink
+!URxvt.cursorBlink: true
+URxvt.cursorBlink: false
+
+!history lines
+URxvt.savelines: 3000
+
+!font set
+Xft.dpi: 96
+URxvt.multichar_encoding: utf-8
+URxvt.imLocale: zh_CN,UTF-8
+URxvt.font: xft: Ubuntu Mono derivative Powerline: size=12, xft: 文泉驿微米黑
+URxvt.boldFont: xft: Ubuntu Mono derivative Powerline: size=12: Bold, xft: 文泉驿微米黑-25: Bold
+URxvt.italicFont: xft: Ubuntu Mono derivative Powerline: size=12:italic, xft: 文泉驿微米黑: size=20: italic
+URxvt.bolditalicFont: xft: Ubuntu Mono derivative Powerline: size=12:italic, xft: 文泉驿微米黑: size=20: Bold italic

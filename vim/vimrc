@@ -65,24 +65,35 @@ set cindent					"C语言缩进
 set autoindent				"继承上一缩进
 set si						"智能缩进
 " 对代码开启不扩展，统一为tab
-autocmd filetype txt set spell	"对txt文档的英文进行语法检查
-autocmd filetype lisp set nocindent autoindent si noexpandtab
-autocmd filetype scheme set nocindent autoindent si noexpandtab
-autocmd filetype python setlocal makeprg=python\ % noexpandtab
-autocmd filetype h set tabstop=4 shiftwidth=4 noexpandtab
-autocmd filetype c++ set tabstop=4 shiftwidth=4 noexpandtab
-autocmd filetype py set noexpandtab tabstop=4 shiftwidth=4 noexpandtab
+set expandtab
 
 " 对不同项目进行编译的脚本
-"set makeprg=$HOME/.vim/makeprg.sh
+autocmd filetype txt call SetNormalOptions()
 autocmd filetype c,cpp call SetCCppOptions()
-"groovy: 为了gradle
 autocmd filetype java,groovy call SetJavaOptions()
 autocmd filetype html,xml,xhtml,ant call SetHtmlXml()
+autocmd filetype python call SetPythonOptions()
+autocmd filetype lisp,scheme call SetLispOptions()
 
+"普通文件设置
+func! SetNormalOptions()
+    set spell	"对txt文档的英文进行语法检查
+    set omnifunc=
+endfunc
+"lisp家族文件设置
+func! SetLispOptions()
+    set nocindent
+endfunc
+"python文件设置
+func! SetPythonOptions()
+    setlocal makeprg=python\ %
+endfunc
 "对C/C++文件进行配置
 func! SetCCppOptions()
     "set noexpandtab
+    "添加库函数gtk补全的路径
+    "set path+=/usr/include/gtk-2.0/,/usr/include/gio-unix-2.0/
+    "set path+=./include,/usr/include/x86_64-linux-gnu/
     set makeprg=$HOME/.vim/makeprg.sh\ %:p:h:h\ %:p:.
 endfunc
 "对Java文件进行配置
@@ -201,24 +212,20 @@ Plugin 'hail2u/vim-css3-syntax'
 Plugin 'mattn/emmet-vim'
 Plugin 'pangloss/vim-javascript'
 Plugin 'othree/html5.vim'
-"NERD commenter,下面的AuthorInfo需要
-Plugin 'scrooloose/nerdcommenter'
-"添加作者信息
-Plugin 'vim-scripts/AuthorInfo'
+"Plugin 'scrooloose/nerdcommenter'       "NERD commenter,下面的AuthorInfo需要
+"Plugin 'vim-scripts/AuthorInfo'         "添加作者信息
 Plugin 'bling/vim-bufferline'
 Plugin 'scrooloose/nerdtree'
 Plugin 'majutsushi/tagbar'
 Plugin 'yianwillis/vimcdoc'
 Plugin 'artur-shaik/vim-javacomplete2'
-"tex补全
-Plugin 'lervag/vimtex'
-"YCM!
-Plugin 'Valloric/YouCompleteMe'
+Plugin 'lervag/vimtex'                  "tex补全
+Plugin 'Valloric/YouCompleteMe'         "YCM!
 "C相关 h <-> c
-Plugin 'taxilian/a.vim'
-"...
+"Plugin 'taxilian/a.vim'
 call vundle#end()
 filetype plugin indent on
+filetype plugin on
 
 "设置tagbar
 let g:tagbar_indent = 1
@@ -279,6 +286,9 @@ let g:ycm_complete_in_comments = 1
 let g:ycm_complete_in_strings = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_python_binary_path = 'python3'
+let g:ycm_filetype_whitelist = {
+    \ 'c': 1, 'cpp': 1, 'python': 1,
+    \}
 "TODO 设置tab不补全
 "YCM跳转
 "<leader>jd 跳到定义
@@ -289,9 +299,6 @@ iab chead #include <stdio.h><cr><cr>int main(int argc, char **argv)<cr>{<cr>retu
 iab cshead using System;<cr>using System.Collections.Generic;<cr>using System.Text;<cr>using System.Collections;<cr>using System.Runtime.InteropServices;<cr><cr>namespace xx {<cr>}<cr>
 iab pyhead #!/usr/bin/env python3<cr>#-*-coding:utf-8-*-<cr>
 
-"添加库函数gtk补全的路径
-set path+=/usr/include/gtk-2.0/,/usr/include/gio-unix-2.0/
-set path+=./include,/usr/include/x86_64-linux-gnu/
 " 引入其他配置
 "source $HOME/.vim/syntax/hi_tag.vim
 "对于markdown文档的行末空格进行高亮    等价于(>=\S) +$ 但是目前不知道markdown的类型
@@ -302,3 +309,24 @@ match WhitespaceEOF /\(\S\)\@<=\ \+$/
 "插入格式如xxxx-xx-xx的日期
 "nmap <leader>d "=strftime("%F")<cr>p
 "imap <leader>d <C-R>=strftime("%F")<cr>
+
+" 一些特征的开启
+let g:enable_toggle_input = 0
+
+"自动开启关闭fcitx，需要vim-fcitx支持
+func! Fcitx2en()
+    let l:a = system("fcitx-remote -c")
+endfunc
+func! Fcitx2zh()
+    let l:a = system("fcitx-remote -o")
+endfunc
+func! AutoSwitchInput()
+    if g:enable_toggle_input == 1
+        set timeoutlen=150
+        "自动退出插入模式
+        autocmd InsertLeave * call Fcitx2en()
+        "自动进入插入模式
+        autocmd InsertEnter * call Fcitx2zh()
+    endif
+endfunc
+call AutoSwitchInput()
