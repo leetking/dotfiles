@@ -1,63 +1,76 @@
 #!/bin/bash
 
-#install.sh [-a{i|r}] [-b{i|r}] [-v{i|r}] [-fo{i|r}] [-fv{i|r}] [-t{|r}] [-r{i|r}]
+# IMPORTANT 本脚本仅供个人环境迁移时使用，所以不会备份原来的文件
 
-#引入环境变量
-hash dirname || { echo "ERROR: 需要安装dirname"; exit 1; }
-INSTALL_PATH=~/.myconfigures
-CURR_PATH=`dirname $0`
+CURR_PATH=$(cd `dirname $0`; pwd -P)
 
-Help()
-{
-	#echo "Usage: $0 [-a{i|r}] [-b{i|r}] [-v{i|r}] [-fo{i|r}] [-fv{i|r}] [-t{|r}] [-r{i|r}]"
-	echo "Usage: $0 [-a{i|r}] [-b{i|r}] [-v{i|r}] [-fv{i|r}] [-t{|r}] [-r{i|r}]"
-	echo -e "\t-a{i|r}    all:    all configures."
-	echo -e "\t-b{i|r}    bashrc: i, install r, remove; -bi or -br."
-	echo -e "\t-v{i|r}    vimrc:  i, install r, remove; -vi or -vr."
-	#echo -e "\t-fo{i|r}   fonts:  i, install r, remove; -foi or -for."
-	echo -e "\t-fv{i|r}   fvwm:   i, install r, remove; -fvi or -fvr."
-	echo -e "\t-t{i|r}    tmux:   i, install r, remove; -ti or -tr."
-	echo -e "\t-r{i|r}    rxvt:   i, install r, remove; -ri or -rr."
-}
-Installall()
-{
-	if [ -e $CURR_PATH/install/bash.sh ]; then
-		$CURR_PATH/install/bash.sh $1
-	fi
-	if [ -e $CURR_PATH/install/vim.sh ]; then
-		$CURR_PATH/install/vim.sh $1
-	fi
-	if [ -e $CURR_PATH/install/fonts.sh ]; then
-		$CURR_PATH/install/fonts.sh $1
-	fi
-	if [ -e $CURR_PATH/install/fvwm.sh ]; then
-		$CURR_PATH/install/fvwm.sh $1
-	fi
-	if [ -e $CURR_PATH/install/tmux.sh ]; then
-		$CURR_PATH/install/tmux.sh $1
-	fi
-	if [ -e $CURR_PATH/install/rxvt.sh ]; then
-		$CURR_PATH/install/rxvt.sh $1
-	fi
-	if [ $1 == "-r" ]; then
-		rm -rf $INSTALL_PATH
-		echo "全部卸载完成"
-	fi
+# bash
+InstallBash() {
+    ln -sf ${CURR_PATH}/bash/bashrc  ~/.bashrc
+    ln -sf ${CURR_PATH}/bash/inputrc ~/.inputrc
 }
 
-#目前只支持全部安装或卸载，或者某一个安装或卸载，不支持选项合并写法
-if [ 2 -lt $# ]; then
-	Help
-	exit 1
+# vim
+InstallVim() {
+    ln -sf ${CURR_PATH}/vim/vimrc   ~/.vimrc
+    ln -sf ${CURR_PATH}/vim/gvimrc  ~/.gvimrc
+    # NOTE 不能写成rm -r ~/.vim/这样会把原始文件一起删除掉，这是软链接的坑
+    rm -r ~/.vim
+    ln -sf ${CURR_PATH}/vim/vim     ~/.vim
+    # clone Vundle.vim
+    git clone --depth=1 https://github.com/VundleVim/Vundle.vim.git ${CURR_PATH}/vim/vim/bundle/Vundle.vim
+    # 通过Vundle安装插件
+    vim +PluginInstall +qall
+}
+
+# sdcv dictionary
+InstallSdcv() {
+    # 先下载文件
+    ${CURR_PATH}/sdcv/download_dicts.sh
+    # 安装
+    rm -rf ~/.stardict
+    mkdir -p ~/.stardict/dic/
+    for i in `ls ${CURR_PATH}/sdcv/`; do
+        [ -d "${CURR_PATH}/sdcv/$i" ] && ln -sf "${CURR_PATH}/sdcv/$i" ~/.stardict/dic/
+    done
+}
+
+InstallUrxvt() {
+    ln -sf ${CURR_PATH}/urxvt/Xdefaults ~/.Xdefaults
+    # TODO xradr 使其生效
+}
+
+# 安装全部
+Install() {
+    InstallBash
+    InstallVim
+    InstallSdcv
+    InstallUrxvt
+}
+
+# 帮助
+Help() {
+    echo "Usage: $0 [vim|bash|sdcv|urxvt|-h]"
+    echo "     vim:  install vimrc."
+    echo "     bash: install bashrc."
+    echo "     sdcv: install sdcv dictionary."
+    echo "     urxvt: install urxvt configuration."
+    echo "     -h:   show this page."
+}
+
+# 默认全部安装
+if [ 0 -eq $# ]; then
+    Install
+    exit 0
 fi
 
-case "${1:1:(-1)}" in
-	"a") Installall -${1:(-1):1} ;;
-	"b") $CURR_PATH/install/bash.sh -${1:(-1):1} ;;
-	"v") $CURR_PATH/install/vim.sh -${1:(-1):1} ;;
-	"fo") $CURR_PATH/install/fonts.sh -${1:(-1):1} ;;
-	"fv") $CURR_PATH/install/fvwm.sh -${1:(-1):1} ;;
-	"t") $CURR_PATH/install/tmux.sh -${1:(-1):1} ;;
-	"r") $CURR_PATH/install/rxvt.sh -${1:(-1):1} ;;
-	*) Help; exit 1 ;;
-esac
+while [ 0 -ne $# ]; do
+    case "$1" in
+        vim)   InstallVim ;;
+        bash)  InstallBash ;;
+        sdcv)  InstallSdcv ;;
+        urxvt) InstallUrxvt ;;
+        *)     Help; exit 1 ;;
+    esac
+    shift
+done

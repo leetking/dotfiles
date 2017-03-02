@@ -1,5 +1,11 @@
+*~
+csdatabase/
+states/
 vim/vim/
 !vim/vim/makeprg.sh
 !vim/vim/ycm_extra_conf.py
-csdatabase/
-*.~
+sdcv/
+!sdcv/sdcv_dict.sh
+
+# 实验性的目录
+obsolete/

@@ -1,21 +1,21 @@
 "============================================================
 "通用设置
 "============================================================
-set nocompatible		"不兼容vi
+set nocompatible        "不兼容vi
 set backspace=indent,eol,start
 set nu
 set ruler
 set ignorecase
-set incsearch		"逐字高亮搜索
-set matchtime=5		"高亮的时间
+set incsearch       "逐字高亮搜索
+set matchtime=5     "高亮的时间
 set history=500
 set go=
 set wildmenu
 set nofen
-set fdl=10			 "始终启用鼠标
+set fdl=10           "始终启用鼠标
 set mouse=a
-filetype off		"侦测文件类型
-syntax enable		"语法高亮
+filetype off        "侦测文件类型
+syntax enable       "语法高亮
 let mapleader=","
 map <C-h> <C-w>h
 map <C-j> <C-w>j
@@ -30,23 +30,32 @@ vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 "1 tab == 4 spaces
 set tabstop=4
 set shiftwidth=4
-set expandtab				"用空格替代tab,(%retab!空格转换为tab) :ret
+set softtabstop=4           "backspace回退4个空格
+set expandtab               "用空格替代tab,(%retab!空格转换为tab) :ret
 set smarttab
 set fileencodings=ucs-bom,utf-8,gbk,gb2312,cp936,default,latin1
-set fileencoding=utf-8		"可以不用设置
-"set encoding=utf-8			"设置状态栏的编码，可以不设置
+set fileencoding=utf-8      "可以不用设置
+"set encoding=utf-8         "设置状态栏的编码，可以不设置
 "set completeopt=longest,menuone,preview
-set completeopt=longest,menuone
+set completeopt=longest,menu
 "设置行长80字符自动换行
 "set textwidth=80 fo+=Mm
 "set novisualbell
+"设置256色
+if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
+            \ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
+            \ $TERM == "vte-256color" || $TERM == "screen-256color" ||
+            \ $TERM == "gnome-256color"
+    set t_Co=256
+    colorscheme desert
+endif
 
 
-"set shortmess=atI	"去掉欢迎界面
-"set lines=28  columns=200		"窗口大小
-"set textwidth=80				"文本行的长度，需要开启自动换行
+"set shortmess=atI  "去掉欢迎界面
+"set lines=28  columns=200      "窗口大小
+"set textwidth=80               "文本行的长度，需要开启自动换行
 " 基于缩进或语法进行折叠
-set foldmethod=indent	"基于缩进
+set foldmethod=indent   "基于缩进
 "set foldmethod=syntax|mnual手动
 "启动vim时关闭代码折叠
 "set nofoldenable
@@ -59,12 +68,11 @@ set foldlevel=9                 "深入9层自动折叠
 "gvim的设置在.gvimrc中
 "===========================================================
 
-set cino=:0                 "case与switch对齐
-set cindent					"C语言缩进
-"set list listchars=tab:>-	"可视化tab键
-set autoindent				"继承上一缩进
-set si						"智能缩进
-" 对代码开启不扩展，统一为tab
+set cino=:0                 "case与switch对齐 TODO 但是注释没对齐
+set cindent                 "C语言缩进
+set si                      "智能缩进
+set autoindent              "继承上一缩进
+"set list listchars=tab:>-  "可视化tab键
 set expandtab
 
 " 对不同项目进行编译的脚本
@@ -77,7 +85,7 @@ autocmd filetype lisp,scheme call SetLispOptions()
 
 "普通文件设置
 func! SetNormalOptions()
-    set spell	"对txt文档的英文进行语法检查
+    set spell   "对txt文档的英文进行语法检查
     set omnifunc=
 endfunc
 "lisp家族文件设置
@@ -132,13 +140,13 @@ endfunction
 "<F4>编译"
 map <F4> :call Compile()<cr>
 func! Compile()
-    if &filetype == 'asm'		"汇编
+    if &filetype == 'asm'       "汇编
         exec "!clear"
         exec "!as '%' -o '%<.o' && ld '%<.o' -o '%<'"
-    elseif &filetype == 'cs'		"c_sharp mcs、gmcs或mono-csc都是c#编译器
+    elseif &filetype == 'cs'        "c_sharp mcs、gmcs或mono-csc都是c#编译器
         exec "!clear"
         exec "!mcs '%'"
-    elseif &filetype == 'tex'		"tex文件
+    elseif &filetype == 'tex'       "tex文件
         exec "!clear"
         "这里使用texlive的包,以后修改
         exec "!xelatex '%'"
@@ -154,12 +162,12 @@ func! Run()
     if &filetype == 'c' || &filetype == 'asm' || &filetype == 'cpp'
         exec "!clear"
         exec "!./'%<'"
-    elseif &filetype == 'java'	"java
+    elseif &filetype == 'java'  "java
         exec "!clear"
         call Runjava()
-    elseif &filetype == 'xhtml' || &filetype == 'html'	"html
+    elseif &filetype == 'xhtml' || &filetype == 'html'  "html
         exec "!firefox '%'"
-    elseif &filetype == 'cs'	"c_sharp
+    elseif &filetype == 'cs'    "c_sharp
         exec "!clear"
         exec "!./'%<.exe'"
     elseif &filetype == 'lua'   "lua
@@ -178,31 +186,30 @@ endfunc
 map <F7> : call GDB()<cr>
 func! GDB()
     exec "w"
-    if &filetype == 'c'			"c
+    if &filetype == 'c'         "c
         exec "!clear"
         exec "!gcc -o %< % -g -Wall -lm -DDEBUG"
         exec "!gdb %<"
-    elseif &filetype == 'cpp'		"cpp
+    elseif &filetype == 'cpp'       "cpp
         exec "!clear"
         exec "!g++ -o %< % -g"
         exec "!gdb %<"
-    elseif &filetype == 'asm'	"汇编
+    elseif &filetype == 'asm'   "汇编
         exec "!clear"
         exec "!as % -g -o %<.o && ld %<.o -o %<"
         exec "!gdb %<"
-    elseif &filetype == 'java'	"java
+    elseif &filetype == 'java'  "java
         exec "!clear"
         exec "!javac -d . -g '%'"
         exec "!jdb '%<'"
-    elseif &filetype == 'cs'	"c_sharp
+    elseif &filetype == 'cs'    "c_sharp
         exec "!clear"
     else
         exec ""
     endif
 endfunc
 
-"使用vbundle来管理插件
-"启动智能补全
+"Vundle管理插件
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
@@ -212,26 +219,23 @@ Plugin 'hail2u/vim-css3-syntax'
 Plugin 'mattn/emmet-vim'
 Plugin 'pangloss/vim-javascript'
 Plugin 'othree/html5.vim'
-"Plugin 'scrooloose/nerdcommenter'       "NERD commenter,下面的AuthorInfo需要
-"Plugin 'vim-scripts/AuthorInfo'         "添加作者信息
 Plugin 'bling/vim-bufferline'
 Plugin 'scrooloose/nerdtree'
-Plugin 'majutsushi/tagbar'
+"Plugin 'majutsushi/tagbar'
 Plugin 'yianwillis/vimcdoc'
 Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'lervag/vimtex'                  "tex补全
 Plugin 'Valloric/YouCompleteMe'         "YCM!
-"C相关 h <-> c
-"Plugin 'taxilian/a.vim'
 call vundle#end()
 filetype plugin indent on
 filetype plugin on
 
-"设置tagbar
+"tagbar {
 let g:tagbar_indent = 1
 let g:tagbar_iconchars = ['▸', '▾']
+"}
 
-"NERD 配置
+"nerdtree {
 let g:NERDTreeIgnore = ['\~$', '\.pyc', '\.swp$']
 "TODO 整合
 "左边文件管理，右边tagbar
@@ -239,13 +243,15 @@ let g:NERDTreeIgnore = ['\~$', '\.pyc', '\.swp$']
 nmap wm : call NerdTree_TagBar_Toggle()<cr>
 function! NerdTree_TagBar_Toggle()
     exec "NERDTreeToggle"
-    exec "TagbarToggle"
+"    exec "TagbarToggle"
 endfunction
+"}
 
-"vim-css3-syntax配置
+"vim-css3-syntax {
 autocmd Filetype css setlocal iskeyword+=-
+"}
 
-"下面是vim-airline的配置
+"vim-airline {
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
@@ -254,30 +260,17 @@ let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
-"设置256色
-if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
-            \ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
-            \ $TERM == "vte-256color" || $TERM == "screen-256color" ||
-            \ $TERM == "gnome-256color"
-    set t_Co=256
-    colorscheme desert
-endif
+"}
 
-"javascript配置
+"javascript {
 let javascript_enable_domhtmlcss = 1
+"}
 
-"AuthorInfo使用,<F2>添加
-let g:vimrc_author='leetking'
-let g:vimrc_email='li_Tking@163.com'
-let g:vimrc_homepage=''
-nmap <F2> :AuthorInfoDetect<cr>
-
+"javacomplete {
 let g:JavaComplete_LibsPath=$HOME.'/.gradle/caches/'
-"let g:JavaComplete_BaseDir="/tmp/.java_cache"
-"if filereadable("xxxx.xml")
-"let g:JavaComplete_SourcesPath="xxxx/xxxx/xxx/r"
+"}
 
-"YCM配置
+"YCM配置 {
 let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/ycm_extra_conf.py'
 let g:ycm_error_symbol = 'E>'
 let g:ycm_warning_symbol = 'W>'
@@ -286,21 +279,20 @@ let g:ycm_complete_in_comments = 1
 let g:ycm_complete_in_strings = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_python_binary_path = 'python3'
-let g:ycm_filetype_whitelist = {
-    \ 'c': 1, 'cpp': 1, 'python': 1,
+let g:ycm_filetype_blacklist = {
+    \ 'tagbar': 1, 'nerdtree': 1,
     \}
 "TODO 设置tab不补全
 "YCM跳转
 "<leader>jd 跳到定义
 nnoremap <leader>jd :YcmCompleter GoToDefinition<cr>
+"}
 
 "c语言模板插入
 iab chead #include <stdio.h><cr><cr>int main(int argc, char **argv)<cr>{<cr>return 0;<cr>}<cr>
 iab cshead using System;<cr>using System.Collections.Generic;<cr>using System.Text;<cr>using System.Collections;<cr>using System.Runtime.InteropServices;<cr><cr>namespace xx {<cr>}<cr>
 iab pyhead #!/usr/bin/env python3<cr>#-*-coding:utf-8-*-<cr>
 
-" 引入其他配置
-"source $HOME/.vim/syntax/hi_tag.vim
 "对于markdown文档的行末空格进行高亮    等价于(>=\S) +$ 但是目前不知道markdown的类型
 highlight WhitespaceEOF ctermbg=cyan guibg=cyan
 match WhitespaceEOF /\(\S\)\@<=\ \+$/

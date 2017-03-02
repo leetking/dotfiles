@@ -2,41 +2,64 @@
 
 # 对任意文件进行编译的脚本，供给vim的make调用
 # 调用形式:
-# makeprg <workspace> <filename> [<makeopt>]
+# makeprg <workspace> <filename> [<opts>]
 # <workspace>: 当前工作空间
 # <filename>: 当前编辑文件的文件名
-# <makeopt>: make时的选项，例如: make clean中的clean
+# <opts>: make时的选项，例如: make clean中的clean
 
 WORKSPACE="$1"
 FILENAME="$2"
-MAKEOPT="$3"
+OPTS="$3"
+PRGARGS="${@:4}"
 
 # 编译c/c++
 makeccpp() {
-    _cc="$1"
-    _makefilelist=(Makefile makefile)
-    _make=make
+    local _cc="$1"
+    local _makefilelist=(Makefile makefile)
+    local _make=make
 
     # 遍历可能的makefile文件，存在就进行处理
     for i in ${_makefilelist}; do
         if [ -e "$i" ]; then
-            ${_make} -f "$i" ${MAKEOPT}
+            ${_make} -f "$i" ${OPTS}
             exit 0
         fi
     done
-    # OK,没有makefile文件，最简单的gcc编译
-    ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -Wall -lm -g -DDEBUG
+
+    # 对于简单程序的管理
+    case "${OPTS}" in
+        clean|c)
+            echo "rm -rf ${FILENAME%.*}.o ${FILENAME%.*}"
+            rm -rf "${FILENAME%.*}.o" "${FILENAME%.*}"
+            ;;
+        cleanall|ca)
+            echo "rm -rf *.o"
+            rm -rf *.o
+            for i in `ls *.c *.C *.cpp *.cxx 2> /dev/null`; do
+                echo "rm -rf ${i%.*}"
+                rm -rf "${i%.*}"
+            done
+            ;;
+        run|r)
+            echo "./${FILENAME%.*} ${PRGARGS}"
+            ./${FILENAME%.*} ${PRGARGS}
+            ;;
+        *)
+            echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -Wall -Wformat -lm -g -DDEBUG"
+            ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -Wall -Wformat -lm -g -DDEBUG
+            ;;
+    esac
     exit 0
 }
 
 # 编译java，目前就采用gradle
 makejava() {
-    _cc=javac
-    _builds=(build.gradle build.xml)
-    _gradle=gradle
+    local _cc=javac
+    local _builds=(build.gradle build.xml)
+    local _gradle=gradle
     for i in ${_builds}; do
         if [ -e "$i" ]; then
-            ${_gradle} ${MAKEOPT}
+            ${_gradle} ${OPTS}
             exit 0
         fi
     done

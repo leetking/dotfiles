@@ -1,55 +1,41 @@
-# 针对自己的习惯改的一些配置
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-# enable color support of ls and also add handy aliases
-# NOTE 开启颜色尽量考虑跨系统的实现
-if [ -x /usr/bin/dircolors ]; then
-	test -r ~/.dircolors && eval "`dircolors -b ~/.dircolors`" || eval "`dircolors -b`"
-	alias ls='ls --color=auto'
-	#alias dir='dir --color=auto'
-	#alias vdir='vdir --color=auto'
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias sdcv='sdcv --color'
 
-	alias grep='grep --color=auto'
-	alias fgrep='fgrep --color=auto'
-	alias egrep='egrep --color=auto'
-	alias sdcv='sdcv --color'
-    alias tree='tree --charset=ascii'
-fi
-
+alias tree='tree --charset=ascii'
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
 alias hg='history | grep'
-alias cd..='cd ..'
-alias cd...='cd ../..'
+
 #Tip of the day
-#NOTE 颜色转移字符的跨系统
 echo -e "		\033[31mTip Of The Day\033[0m
 \033[1;36mDid you know that:\033[0m"; whatis `ls /bin | shuf -n 1`
-fortune
-#if you want to use cowsay ,then
-#cowsay -f $(ls /usr/share/cowsay/cows | shuf -n 1 | cut -d. -f1) $(whatis $(ls /bin) 2> /dev/null | shuf -n 1)
+which fortune > /dev/null 2>&1 && fortune
 
-#漂亮的PS1
+# 支持git分支的PS1
 find_git_branch () {
-	local dir=. head
-	until [ "$dir" -ef / ]; do
-		if [ -f "$dir/.git/HEAD" ]; then
-			head=$(< "$dir/.git/HEAD")
-			if [[ $head = ref:\ refs/heads/* ]]; then
-				git_branch="(${head#*/*/})"
-			elif [[ $head != '' ]]; then
-				git_branch="((detached))"
-			else
-				git_branch="((unknow))"
-			fi
-			return
-		fi
-		dir="../$dir"
-	done
-	git_branch=''
+    local dir=. head
+    until [ "$dir" -ef / ]; do
+        if [ -f "$dir/.git/HEAD" ]; then
+            head=$(< "$dir/.git/HEAD")
+            if [[ $head = ref:\ refs/heads/* ]]; then
+                git_branch="(${head#*/*/})"
+            elif [[ $head != '' ]]; then
+                git_branch="((detached))"
+            else
+                git_branch="((unknow))"
+            fi
+            return
+        fi
+        dir="../$dir"
+    done
+    git_branch=''
 }
 PROMPT_COMMAND="find_git_branch; $PROMPT_COMMAND"
 black=$'\[\e[1;30m\]'
@@ -61,43 +47,21 @@ magenta=$'\[\e[1;35m\]'
 cyan=$'\[\e[1;36m\]'
 white=$'\[\e[1;37m\]'
 normal=$'\[\e[m\]'
-#修改ps1
 export PS1="$white[$magenta\u$white@$green\h$white:$cyan\w$yellow\$git_branch$white]"'\$'" $normal"
-#PS4
 export PS4="$black+$cyan"'${BASH_SOURCE##*/}'"$normal:$red"'$LINENO'"$normal: "
 
-# 使键盘映射启用
-#xmodmap ~/.Xmodmap
-
-#update newly added ppa for debian
-#update-ppa()
-#{
-#	sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/$1.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
-#}
-#tmux
-#修改history命令的显示格式
+# 修改history命令的显示格式
 HISTTIMEFORMAT="%y/%m/%d %T "
-#bash使用vi风格的使用
+# bash使用vi风格的使用
+# 设置vi模式下的ctrl+l为清屏的实现在~/.inputrc下
 set -o vi
-#设置vi模式下的ctrl+l为清屏的实现在~/.inputrc下
-#开启256色
+# 开启256色
 export TERM=gnome-256color
-#export TERM=xterm-256color
-#开启可以使用core文件，以便程序崩溃后调试
-ulimit -c unlimited
-#mkd: mkd 用于生成xxxx-xx-xx格式的文件夹
-#mkt函数: mkt name; 用于生成xxxx-xx-xx-name的文件
-alias mkd='mkdir `date "+%Y-%m-%d"`'
-mkt() {
-	for i in $@; do
-		touch `date '+%Y-%m-%d'`-$i
-	done
-}
+# 开启可以使用core文件，以便程序崩溃后调试，10MB = 20480 blocks
+ulimit -c 20480
 
-source /opt/pathsrc
+# 手动安装的软件放在/opt下，通过pathrc导入相关设置
+[ -e /opt/pathsrc ] && . /opt/pathsrc
 
-#启动tmux
-#tmux
-
-#为opt下程序添加启动
-. /opt/pathsrc
+# bash-completion
+[ -e /etc/bash_completion ] && . /etc/bash_completion

@@ -1,2 +1,0 @@
-set keymap vi-insert
-"\C-l": clear-screen

@@ -1,35 +1,23 @@
-#生产工具的配置文件
+# 个人的dotfile
 
-> **包括了:**
+仅供我个人配置新环境时使用，所以安装时没有备份原来的数据。
 
-- [x] bash
-- [x] vim
-- [x] tmux
-- [x] rxvt
-- [ ] fvwm
-- [ ] sdcv
+_如果想要使用，请确保你**明白**脚本在干什么。_
 
+## 使用说明
 
-###使用说明
+### 准备工作
 
-使用install.sh来安装和卸载，文件安装在~/.myconfigures里面
+1. 调整呼吸，大喊三声`Linux大法好!`，可保一次就安装成功
+2. 保证电脑**能**接入网络
+3. 电脑已经安装好了`git`和`wget`
+4. 没有后悔药，如果安装后不想要自己看情况卸载吧XD
 
-> **安装**
+### 开始安装！
 
 ```shell
-./install.sh [-a{i|r}] [-b{i|r}] [-v{i|r}] [-fv{i|r}] [-t{|r}] [-r{i|r}]
-a:    all, 所有配置文件都安装(i)或卸载(r)
-b:    bash, bash配置的安装(i)或卸载(r)
-v:    vim, vim配置的安装(i)或卸载(r)
-fv:   fvwm, fvwm配置的安装(i)或卸载(r)
-t:    tmux, tmux配置的安装(i)或卸载(r)
-r:    rxvt, rxvt配置的安装(i)或卸载(r)
+git clone --depth=1 https://github.com/leetking/dotfiles.git
+mv dotfiles .dotfiles
+cd .dotfiles
+./install.sh
 ```
-
-> **卸载**
-
-进入~/.myconfigures里然后执行
-```shell
-./install -ar
-```
-然后全部就卸载了，不留一点痕迹:P
