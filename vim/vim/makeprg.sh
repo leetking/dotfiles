@@ -33,8 +33,8 @@ makeccpp() {
             rm -rf "${FILENAME%.*}.o" "${FILENAME%.*}"
             ;;
         cleanall|ca)
-            echo "rm -rf *.o"
-            rm -rf *.o
+            echo "rm -rf *.o core"
+            rm -rf *.o core
             for i in `ls *.c *.C *.cpp *.cxx 2> /dev/null`; do
                 echo "rm -rf ${i%.*}"
                 rm -rf "${i%.*}"
