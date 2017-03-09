@@ -44,6 +44,10 @@ makeccpp() {
             echo "./${FILENAME%.*} ${PRGARGS}"
             ./${FILENAME%.*} ${PRGARGS}
             ;;
+        debug|d)
+            echo "gdb ./${FILENAME%.*}"
+            gdb ./${FILENAME%.*}
+            ;;
         *)
             echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -Wall -Wformat -lm -g -DDEBUG"
             ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -Wall -Wformat -lm -g -DDEBUG
@@ -69,7 +73,7 @@ makejava() {
 }
 
 case "${2##*.}" in
-    c|h)            makeccpp gcc ;;
+    c|h|s|asm)      makeccpp gcc ;;
     cpp|C|cxx)      makeccpp g++ ;;
     java|gradle)    makejava ;;
     *) ;;

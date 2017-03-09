@@ -76,17 +76,22 @@ set autoindent              "继承上一缩进
 set expandtab
 
 " 对不同项目进行编译的脚本
-autocmd filetype txt call SetNormalOptions()
-autocmd filetype c,cpp call SetCCppOptions()
-autocmd filetype java,groovy call SetJavaOptions()
+autocmd filetype txt            call SetNormalOptions()
+autocmd filetype c,cpp          call SetCCppOptions()
+autocmd filetype java,groovy    call SetJavaOptions()
 autocmd filetype html,xml,xhtml,ant call SetHtmlXml()
-autocmd filetype python call SetPythonOptions()
-autocmd filetype lisp,scheme call SetLispOptions()
+autocmd filetype python         call SetPythonOptions()
+autocmd filetype lisp,scheme    call SetLispOptions()
+autocmd filetype lua            call SetLuaOptions()
 
 "普通文件设置
 func! SetNormalOptions()
     set spell   "对txt文档的英文进行语法检查
     set omnifunc=
+endfunc
+"Lua语言设置
+func! SetLuaOptions()
+    setlocal makeprg=lua5.1\ %
 endfunc
 "lisp家族文件设置
 func! SetLispOptions()
@@ -98,10 +103,6 @@ func! SetPythonOptions()
 endfunc
 "对C/C++文件进行配置
 func! SetCCppOptions()
-    "set noexpandtab
-    "添加库函数gtk补全的路径
-    "set path+=/usr/include/gtk-2.0/,/usr/include/gio-unix-2.0/
-    "set path+=./include,/usr/include/x86_64-linux-gnu/
     set makeprg=$HOME/.vim/makeprg.sh\ %:p:h:h\ %:p:.
 endfunc
 "对Java文件进行配置
@@ -113,25 +114,23 @@ endfunc
 func! SetHtmlXml()
     set tabstop=2
     set shiftwidth=2
-    set expandtab
     set autoindent
     "emmet配置和使用
     let g:user_emmet_install_global=0
     EmmetInstall
     "USE: <C-y>展开
     "使用方法在http://blog.wpjam.com/m/emmet-grammar/
+    setlocal makeprg=firefox\ %
 endfunc
 
 
 "<F3>实现sdcv快捷查询
+"TODO 实现到`K'里去
 nmap <F3> :call Mydict()<cr>
 function! Mydict()
-    let expl=system('sdcv -n ' .
-                \  expand("<cword>"))
-    windo if
-                \ expand("%")=="diCt-tmp" |
-                \ q!|endif
-    30vsp diCt-tmp
+    let expl=system('sdcv -n '.expand("<cword>"))
+    windo if expand("%")=="dict-tmp" | q! | endif
+    30vsp dict-tmp
     setlocal buftype=nofile bufhidden=hide noswapfile
     1s/^/\=expl/
     1
@@ -140,10 +139,7 @@ endfunction
 "<F4>编译"
 map <F4> :call Compile()<cr>
 func! Compile()
-    if &filetype == 'asm'       "汇编
-        exec "!clear"
-        exec "!as '%' -o '%<.o' && ld '%<.o' -o '%<'"
-    elseif &filetype == 'cs'        "c_sharp mcs、gmcs或mono-csc都是c#编译器
+    if &filetype == 'cs'        "c_sharp mcs、gmcs或mono-csc都是c#编译器
         exec "!clear"
         exec "!mcs '%'"
     elseif &filetype == 'tex'       "tex文件
@@ -179,33 +175,6 @@ func! Runjava()
     if s:firstline =~ "^package"
     else
         exec "!java '%:t:r'"
-    endif
-endfunc
-
-"C语言调试"
-map <F7> : call GDB()<cr>
-func! GDB()
-    exec "w"
-    if &filetype == 'c'         "c
-        exec "!clear"
-        exec "!gcc -o %< % -g -Wall -lm -DDEBUG"
-        exec "!gdb %<"
-    elseif &filetype == 'cpp'       "cpp
-        exec "!clear"
-        exec "!g++ -o %< % -g"
-        exec "!gdb %<"
-    elseif &filetype == 'asm'   "汇编
-        exec "!clear"
-        exec "!as % -g -o %<.o && ld %<.o -o %<"
-        exec "!gdb %<"
-    elseif &filetype == 'java'  "java
-        exec "!clear"
-        exec "!javac -d . -g '%'"
-        exec "!jdb '%<'"
-    elseif &filetype == 'cs'    "c_sharp
-        exec "!clear"
-    else
-        exec ""
     endif
 endfunc
 
