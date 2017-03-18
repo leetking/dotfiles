@@ -1,6 +1,5 @@
 colorscheme desert
-set guifont=monaco\ 9
-set linespace=-2
+set guifont=monaco\ 10
 set columns=82
 set cursorline
 set guicursor=a:blinkon0    "gvim光标不闪烁
