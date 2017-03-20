@@ -6,6 +6,7 @@
 # <workspace>: 当前工作空间
 # <filename>: 当前编辑文件的文件名
 # <opts>: make时的选项，例如: make clean中的clean
+# TODO 格式化quickfix的信息
 
 WORKSPACE="$1"
 FILENAME="$2"

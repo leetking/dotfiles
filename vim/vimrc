@@ -96,6 +96,10 @@ endfunc
 "lisp家族文件设置
 func! SetLispOptions()
     set nocindent
+    set autoindent
+    set lisp
+    " 使用chez-scheme
+    setlocal makeprg=scheme\ --script\ %
 endfunc
 "python文件设置
 func! SetPythonOptions()
@@ -195,6 +199,7 @@ Plugin 'yianwillis/vimcdoc'
 Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'lervag/vimtex'                  "tex补全
 Plugin 'Valloric/YouCompleteMe'         "YCM!
+Plugin 'marijnh/tern_for_vim'
 call vundle#end()
 filetype plugin indent on
 filetype plugin on
@@ -247,10 +252,29 @@ let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_complete_in_strings = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_python_binary_path = 'python3'
+let g:ycm_seed_identifiers_with_syntax = 1
+"let g:ycm_key_list_select_completion = ['<C-TAB>', '<Down>']
+"let g:ycm_key_list_previous_completion = ['<C-S-TAB>','<Up>']
+"let g:ycm_key_invoke_completion = '<leader><tab>'
 let g:ycm_filetype_blacklist = {
     \ 'tagbar': 1, 'nerdtree': 1,
     \}
+let g:ycm_semantic_triggers =  {
+            \   'c' : ['->', '.'],
+            \   'objc' : ['->', '.'],
+            \   'ocaml' : ['.', '#'],
+            \   'cpp,objcpp' : ['->', '.', '::'],
+            \   'perl' : ['->'],
+            \   'php' : ['->', '::'],
+            \   'cs,javascript,d,python,perl6,scala,vb,elixir,go' : ['.'],
+            \   'java,jsp' : ['.'],
+            \   'vim' : ['re![_a-zA-Z]+[_\w]*\.'],
+            \   'ruby' : ['.', '::'],
+            \   'lua' : ['.', ':'],
+            \   'erlang' : [':'],
+            \ }
 "TODO 设置tab不补全
 "YCM跳转
 "<leader>jd 跳到定义
