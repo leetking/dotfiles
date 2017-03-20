@@ -18,8 +18,8 @@
 ### 开始安装！
 
 ```shell
-git clone --depth=1 https://github.com/leetking/dotfiles.git
-mv dotfiles .dotfiles
-cd .dotfiles
-./install.sh
+$ git clone --depth=1 https://github.com/leetking/dotfiles.git
+$ mv dotfiles .dotfiles
+$ cd .dotfiles
+$ ./install.sh
 ```
