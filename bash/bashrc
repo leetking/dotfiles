@@ -7,7 +7,7 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias sdcv='sdcv --color'
 
-alias tree='tree --charset=ascii'
+alias tree='tree -F -C --charset=ascii'
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'

@@ -6,6 +6,7 @@
 # <workspace>: 当前工作空间
 # <filename>: 当前编辑文件的文件名
 # <opts>: make时的选项，例如: make clean中的clean
+# TODO 格式化quickfix的信息
 
 WORKSPACE="$1"
 FILENAME="$2"
@@ -44,6 +45,10 @@ makeccpp() {
             echo "./${FILENAME%.*} ${PRGARGS}"
             ./${FILENAME%.*} ${PRGARGS}
             ;;
+        debug|d)
+            echo "gdb ./${FILENAME%.*}"
+            gdb ./${FILENAME%.*}
+            ;;
         *)
             echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -Wall -Wformat -lm -g -DDEBUG"
             ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -Wall -Wformat -lm -g -DDEBUG
@@ -69,7 +74,7 @@ makejava() {
 }
 
 case "${2##*.}" in
-    c|h)            makeccpp gcc ;;
+    c|h|s|asm)      makeccpp gcc ;;
     cpp|C|cxx)      makeccpp g++ ;;
     java|gradle)    makejava ;;
     *) ;;
