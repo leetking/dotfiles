@@ -1,16 +1,19 @@
 URxvt.preeditType: Root
 
+!xrdb -load ~/.Xresources
+
 !! background and foreground
-!set the artificial transparency
-!URxvt.perl-ext-common: ..., default, ...
+!URxvt.perl-ext-common: default, clipboard, url-select, keyboard-select
+!URxvt.url-select.launcher: chromium
+!URxvr.url-select.underline: true
 URxvt.depth: 32
-URxvt.transparent: true
-URxvt.shading: 55
-URxvt.background: #555555
+!URxvt.transparent: true
+URxvt.shading: 20
+URxvt.background: black
 URxvt.foreground: white
 
 !url opare
-URxvt.colorBd: yellow
+URxvt.colorBD: yellow
 URxvt.colorUL: green
 
 !scrollBar
@@ -20,17 +23,18 @@ URxvt.scrollBar: false
 URxvt.borderLess: false
 
 !cursor-blink
-!URxvt.cursorBlink: true
 URxvt.cursorBlink: false
 
 !history lines
 URxvt.savelines: 3000
 
 !font set
+!dpi 像素密度
 Xft.dpi: 96
 URxvt.multichar_encoding: utf-8
 URxvt.imLocale: zh_CN,UTF-8
-URxvt.font: xft: Ubuntu Mono derivative Powerline: size=12, xft: 文泉驿微米黑
-URxvt.boldFont: xft: Ubuntu Mono derivative Powerline: size=12: Bold, xft: 文泉驿微米黑-25: Bold
-URxvt.italicFont: xft: Ubuntu Mono derivative Powerline: size=12:italic, xft: 文泉驿微米黑: size=20: italic
-URxvt.bolditalicFont: xft: Ubuntu Mono derivative Powerline: size=12:italic, xft: 文泉驿微米黑: size=20: Bold italic
+URxvt.font:           xft: Migu 1M:size=11:antialias=true, xft: Noto Sans Mono CJK SC:size=10:antialias=true
+URxvt.boldFont:       xft: Migu 1M:size=11:bold:antialias=true, xft: Noto Sans Mono CJK SC:size=10:bold:antialias=true
+!URxvt.italicFont:     xft: Noto Sans Mono CJK SC:size=10:italic:antialias=true
+!URxvt.bolditalicFont: xft: Noto Sans Mono CJK SC:size=10:bold italic:antialias=true
+!URxvt.letterSpace: -2
