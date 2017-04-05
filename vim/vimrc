@@ -79,10 +79,11 @@ set expandtab
 autocmd filetype txt            call SetNormalOptions()
 autocmd filetype c,cpp          call SetCCppOptions()
 autocmd filetype java,groovy    call SetJavaOptions()
-autocmd filetype html,xml,xhtml,ant call SetHtmlXml()
+autocmd filetype html,xml,xhtml,ant,markdown call SetHtmlXml()
 autocmd filetype python         call SetPythonOptions()
 autocmd filetype lisp,scheme    call SetLispOptions()
 autocmd filetype lua            call SetLuaOptions()
+autocmd filetype javascript     call SetJSOptions()
 
 "普通文件设置
 func! SetNormalOptions()
@@ -91,7 +92,7 @@ func! SetNormalOptions()
 endfunc
 "Lua语言设置
 func! SetLuaOptions()
-    setlocal makeprg=lua5.1\ %
+    setlocal makeprg=lua\ %
 endfunc
 "lisp家族文件设置
 func! SetLispOptions()
@@ -125,6 +126,10 @@ func! SetHtmlXml()
     "USE: <C-y>展开
     "使用方法在http://blog.wpjam.com/m/emmet-grammar/
     setlocal makeprg=firefox\ %\ &
+endfunc
+"javaScript
+func! SetJSOptions()
+    setlocal makeprg=node\ %
 endfunc
 
 
@@ -200,6 +205,7 @@ Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'lervag/vimtex'                  "tex补全
 Plugin 'Valloric/YouCompleteMe'         "YCM!
 Plugin 'marijnh/tern_for_vim'
+Plugin 'kien/ctrlp.vim'                 "ctrlp
 call vundle#end()
 filetype plugin indent on
 filetype plugin on
@@ -279,6 +285,10 @@ let g:ycm_semantic_triggers =  {
 "YCM跳转
 "<leader>jd 跳到定义
 nnoremap <leader>jd :YcmCompleter GoToDefinition<cr>
+"}
+
+"ctrlp {
+set runtimepath^=~/.vim/bundle/ctrlp.vim
 "}
 
 "c语言模板插入
