@@ -73,9 +73,14 @@ makejava() {
     exit 0
 }
 
+CC=gcc
+CXX=g++
+which clang   > /dev/null 2>&1 && CC=clang
+which clang++ > /dev/null 2>&1 && CXX=clang++
+
 case "${2##*.}" in
-    c|h|s|asm)      makeccpp gcc ;;
-    cpp|C|cxx)      makeccpp g++ ;;
+    c|h|s|asm)      makeccpp ${CC};;
+    cpp|C|cxx)      makeccpp ${CXX};;
     java|gradle)    makejava ;;
     *) ;;
 esac
