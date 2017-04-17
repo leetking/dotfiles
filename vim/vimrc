@@ -217,7 +217,6 @@ let g:tagbar_iconchars = ['▸', '▾']
 
 "nerdtree {
 let g:NERDTreeIgnore = ['\~$', '\.pyc', '\.swp$']
-"TODO 整合
 "左边文件管理，右边tagbar
 "USE: 在普通模式下输入 vm
 nmap wm : call NerdTree_TagBar_Toggle()<cr>

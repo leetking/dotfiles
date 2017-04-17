@@ -50,18 +50,18 @@ normal=$'\[\e[m\]'
 export PS1="$white[$magenta\u$white@$green\h$white:$cyan\w$yellow\$git_branch$white]"'\$'" $normal"
 export PS4="$black+$cyan"'${BASH_SOURCE##*/}'"$normal:$red"'$LINENO'"$normal: "
 
-# 修改history命令的显示格式
 HISTTIMEFORMAT="%y/%m/%d %T "
-# bash使用vi风格的使用
-# 设置vi模式下的ctrl+l为清屏的实现在~/.inputrc下
+# vi mode
+# The implement of clearing screan by 'ctrl+l' is in file ~/.inputrc
 set -o vi
-# 开启256色
+# enable 256colors
 export TERM=gnome-256color
-# 开启可以使用core文件，以便程序崩溃后调试，10MB = 20480 blocks
+# enable core, 10MB = 20480 blocks
 ulimit -c 20480
 
-# 手动安装的软件放在/opt下，通过pathrc导入相关设置
+# There are some software at /opt, now I append PATH from file /opt/pathsrc
 [ -e /opt/pathsrc ] && . /opt/pathsrc
 
 # bash-completion
 [ -e /etc/bash_completion ] && . /etc/bash_completion
+PATH=$PATH:/home/ultk/.dotfiles/tools/bin

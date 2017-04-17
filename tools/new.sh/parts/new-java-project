@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+TEMPLATE_PATH=$(cd `dirname $0`; pwd -P)/../template
+PROJECT_DIR="$1"
+
+Usage() {
+    echo "Usage: $0 {project-dir} [type]"
+}
+
+if [ $# -le 0 ]; then
+    Usage
+    exit 0
+fi
+
+mkdir -p ${PROJECT_DIR}/src/{main,test}
+mkdir -p ${PROJECT_DIR}/src/main/{java,resources}
+mkdir -p ${PROJECT_DIR}/src/test/{java,resources}
+
+cp ${TEMPLATE_PATH}/java.build.gradle ${PROJECT_DIR}/build.gradle

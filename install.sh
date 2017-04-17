@@ -23,7 +23,7 @@ InstallVim() {
     vim +PluginInstall +qall
 }
 
-# sdcv dictionary
+# sdcv dictionaries
 InstallSdcv() {
     # 先下载文件
     ${CURR_PATH}/sdcv/download_dicts.sh
@@ -35,30 +35,36 @@ InstallSdcv() {
     done
 }
 
+# urxvt configuration
 InstallUrxvt() {
     ln -sf ${CURR_PATH}/urxvt/Xdefaults ~/.Xdefaults
     # TODO xradr 使其生效
 }
 
-# 安装全部
+InstallTools() {
+    echo "Own shell scripts." >> ~/.bashrc
+    echo "PATH=\$PATH:${CURR_PATH}/tools/bin" >> ~/.bashrc
+}
+
 Install() {
     InstallBash
     InstallVim
     InstallSdcv
     InstallUrxvt
+    InstallTools
 }
 
-# 帮助
 Help() {
-    echo "Usage: $0 [vim|bash|sdcv|urxvt|-h]"
+    echo "Usage: $0 [vim|bash|sdcv|urxvt|tools|-h]"
     echo "     vim:  install vimrc."
     echo "     bash: install bashrc."
     echo "     sdcv: install sdcv dictionary."
     echo "     urxvt: install urxvt configuration."
+    echo "     tools: install my shell scripts."
     echo "     -h:   show this page."
 }
 
-# 默认全部安装
+# I install the all by default
 if [ 0 -eq $# ]; then
     Install
     exit 0
@@ -70,7 +76,8 @@ while [ 0 -ne $# ]; do
         bash)  InstallBash ;;
         sdcv)  InstallSdcv ;;
         urxvt) InstallUrxvt ;;
-        *)     Help; exit 1 ;;
+        tools) InstallTools ;;
+        *)     echo "No options \"$1\"."; Help; exit 1 ;;
     esac
     shift
 done

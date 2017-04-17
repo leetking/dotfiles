@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+/*
+ * 普通java程序
+ */
+
+/* from plugin application */
+mainClassName = 'package.App';
+
+repositories {
+    mavenCentral();
+}
+
+/*
+ * dependencies
+ */
+dependencies {
+    //compile 'com.google.gson:gson:2.8.0';
+    //runtime 'mysql:mysql-connector-java:6.0.5';
+    //providedCompile 'javax.servlet:servlet-api:3.1';
+    testCompile 'junit:junit:4.+';
+}
+
+jar {
+    baseName = 'AppName';
+    version = '0.0.1';
+    manifest {
+        attributes('Create-By': 'leetking <li_Tking@163.com>');
+        attributes('Copyright': 'leetking <li_Tking@163.com>');
+    }
+}
+
