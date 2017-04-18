@@ -42,8 +42,9 @@ InstallUrxvt() {
 }
 
 InstallTools() {
-    echo "Own shell scripts." >> ~/.bashrc
-    echo "PATH=\$PATH:${CURR_PATH}/tools/bin" >> ~/.bashrc
+    sed -i '/#tools-tag/d' ~/.bashrc
+    echo "# Own shell scripts. #tools-tag" >> ~/.bashrc
+    echo "PATH=\$PATH:${CURR_PATH}/tools/bin #tools-tag" >> ~/.bashrc
 }
 
 Install() {

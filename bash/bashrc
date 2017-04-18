@@ -64,4 +64,8 @@ ulimit -c 20480
 
 # bash-completion
 [ -e /etc/bash_completion ] && . /etc/bash_completion
-PATH=$PATH:/home/ultk/.dotfiles/tools/bin
+
+export EDITOR=vim
+
+# Own shell scripts. #tools-tag
+PATH=$PATH:/home/altk/.dotfiles/tools/bin #tools-tag
