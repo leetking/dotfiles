@@ -13,6 +13,8 @@ FILENAME="$2"
 OPTS="$3"
 PRGARGS="${@:4}"
 
+BROWSER=chromium
+
 # 编译c/c++
 makeccpp() {
     local _cc="$1"
