@@ -324,3 +324,6 @@ func! AutoSwitchInput()
     endif
 endfunc
 call AutoSwitchInput()
+
+" 以root保存
+command W w !sudo tee % > /dev/null
