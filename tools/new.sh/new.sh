@@ -9,7 +9,7 @@ WORK_PATH=$(pwd -P)
 # Import some tools
 PATH=$PATH:$INSTALL_PATH/parts
 
-PROJECT_LOCATION=https://github.com/leetking/dotfiles/tools/new.sh/README.md
+PROJECT_LOCATION=https://github.com/leetking/dotfiles/tree/master/tools/new.sh
 
 Usage() {
     echo "Usage: new [<category>] [<type>] | filename.type"
