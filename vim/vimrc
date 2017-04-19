@@ -5,7 +5,8 @@ set nocompatible        "不兼容vi
 set backspace=indent,eol,start
 set nu
 set ruler
-set ignorecase
+"set ignorecase
+"set smartcase
 set incsearch       "逐字高亮搜索
 set matchtime=5     "高亮的时间
 set history=500
