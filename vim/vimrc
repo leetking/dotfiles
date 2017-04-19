@@ -126,7 +126,7 @@ func! SetHtmlXml()
     EmmetInstall
     "USE: <C-y>展开
     "使用方法在http://blog.wpjam.com/m/emmet-grammar/
-    setlocal makeprg=firefox\ %\ &
+    setlocal makeprg=chromium\ %\ &
 endfunc
 "javaScript
 func! SetJSOptions()
