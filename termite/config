@@ -1,0 +1,8 @@
+[options]
+font = Migu 1M 11
+#font = Droid Sans Mono 8
+
+[colors]
+foreground = #dcdccc
+#background = #3f3f3f
+background = rgba(0, 30, 40, 0.9)
