@@ -17,7 +17,7 @@ Usage() {
     echo "           type: c/cpp/acm"
     echo ""
     echo "More details please see "
-    echo " > ${PROJECT_LOCATION}."
+    echo " > ${PROJECT_LOCATION} ."
     echo "Create project or file from template."
     echo "(C) leetking <li_Tking@163.com>"
 }
