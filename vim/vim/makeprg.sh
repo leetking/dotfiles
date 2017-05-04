@@ -2,16 +2,14 @@
 
 # 对任意文件进行编译的脚本，供给vim的make调用
 # 调用形式:
-# makeprg <workspace> <filename> [<opts>]
-# <workspace>: 当前工作空间
+# makeprg <filename> [<opts>]
 # <filename>: 当前编辑文件的文件名
 # <opts>: make时的选项，例如: make clean中的clean
 # TODO 格式化quickfix的信息
 
-WORKSPACE="$1"
-FILENAME="$2"
-OPTS="$3"
-PRGARGS="${@:4}"
+FILENAME="$1"
+OPTS="$2"
+PRGARGS="${@:3}"
 
 BROWSER=chromium
 
@@ -36,11 +34,11 @@ makeccpp() {
             rm -rf "${FILENAME%.*}.o" "${FILENAME%.*}"
             ;;
         cleanall|ca)
-            echo "rm -rf *.o core"
-            rm -rf *.o core
-            for i in `ls *.c *.C *.cpp *.cxx 2> /dev/null`; do
-                echo "rm -rf ${i%.*}"
-                rm -rf "${i%.*}"
+            echo "rm -f *.o core"
+            rm -f *.o core
+            for i in `ls ${WORKSPACE}/*.{c,C,cpp,cxx,cc} 2> /dev/null`; do
+                echo "rm -f ${i%.*}"
+                rm -f "${i%.*}"
             done
             ;;
         run|r)
@@ -52,8 +50,8 @@ makeccpp() {
             gdb ./${FILENAME%.*}
             ;;
         *)
-            echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -Wall -Wformat -lm -g -DDEBUG"
-            ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -Wall -Wformat -lm -g -DDEBUG
+            echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -O0 -Wall -Wformat -lm -g -DDEBUG"
+            ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -O0 -Wall -Wformat -lm -g -DDEBUG
             ;;
     esac
     exit 0
@@ -71,7 +69,52 @@ makejava() {
         fi
     done
 
-    ${_cc} -d . "${FILENAME}"
+    package=$(grep -oP '(?<=package)\s+[\w\.]+' "${FILENAME}" | grep -oP '[\w\.]+')
+    case "${OPTS}" in
+        cleanall|ca)
+            echo "rm -f *.class"
+            rm -f *.class
+            for i in `ls *.java 2> /dev/null`; do
+                package=$(grep -oP '(?<=package)\s+[\w\.]+' "$i" | grep -oP '[\w\.]+')
+                if [ -z "${package}" ]; then
+                    echo "rm -f ${FILENAME%.*}.class"
+                    rm -f ${FILENAME%.*}.class
+                else
+                    echo "rm -rf ${package%%.*}"
+                    rm -rf ${package%%.*}
+                fi
+            done
+            ;;
+        clean|c)
+            if [ -z "${package}" ]; then
+                echo "rm -f ${FILENAME%.*}.class"
+                rm -f ${FILENAME%.*}.class
+            else
+                echo "rm -rf ${package%%.*}"
+                rm -rf ${package%%.*}
+            fi
+            ;;
+        run|r)
+            mainclass=${FILENAME%.*}
+            if [ ! -z "$package" ]; then
+                mainclass=${package}.${mainclass}
+            fi
+            echo "java ${mainclass}"
+            java ${mainclass}
+            ;;
+        debug|d)
+            mainclass=${FILENAME%.*}
+            if [ ! -z "$package" ]; then
+                mainclass=${package}.${mainclass}
+            fi
+            echo "jdb ${mainclass}"
+            jdb ${mainclass}
+            ;;
+        *)
+            echo "${_cc} -d . ${FILENAME}"
+            ${_cc} -d . "${FILENAME}"
+            ;;
+    esac
     exit 0
 }
 
@@ -80,7 +123,7 @@ CXX=g++
 which clang   > /dev/null 2>&1 && CC=clang
 which clang++ > /dev/null 2>&1 && CXX=clang++
 
-case "${2##*.}" in
+case "${FILENAME##*.}" in
     c|h|s|asm)      makeccpp ${CC};;
     cpp|C|cxx)      makeccpp ${CXX};;
     java|gradle)    makejava ;;
