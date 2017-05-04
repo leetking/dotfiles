@@ -36,7 +36,7 @@ makeccpp() {
         cleanall|ca)
             echo "rm -f *.o core"
             rm -f *.o core
-            for i in `ls ${WORKSPACE}/*.{c,C,cpp,cxx,cc} 2> /dev/null`; do
+            for i in `ls *.{c,C,cpp,cxx,cc} 2> /dev/null`; do
                 echo "rm -f ${i%.*}"
                 rm -f "${i%.*}"
             done
@@ -69,6 +69,7 @@ makejava() {
         fi
     done
 
+    # 单个java文件
     package=$(grep -oP '(?<=package)\s+[\w\.]+' "${FILENAME}" | grep -oP '[\w\.]+')
     case "${OPTS}" in
         cleanall|ca)
@@ -125,7 +126,7 @@ which clang++ > /dev/null 2>&1 && CXX=clang++
 
 case "${FILENAME##*.}" in
     c|h|s|asm)      makeccpp ${CC};;
-    cpp|C|cxx)      makeccpp ${CXX};;
+    cpp|C|cxx|cc)   makeccpp ${CXX};;
     java|gradle)    makejava ;;
     *) ;;
 esac
