@@ -109,12 +109,12 @@ func! SetPythonOptions()
 endfunc
 "对C/C++文件进行配置
 func! SetCCppOptions()
-    set makeprg=$HOME/.vim/makeprg.sh\ %:p:h:h\ %:p:.
+    set makeprg=$HOME/.vim/makeprg.sh\ %:p:.
 endfunc
 "对Java文件进行配置
 func! SetJavaOptions()
     set omnifunc=javacomplete#Complete
-    set makeprg=$HOME/.vim/makeprg.sh\ %:p:h:h\ %:p:.
+    set makeprg=$HOME/.vim/makeprg.sh\ %:p:.
 endfunc
 "对html/xml设置
 func! SetHtmlXml()
