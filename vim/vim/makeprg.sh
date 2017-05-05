@@ -121,8 +121,8 @@ makejava() {
 
 CC=gcc
 CXX=g++
-which clang   > /dev/null 2>&1 && CC=clang
-which clang++ > /dev/null 2>&1 && CXX=clang++
+#which clang   > /dev/null 2>&1 && CC=clang
+#which clang++ > /dev/null 2>&1 && CXX=clang++
 
 case "${FILENAME##*.}" in
     c|h|s|asm)      makeccpp ${CC};;
