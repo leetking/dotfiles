@@ -11,6 +11,7 @@
 #include <queue>
 
 using namespace std;
+typedef long long LL;
 
 #ifndef ONLINE_JUDGE
 # define _D(...)    printf(__VA_ARGS__)
