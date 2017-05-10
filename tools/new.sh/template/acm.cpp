@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <climits>
 #include <cctype>
+#include <cfloat>
 #include <cmath>
 #include <cstring>
 #include <iostream>
