@@ -50,8 +50,8 @@ makeccpp() {
             gdb ./${FILENAME%.*}
             ;;
         *)
-            echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -O0 -Wall -Wformat -lm -g -DDEBUG"
-            ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -O0 -Wall -Wformat -lm -g -DDEBUG
+            echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -O0 -Wall -Wformat -lm -g -DDEBUG -fsanitize=address"
+            ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -O0 -Wall -Wformat -lm -g -DDEBUG -fsanitize=address
             ;;
     esac
     exit 0
