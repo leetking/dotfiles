@@ -8,6 +8,7 @@ MIRROR=http://download.huzheng.org
 zh_CN_DICTS=(stardict-langdao-ec-gb-2.4.2.tar.bz2
     stardict-langdao-ce-gb-2.4.2.tar.bz2
     stardict-CET4-2.4.2.tar.bz2
+    stardict-jilin_jc-2.4.2.tar.bz2
 )
 ja_DICTS=(
 )

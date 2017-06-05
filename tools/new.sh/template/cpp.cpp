@@ -12,7 +12,9 @@
 
 using namespace std;
 
-#ifndef DEBUG
+#define ARR_SIZE(x)     ((int)sizeof(x)/sizeof(x[0]))
+
+#ifndef NDEBUG      /* fllow the macor `NDEBUG` from assert.h */
 # define _D(...)    printf(__VA_ARGS__)
 #else
 # define _D(...)    ((void)0)

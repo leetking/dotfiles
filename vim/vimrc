@@ -161,33 +161,6 @@ func! Compile()
     endif
 endfunc
 
-"<F5>对简单小程序进行运行或预览
-map <F5> :call Run()<cr>
-func! Run()
-    exec "w"
-    if &filetype == 'c' || &filetype == 'asm' || &filetype == 'cpp'
-        exec "!clear"
-        exec "!./'%<'"
-    elseif &filetype == 'java'  "java
-        exec "!clear"
-        call Runjava()
-    elseif &filetype == 'xhtml' || &filetype == 'html'  "html
-        exec "!firefox '%'"
-    elseif &filetype == 'cs'    "c_sharp
-        exec "!clear"
-        exec "!./'%<.exe'"
-    elseif &filetype == 'lua'   "lua
-        exec "!lua '%:p:.'"
-    endif
-endfunc
-func! Runjava()
-    let s:firstline = getline(1)
-    if s:firstline =~ "^package"
-    else
-        exec "!java '%:t:r'"
-    endif
-endfunc
-
 "Vundle管理插件
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -207,6 +180,7 @@ Plugin 'lervag/vimtex'                  "tex补全
 Plugin 'Valloric/YouCompleteMe'         "YCM!
 Plugin 'marijnh/tern_for_vim'
 Plugin 'kien/ctrlp.vim'                 "ctrlp
+Plugin 'SpaceVim/vim-luacomplete' "lua complete
 call vundle#end()
 filetype plugin indent on
 filetype plugin on
@@ -328,3 +302,6 @@ call AutoSwitchInput()
 
 " 以root保存
 command W w !sudo tee % > /dev/null
+
+" <F5>强制重绘界面
+nmap <F5> :redraw!<cr>

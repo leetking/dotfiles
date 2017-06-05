@@ -52,7 +52,8 @@ magenta=$'\[\e[1;35m\]'
 cyan=$'\[\e[1;36m\]'
 white=$'\[\e[1;37m\]'
 normal=$'\[\e[m\]'
-export PS1="$white[$magenta\u$white@$green\h$white:$cyan\w$yellow\$git_branch$white]"'\$'" $normal"
+# export PS1="$white[$magenta\u$white@$green\h$white:$cyan\w$yellow\$git_branch$white]"'\$'" $normal"
+export PS1="$cyan\w$yellow\$git_branch$white"'\$'" $normal"
 export PS4="$black+$cyan"'${BASH_SOURCE##*/}'"$normal:$red"'$LINENO'"$normal: "
 
 HISTTIMEFORMAT="%y/%m/%d %T "

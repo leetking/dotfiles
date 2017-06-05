@@ -10,9 +10,12 @@
 #include <set>
 #include <map>
 #include <queue>
+#include <stack>
 
 using namespace std;
 typedef long long LL;
+
+#define ARR_SIZE(x)     ((int)sizeof(x)/sizeof(x[0]))
 
 #ifndef ONLINE_JUDGE
 # define _D(...)    printf(__VA_ARGS__)
