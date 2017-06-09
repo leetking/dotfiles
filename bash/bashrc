@@ -6,29 +6,57 @@ fi
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-alias ls='ls --color=auto'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-alias sdcv='sdcv --color'
+which dircolors > /dev/null 2>&1 && {
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+    alias sdcv='sdcv --color'
 
-alias tree='tree -F -C --charset=ascii'
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
-alias hg='history | grep'
+    alias tree='tree -F -C --charset=ascii'
+    alias ll='ls -l'
+    alias la='ls -A'
+    alias l='ls -CF'
+    alias hg='history | grep'
+}
 
-#Tip of the day
-echo -e "		\033[31mTip Of The Day\033[0m
-\033[1;36mDid you know that:\033[0m"; whatis `ls /bin | shuf -n 1`
 which fortune > /dev/null 2>&1 && fortune
 
-# 支持git分支的PS1
+git_branch='\W'
+short_workspace=''
+gen_short_workpath() {
+    short_workspace=''
+    local home="$HOME"
+    local dir=$(pwd)
+    if [ "$dir" == "/" ]; then
+        short_workspace="/"
+        return
+    fi
+    if [[ $dir == ${HOME}* ]]; then
+        short_workspace="~"
+        dir=${dir#${HOME}}
+    fi
+    # FIXME when name of directory include space charactors,
+    # the space charactor is instead of '/'.
+    local tmp=($(echo $dir | sed -n "s/\//\n/g; p"))
+    local len=$((${#tmp[@]}-1))
+    if [ $len -lt 0 ]; then
+        return
+    fi
+    dir=""
+    for ((i = 0; i < len; ++i)); do
+        local t=$(echo "${tmp[$i]}" | grep -Po "^[^/]?")
+        dir="${dir}/$t"
+    done
+    dir="${dir}/${tmp[$len]}"
+    short_workspace=$short_workspace$dir
+}
 find_git_branch () {
     local dir=. head
     until [ "$dir" -ef / ]; do
         if [ -f "$dir/.git/HEAD" ]; then
-            head=$(< "$dir/.git/HEAD")
+            local head=$(< "$dir/.git/HEAD")
             if [[ $head = ref:\ refs/heads/* ]]; then
                 git_branch="(${head#*/*/})"
             elif [[ $head != '' ]]; then
@@ -42,7 +70,8 @@ find_git_branch () {
     done
     git_branch=''
 }
-PROMPT_COMMAND="find_git_branch; $PROMPT_COMMAND"
+# PROMPT_COMMAND is invoked before displaying PS1
+PROMPT_COMMAND="gen_short_workpath; find_git_branch; $PROMPT_COMMAND"
 black=$'\[\e[1;30m\]'
 red=$'\[\e[1;31m\]'
 green=$'\[\e[1;32m\]'
@@ -52,9 +81,8 @@ magenta=$'\[\e[1;35m\]'
 cyan=$'\[\e[1;36m\]'
 white=$'\[\e[1;37m\]'
 normal=$'\[\e[m\]'
-# export PS1="$white[$magenta\u$white@$green\h$white:$cyan\w$yellow\$git_branch$white]"'\$'" $normal"
-export PS1="$cyan\w$yellow\$git_branch$white"'\$'" $normal"
-export PS4="$black+$cyan"'${BASH_SOURCE##*/}'"$normal:$red"'$LINENO'"$normal: "
+export PS1="${cyan}\$short_workspace${yellow}\$git_branch${white}${normal}\$ "
+export PS4="$black+$cyan\${BASH_SOURCE##*/$normal:$red\$LINENO$normal: "
 
 HISTTIMEFORMAT="%y/%m/%d %T "
 # vi mode
@@ -75,3 +103,7 @@ export EDITOR=vim
 
 # Own shell scripts. #tools-tag
 PATH=$PATH:/home/ultk/.dotfiles/tools/bin #tools-tag
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/ultk/.sdkman"
+[[ -s "/home/ultk/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ultk/.sdkman/bin/sdkman-init.sh"

@@ -2,6 +2,7 @@
 
 TEMPLATE_PATH=$(cd `dirname $0`; pwd -P)/../template
 PROJECT_DIR="$1"
+TYPE="$2"
 
 Usage() {
     echo "Usage: $0 {project-dir} [type]"
