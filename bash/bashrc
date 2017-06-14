@@ -37,7 +37,8 @@ gen_short_workpath() {
         short_workspace="~"
         dir=${dir#${HOME}}
     fi
-    # FIXME when name of directory include space charactors, the space charactor is instead of '/'.
+    local SAVEIFS=$IFS
+    IFS=$(echo -ne "\n\b")
     local tmp=($(echo $dir | sed -n "s/\//\n/g; p"))
     local len=$((${#tmp[@]}-1))
     if [ $len -lt 0 ]; then
@@ -50,6 +51,7 @@ gen_short_workpath() {
     done
     dir="${dir}/${tmp[$len]}"
     short_workspace=$short_workspace$dir
+    IFS=$SAVEIFS
 }
 find_git_branch () {
     local dir=. head
@@ -86,6 +88,8 @@ export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
 # improve command cd through `lcsfind`
 # that is a lua script implemented by lcs algorithm.
 cd() {
+    local SAVEIFS=$IFS
+    IFS=$(echo -ne "\n\b")
     if [ $# -lt 1 ]; then
         builtin cd
         return 0
@@ -115,6 +119,7 @@ cd() {
         wks="$wks/$nextdir"
     done
     builtin cd $wks
+    IFS=$SAVEIFS
     return 0
 }
 alias r='builtin cd /'          # '/' can't be as a command name and is instead of 'r'.
@@ -143,5 +148,5 @@ export EDITOR=vim
 PATH=$PATH:/home/ultk/.dotfiles/tools/bin #tools-tag
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/ultk/.sdkman"
-[[ -s "/home/ultk/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ultk/.sdkman/bin/sdkman-init.sh"
+#export SDKMAN_DIR="/home/ultk/.sdkman"
+#[[ -s "/home/ultk/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ultk/.sdkman/bin/sdkman-init.sh"
