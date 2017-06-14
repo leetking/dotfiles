@@ -28,7 +28,7 @@ short_workspace=''
 gen_short_workpath() {
     short_workspace=''
     local home="$HOME"
-    local dir=$(pwd)
+    local dir="$PWD"
     if [ "$dir" == "/" ]; then
         short_workspace="/"
         return
@@ -37,8 +37,7 @@ gen_short_workpath() {
         short_workspace="~"
         dir=${dir#${HOME}}
     fi
-    # FIXME when name of directory include space charactors,
-    # the space charactor is instead of '/'.
+    # FIXME when name of directory include space charactors, the space charactor is instead of '/'.
     local tmp=($(echo $dir | sed -n "s/\//\n/g; p"))
     local len=$((${#tmp[@]}-1))
     if [ $len -lt 0 ]; then
@@ -46,7 +45,7 @@ gen_short_workpath() {
     fi
     dir=""
     for ((i = 0; i < len; ++i)); do
-        local t=$(echo "${tmp[$i]}" | grep -Po "^[^/]?")
+        local t=$(echo "${tmp[$i]}" | grep -Po "^\.*[^/]?")
         dir="${dir}/$t"
     done
     dir="${dir}/${tmp[$len]}"
@@ -82,7 +81,46 @@ cyan=$'\[\e[1;36m\]'
 white=$'\[\e[1;37m\]'
 normal=$'\[\e[m\]'
 export PS1="${cyan}\$short_workspace${yellow}\$git_branch${white}${normal}\$ "
-export PS4="$black+$cyan\${BASH_SOURCE##*/$normal:$red\$LINENO$normal: "
+export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
+
+# improve command cd through `lcsfind`
+# that is a lua script implemented by lcs algorithm.
+cd() {
+    if [ $# -lt 1 ]; then
+        builtin cd
+        return 0
+    fi
+    ! which lcsfind > /dev/null 2>&1 && {
+        return 0
+    }
+    local wks="$PWD"
+    [ '/' == "${1:0:1}" ] && wks="/"
+    local dir=($(echo "$1" | sed -n "s/\//\n/g; p"))
+    for ((i = 0; i < ${#dir[@]}; ++i)); do
+        local pat=${dir[i]}
+        local cddirs=()
+        local idx=0
+        for j in `ls -a $wks/`; do
+            [ -d "$wks/$j" ] && {
+                [ "." == "${pat:0:1}" -a "." == "${j:0:1}" ] && {
+                    cddirs[$idx]="$j"
+                }
+                [ "." != "${j:0:1}" ] && {
+                    cddirs[$idx]="$j"
+                }
+            }
+            ((idx = idx + 1))
+        done
+        local nextdir=`lcsfind $pat ${cddirs[@]}`
+        wks="$wks/$nextdir"
+    done
+    builtin cd $wks
+    return 0
+}
+alias r='builtin cd /'          # '/' can't be as a command name and is instead of 'r'.
+alias ..='builtin cd ..'
+alias ...='builtin cd ../..'
+alias 4.='builtin cd ../../../' # we can define more as command 'n.' to implement cd parent directories.
 
 HISTTIMEFORMAT="%y/%m/%d %T "
 # vi mode

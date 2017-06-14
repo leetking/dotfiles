@@ -1,0 +1,77 @@
+#!/usr/bin/env lua
+
+-- a script for find a string by lcs algorithm.
+-- it is invoked by shell script to implement command `cd`.
+-- GPL v3 (C) leetking <li_Tking@163.com>
+
+local max = math.max
+local abs = math.abs
+local tolower = string.lower
+local ver = function()
+    s, e = string.find(_G._VERSION, "5%.%d+")
+    return tonumber(_G._VERSION:sub(s, e))*10
+end
+
+local function lcs(s1, s2)
+    local dp={}
+    for i = 0, max(#s1, #s2) do
+        dp[i] = {}
+        dp[i][0] = 0
+        dp[0][i] = 0
+    end
+    for i = 1, #s1 do
+        for j = 1, #s2 do
+            if s1:sub(i, i) == s2:sub(j, j) then
+                dp[i][j] = dp[i-1][j-1]+1
+            else
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+            end
+        end
+    end
+    return dp[#s1][#s2]
+end
+
+local function lcsfind(pat, ...)
+    local maxi   = 1
+    local maxlcs = -1
+    local minabs = math.mininteger
+    pat = tolower(pat)
+    local arg = type(...) == "table" and ... or {...}
+    for i = 1, #arg do
+        local str = tolower(arg[i])
+        local lcst = lcs(pat, str)
+        local abst = abs(#pat - #str)
+        if lcst > maxlcs then
+            maxi   = i
+            minabs = abst
+            maxlcs = lcst
+        elseif lcst == maxlcs and abst < minabs then
+            maxi   = i
+            minabs = abst
+        elseif lcst == maxlcs and abst == minabs
+            and pat:sub(1,1) == str:sub(1,1) then
+            maxi = i
+        end
+    end
+    print(arg[maxi])
+end
+
+-- main interface
+if #arg < 2 then
+    print([[
+Usage: lcsfind pat str1 ... strn
+Find a string most same as `pat` from `str1 ... strn` by extending lcs algorithm.
+GPL v3 (C) leetking <li_Tking@163.com>
+]])
+    return 1
+end
+if ver() < 51 then
+    print([[
+WARN: MAYBE DONT SUPPORT NO-ASICC CHARACTOR SET.]])
+end
+local pat = arg[1]
+for i = 2, #arg do
+    arg[i-1] = arg[i]
+end
+lcsfind(pat, arg)
+
