@@ -37,11 +37,12 @@ gen_short_workpath() {
         short_workspace="~"
         dir=${dir#${HOME}}
     fi
-    local SAVEIFS=$IFS
-    IFS=$(echo -ne "\n\b")
+    local SAVEIFS="$IFS"
+    IFS="$(echo -ne "\n\b")"
     local tmp=($(echo $dir | sed -n "s/\//\n/g; p"))
     local len=$((${#tmp[@]}-1))
     if [ $len -lt 0 ]; then
+        IFS="$SAVEIFS"
         return
     fi
     dir=""
@@ -51,7 +52,7 @@ gen_short_workpath() {
     done
     dir="${dir}/${tmp[$len]}"
     short_workspace=$short_workspace$dir
-    IFS=$SAVEIFS
+    IFS="$SAVEIFS"
 }
 find_git_branch () {
     local dir=. head
@@ -88,8 +89,6 @@ export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
 # improve command cd through `lcsfind`
 # that is a lua script implemented by lcs algorithm.
 cd() {
-    local SAVEIFS=$IFS
-    IFS=$(echo -ne "\n\b")
     if [ $# -lt 1 ]; then
         builtin cd
         return 0
@@ -99,6 +98,8 @@ cd() {
     }
     local wks="$PWD"
     [ '/' == "${1:0:1}" ] && wks="/"
+    local SAVEIFS="$IFS"
+    IFS="$(echo -ne "\n\b")"
     local dir=($(echo "$1" | sed -n "s/\//\n/g; p"))
     for ((i = 0; i < ${#dir[@]}; ++i)); do
         local pat=${dir[i]}
@@ -119,7 +120,7 @@ cd() {
         wks="$wks/$nextdir"
     done
     builtin cd $wks
-    IFS=$SAVEIFS
+    IFS="$SAVEIFS"
     return 0
 }
 alias r='builtin cd /'          # '/' can't be as a command name and is instead of 'r'.
