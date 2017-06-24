@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # IMPORTANT 本脚本仅供个人环境迁移时使用，所以不会备份原来的文件
 

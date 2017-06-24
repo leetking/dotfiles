@@ -140,8 +140,8 @@ ulimit -c 20480
 export EDITOR=vim
 
 # Own shell scripts. #tools-tag
-PATH=$PATH:/home/ultk/.dotfiles/tools/bin #tools-tag
+PATH=$PATH:/home/altk/.dotfiles/tools/bin #tools-tag
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/ultk/.sdkman"
-[[ -s "/home/ultk/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ultk/.sdkman/bin/sdkman-init.sh"
+#export SDKMAN_DIR="/home/ultk/.sdkman"
+#[[ -s "/home/ultk/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ultk/.sdkman/bin/sdkman-init.sh"
