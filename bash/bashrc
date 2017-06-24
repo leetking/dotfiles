@@ -37,10 +37,12 @@ gen_short_workpath() {
         short_workspace="~"
         dir=${dir#${HOME}}
     fi
-    # FIXME when name of directory include space charactors, the space charactor is instead of '/'.
+    local SAVEIFS="$IFS"
+    IFS="$(echo -ne "\n\b")"
     local tmp=($(echo $dir | sed -n "s/\//\n/g; p"))
     local len=$((${#tmp[@]}-1))
     if [ $len -lt 0 ]; then
+        IFS="$SAVEIFS"
         return
     fi
     dir=""
@@ -50,6 +52,7 @@ gen_short_workpath() {
     done
     dir="${dir}/${tmp[$len]}"
     short_workspace=$short_workspace$dir
+    IFS="$SAVEIFS"
 }
 find_git_branch () {
     local dir=. head
@@ -91,10 +94,13 @@ cd() {
         return 0
     fi
     ! which lcsfind > /dev/null 2>&1 && {
+        builtin cd "$1"
         return 0
     }
+    local SAVEIFS="$IFS"
+    IFS="$(echo -ne "\n\b")"
     local wks="$PWD"
-    [ '/' == "${1:0:1}" ] && wks="/"
+    [ '/' == "${1:0:1}" ] && wks=""
     local dir=($(echo "$1" | sed -n "s/\//\n/g; p"))
     for ((i = 0; i < ${#dir[@]}; ++i)); do
         local pat=${dir[i]}
@@ -115,6 +121,7 @@ cd() {
         wks="$wks/$nextdir"
     done
     builtin cd $wks
+    IFS="$SAVEIFS"
     return 0
 }
 alias r='builtin cd /'          # '/' can't be as a command name and is instead of 'r'.
