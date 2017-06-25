@@ -1,0 +1,164 @@
+# You can edit this file by hand, but it's recommended not to do that.
+
+# Marks:
+'H
+	/home/altk/
+	..
+1488010305
+'b
+	/home/altk/bin/
+	..
+1488010305
+'h
+	/home/altk/
+	..
+1488010305
+'z
+	/home/altk/.config/vifm
+	..
+1488010305
+
+# Bookmarks:
+
+# TUI:
+ar
+q0
+v2
+ov
+m-1
+l2
+r2
+
+# Left window history (oldest to newest):
+d/home/altk
+	..
+0
+d/home
+	ultk
+6
+d/home/ultk
+	桌面
+13
+d/home/ultk/桌面
+	..
+0
+d/home/ultk
+	文档
+12
+d/home/ultk/文档
+	计算机相关
+17
+d/home/ultk/文档/计算机相关
+	优秀资料
+5
+d/home/ultk/文档/计算机相关/优秀资料
+	shell
+13
+d/home/ultk/文档/计算机相关/优秀资料/shell
+	..
+0
+d/home/ultk/文档/计算机相关/优秀资料
+	shell
+13
+d/home/ultk/文档/计算机相关/优秀资料/shell
+	..
+0
+d/home/ultk/文档/计算机相关/优秀资料
+	..
+0
+d/home/ultk/文档/计算机相关
+	..
+0
+d/home/ultk/文档
+	..
+0
+d/home/ultk
+	ASM
+2
+d
+
+# Right window history (oldest to newest):
+D/home/altk
+	cwnu-drcom
+9
+D/home/altk/cwnu-drcom
+	..
+0
+D/home/altk
+	cwnu-drcom
+9
+D/home/altk/cwnu-drcom
+	..
+0
+D/home/altk
+	cwnu-drcom
+9
+D/home/altk/cwnu-drcom
+	..
+0
+D/home/altk
+	configures
+8
+D/home/altk/configures
+	..
+0
+D/home/altk
+	configures
+8
+D/home/altk/configures
+	..
+0
+D/home/altk
+	algorithm
+7
+D/home/altk/algorithm
+	..
+0
+D/home/altk
+	Desktop
+1
+D/home/altk/Desktop
+	..
+0
+D/home/altk
+	Downloads
+2
+D/home/altk/Downloads
+	..
+0
+D/home/altk
+	..
+0
+D
+
+# Command line history (oldest to newest):
+:qa
+:h
+:q
+
+# Search history (oldest to newest):
+/优秀
+/bash
+/she
+
+# Prompt history (oldest to newest):
+
+# Local filter history (oldest to newest):
+|/
+
+# Registers:
+
+# Directory stack (oldest to newest):
+
+# Trash content:
+
+# State:
+f
+i1
+[.1
+[F
+F
+I1
+].1
+]F
+s0

@@ -93,6 +93,11 @@ func! SetNormalOptions()
 endfunc
 "Lua语言设置
 func! SetLuaOptions()
+    "1 tab == 4 spaces
+    set tabstop=2
+    set shiftwidth=2
+    set softtabstop=2
+    set smarttab
     setlocal makeprg=lua\ %
 endfunc
 "lisp家族文件设置
@@ -120,6 +125,7 @@ endfunc
 func! SetHtmlXml()
     set tabstop=2
     set shiftwidth=2
+    set smarttab
     set autoindent
     "emmet配置和使用
     let g:user_emmet_install_global=0
