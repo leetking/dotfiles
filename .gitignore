@@ -1,6 +1,7 @@
 .~
 !.gitignore
 *~
+obsolete/
 csdatabase/
 states/
 vim/vim/
@@ -8,6 +9,12 @@ vim/vim/
 !vim/vim/ycm_extra_conf.py
 sdcv/
 !sdcv/download_dicts.sh
-
-# 实验性的目录
-obsolete/
+config/
+!config/awesome/
+!config/gtk-2.0/
+!config/gtk-3.0/
+!config/htop/
+!config/pcmanfm/
+!config/termite/
+!config/vifm/
+!config/compton.conf

@@ -41,6 +41,11 @@ InstallUrxvt() {
     # TODO xradr 使其生效
 }
 
+InstallConfig() {
+    rm -r ~/.config
+    ln -s ${CURR_PATH}/config ~/.config
+}
+
 InstallTools() {
     sed --follow-symlinks -i '/#tools-tag/d' ~/.bashrc
     echo "# Own shell scripts. #tools-tag" >> ~/.bashrc
@@ -52,15 +57,17 @@ Install() {
     InstallVim
     InstallSdcv
     InstallUrxvt
+    InstallConfig
     InstallTools
+    echo "Done."
 }
 
 Help() {
-    echo "Usage: $0 [vim|bash|sdcv|urxvt|tools|-h]"
+    echo "Usage: $0 [vim|bash|sdcv|config|tools|-h]"
     echo "     vim:  install vimrc."
     echo "     bash: install bashrc."
     echo "     sdcv: install sdcv dictionary."
-    echo "     urxvt: install urxvt configuration."
+    echo "     config: install \`.config' directory."
     echo "     tools: install my shell scripts."
     echo "     -h:   show this page."
 }
@@ -76,9 +83,10 @@ while [ 0 -ne $# ]; do
         vim)   InstallVim ;;
         bash)  InstallBash ;;
         sdcv)  InstallSdcv ;;
-        urxvt) InstallUrxvt ;;
+        config)InstallConfig ;;
         tools) InstallTools ;;
         *)     echo "No options \"$1\"."; Help; exit 1 ;;
     esac
     shift
 done
+echo "Done."
