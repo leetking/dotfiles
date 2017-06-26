@@ -1,4 +1,3 @@
-local awful = require("awful")
 local gears = require("gears")
 local partially_rounded_rect = gears.shape.partially_rounded_rect
 
