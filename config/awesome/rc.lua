@@ -634,14 +634,18 @@ buttons = buttons,
         awful.titlebar.widget.closebutton    (c),
       },
     }
-  end)
+end)
 
-  -- Enable sloppy focus, so that focus follows mouse.
-  client.connect_signal("mouse::enter", function(c)
+-- Enable sloppy focus, so that focus follows mouse.
+client.connect_signal("mouse::enter", function(c)
     if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-      and awful.client.focus.filter(c) then
-      client.focus = c
+        and awful.client.focus.filter(c) then
+        client.focus = c
     end
-  end)
+end)
 
-  -- }}}
+-- Start some app
+os.execute("fcitx &")
+os.execute("compton -b -CG")
+
+-- }}}
