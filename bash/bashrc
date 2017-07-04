@@ -120,7 +120,7 @@ cd() {
         local nextdir=`lcsfind $pat ${cddirs[@]}`
         wks="$wks/$nextdir"
     done
-    builtin cd $wks
+    builtin cd "$wks/"
     IFS="$SAVEIFS"
     return 0
 }
