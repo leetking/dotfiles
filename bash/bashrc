@@ -22,7 +22,10 @@ which dircolors > /dev/null 2>&1 && {
 }
 
 which fortune > /dev/null 2>&1 && fortune
-
+host=''
+if [ "$(who -m | grep -oP '\(.*\)')" != "" ]; then
+    host="$(hostname) "
+fi
 git_branch='\W'
 short_workspace=''
 gen_short_workpath() {
@@ -83,7 +86,7 @@ magenta=$'\[\e[1;35m\]'
 cyan=$'\[\e[1;36m\]'
 white=$'\[\e[1;37m\]'
 normal=$'\[\e[m\]'
-export PS1="${cyan}\$short_workspace${yellow}\$git_branch${white}${normal}\$ "
+export PS1="${cyan}\$host\$short_workspace${yellow}\$git_branch${white}${normal}\$ "
 export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
 
 # improve command cd through `lcsfind`
@@ -146,9 +149,9 @@ ulimit -c 20480
 
 export EDITOR=vim
 
-# Own shell scripts. #tools-tag
-PATH=$PATH:/home/altk/.dotfiles/tools/bin #tools-tag
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 #export SDKMAN_DIR="/home/ultk/.sdkman"
 #[[ -s "/home/ultk/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ultk/.sdkman/bin/sdkman-init.sh"
+# Own shell scripts. #tools-tag
+PATH=$PATH:/home/ultk/.dotfiles/tools/bin #tools-tag
