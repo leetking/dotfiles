@@ -3,7 +3,7 @@ import ycm_core
 import re
 
 # Add your custom `include' of library to variable `justneed'
-justneed = ("sdl2", "gtk+-2.0", "lua5.1")
+justneed = ("sdl2", "gtk+-2.0", "lua5.1", "libndpi")
 custom_macro = ['-DDEBUG', '-DLINUX', '-DVERSION="v0.0.1"']
 current_project = ['-I', '.', '-I', './include', '-I', './src/include']
 final_inclues = []

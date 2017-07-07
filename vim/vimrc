@@ -13,9 +13,9 @@ set history=500
 set go=
 set wildmenu
 set nofen
-set fdl=10           "始终启用鼠标
+set fdl=10          "始终启用鼠标
 set mouse=a
-filetype off        "侦测文件类型
+filetype on         "侦测文件类型
 syntax enable       "语法高亮
 let mapleader=","
 map <C-h> <C-w>h
@@ -45,8 +45,7 @@ set completeopt=longest,menu
 "设置256色
 if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
             \ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
-            \ $TERM == "vte-256color" || $TERM == "screen-256color" ||
-            \ $TERM == "gnome-256color"
+            \ $TERM == "vte-256color" || $TERM == "screen-256color"
     set t_Co=256
     colorscheme desert
 endif
@@ -77,14 +76,14 @@ set autoindent              "继承上一缩进
 set expandtab
 
 " 对不同项目进行编译的脚本
-autocmd filetype txt            call SetNormalOptions()
-autocmd filetype c,cpp          call SetCCppOptions()
-autocmd filetype java,groovy    call SetJavaOptions()
-autocmd filetype html,xml,xhtml,ant,markdown call SetHtmlXml()
-autocmd filetype python         call SetPythonOptions()
-autocmd filetype lisp,scheme    call SetLispOptions()
-autocmd filetype lua            call SetLuaOptions()
-autocmd filetype javascript     call SetJSOptions()
+autocmd FileType txt            call SetNormalOptions()
+autocmd FileType c,cpp          call SetCCppOptions()
+autocmd FileType java,groovy    call SetJavaOptions()
+autocmd FileType html,xml,xhtml,ant,markdown call SetHtmlXml()
+autocmd FileType python         call SetPythonOptions()
+autocmd FileType lisp,scheme    call SetLispOptions()
+autocmd FileType lua            call SetLuaOptions()
+autocmd FileType javascript     call SetJSOptions()
 
 "普通文件设置
 func! SetNormalOptions()
@@ -105,7 +104,7 @@ func! SetLispOptions()
 endfunc
 "python文件设置
 func! SetPythonOptions()
-    setlocal makeprg=python\ %
+    setlocal makeprg=python3\ %
 endfunc
 "对C/C++文件进行配置
 func! SetCCppOptions()
@@ -167,7 +166,6 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'bling/vim-airline'
-"前端
 Plugin 'hail2u/vim-css3-syntax'
 Plugin 'mattn/emmet-vim'
 Plugin 'pangloss/vim-javascript'
@@ -182,6 +180,7 @@ Plugin 'Valloric/YouCompleteMe'         "YCM!
 Plugin 'marijnh/tern_for_vim'
 Plugin 'kien/ctrlp.vim'                 "ctrlp
 Plugin 'SpaceVim/vim-luacomplete' "lua complete
+" TODO 添加语言模板
 call vundle#end()
 filetype plugin indent on
 filetype plugin on
@@ -192,7 +191,7 @@ let g:tagbar_iconchars = ['▸', '▾']
 "}
 
 "nerdtree {
-let g:NERDTreeIgnore = ['\~$', '\.pyc', '\.swp$']
+let g:NERDTreeIgnore = ['\~$', '\.pyc', '\.swp$', '\.o$']
 "左边文件管理，右边tagbar
 "USE: 在普通模式下输入 vm
 nmap wm : call NerdTree_TagBar_Toggle()<cr>
@@ -266,9 +265,6 @@ nnoremap <leader>jd :YcmCompleter GoToDefinition<cr>
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 "}
 
-"python语言模板插入
-iab pyhead #!/usr/bin/env python3<cr>#-*-coding:utf-8-*-<cr>
-
 "对于markdown文档的行末空格进行高亮    等价于(>=\S) +$ 但是目前不知道markdown的类型
 highlight WhitespaceEOF ctermbg=cyan guibg=cyan
 match WhitespaceEOF /\(\S\)\@<=\ \+$/
@@ -304,3 +300,5 @@ command W w !sudo tee % > /dev/null
 
 " <F5>强制重绘界面
 nmap <F5> :redraw!<cr>
+
+let g:markdown_fenced_languages = ['c', 'cpp', 'lua', 'python', 'css', 'java']

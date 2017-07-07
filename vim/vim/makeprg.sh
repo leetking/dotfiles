@@ -42,12 +42,14 @@ makeccpp() {
             done
             ;;
         run|r)
-            echo "./${FILENAME%.*} ${PRGARGS}"
-            ./${FILENAME%.*} ${PRGARGS}
+            PATH="."
+            echo "Run ${FILENAME%.*} ${PRGARGS}"
+            ${FILENAME%.*} ${PRGARGS}
             ;;
         debug|d)
-            echo "gdb ./${FILENAME%.*}"
-            gdb ./${FILENAME%.*}
+            PATH=".:$PATH"
+            echo "gdb ${FILENAME%.*}"
+            gdb ${FILENAME%.*}
             ;;
         *)
             echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -O0 -Wall -Wformat -lm -g -DDEBUG -fsanitize=address"

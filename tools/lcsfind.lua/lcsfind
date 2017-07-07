@@ -7,6 +7,8 @@
 local max = math.max
 local abs = math.abs
 local tolower = string.lower
+local match = string.match
+local _D = function(...) io.stderr:write(...) end
 local ver = function()
     s, e = string.find(_G._VERSION, "5%.%d+")
     return tonumber(_G._VERSION:sub(s, e))*10
@@ -35,11 +37,15 @@ local function lcsfind(pat, ...)
     local maxi   = 1
     local maxlcs = -1
     local minabs = math.mininteger
-    pat = tolower(pat)
+    local fuzzy = true
+    if match(pat, "%u+") then fuzzy = false end
+    pat = fuzzy and tolower(pat) or pat
     local arg = type(...) == "table" and ... or {...}
+    --_D(#arg, "\n")
     for i = 1, #arg do
-        local str = tolower(arg[i])
+        local str = fuzzy and tolower(arg[i]) or arg[i]
         local lcst = lcs(pat, str)
+        --_D(pat, " ", str, " ", arg[i], " ", lcst, "\n")
         local abst = abs(#pat - #str)
         if lcst > maxlcs then
             maxi   = i
@@ -50,7 +56,13 @@ local function lcsfind(pat, ...)
             minabs = abst
         elseif lcst == maxlcs and abst == minabs
             and pat:sub(1,1) == str:sub(1,1) then
-            maxi = i
+            if fuzzy then
+                if maxi == math.mininteger or not match(arg[i], "%u+") then
+                    maxi = i
+                end
+            else
+                maxi = i
+            end
         end
     end
     print(arg[maxi])
@@ -70,8 +82,8 @@ if ver() < 51 then
 WARN: MAYBE DONT SUPPORT NO-ASICC CHARACTOR SET.]])
 end
 local pat = arg[1]
-for i = 2, #arg do
-    arg[i-1] = arg[i]
+for i = 1, #arg do
+    arg[i] = arg[i+1]
 end
 lcsfind(pat, arg)
 
