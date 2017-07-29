@@ -6,6 +6,16 @@ fi
 HISTSIZE=1000
 HISTFILESIZE=2000
 
+black=$'\[\e[1;30m\]'
+red=$'\[\e[1;31m\]'
+green=$'\[\e[1;32m\]'
+yellow=$'\[\e[1;33m\]'
+blue=$'\[\e[1;34m\]'
+magenta=$'\[\e[1;35m\]'
+cyan=$'\[\e[1;36m\]'
+white=$'\[\e[1;37m\]'
+normal=$'\[\e[m\]'
+
 which dircolors > /dev/null 2>&1 && {
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
@@ -25,6 +35,10 @@ which fortune > /dev/null 2>&1 && fortune
 host=''
 if [ "$(who -m | grep -oP '\(.*\)')" != "" ]; then
     host="$(hostname) "
+fi
+_red=''
+if [ "0" == "$(id | grep -Po '(?<=uid=)(\d+)')" ]; then
+    _red="$red"
 fi
 git_branch='\W'
 short_workspace=''
@@ -77,16 +91,7 @@ find_git_branch () {
 }
 # PROMPT_COMMAND is invoked before displaying PS1
 PROMPT_COMMAND="gen_short_workpath; find_git_branch; $PROMPT_COMMAND"
-black=$'\[\e[1;30m\]'
-red=$'\[\e[1;31m\]'
-green=$'\[\e[1;32m\]'
-yellow=$'\[\e[1;33m\]'
-blue=$'\[\e[1;34m\]'
-magenta=$'\[\e[1;35m\]'
-cyan=$'\[\e[1;36m\]'
-white=$'\[\e[1;37m\]'
-normal=$'\[\e[m\]'
-export PS1="${cyan}\$host\$short_workspace${yellow}\$git_branch${white}${normal}\$ "
+export PS1="${cyan}\$host\$short_workspace${yellow}\$git_branch${white}${_red}\\$ ${normal}"
 export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
 
 # improve command cd through `lcsfind`
