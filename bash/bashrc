@@ -37,7 +37,7 @@ if [ "$(who -m | grep -oP '\(.*\)')" != "" ]; then
     host="$(hostname) "
 fi
 _red=''
-if [ "0" == "$(id | grep -Po '(?<=uid=)(\d+)')" ]; then
+if [ 0 == `id -u` ]; then
     _red="$red"
 fi
 git_branch='\W'
