@@ -5,8 +5,8 @@ local themes_path = gears.filesystem.get_dir("config").."themes/"
  
 -- {{{ Main
 local theme = {}
---theme.wallpaper = themes_path .. "custom/wallparper.png"
-theme.wallpaper = themes_path .. "custom/wall2.jpg"
+--theme.wallpaper = themes_path .. "custom/wallpaper.png"
+theme.wallpaper = themes_path .. "custom/wallpaper.jpg"
 -- }}}
 
 -- {{{ Styles
