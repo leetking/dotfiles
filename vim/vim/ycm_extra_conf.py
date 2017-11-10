@@ -1,13 +1,17 @@
 import os
 import ycm_core
 import re
+import subprocess
+
+# TODO use pkg_config() instead
 
 # Add your custom `include' of library to variable `justneed'
-justneed = ("sdl2", "gtk+-2.0", "lua5.1", "libndpi")
-custom_macro = ['-DDEBUG', '-DLINUX', '-DVERSION="v0.0.1"']
+justneed = ("sdl2", "gtk+-2.0", "lua5.1", "libndpi", "opencv")
+custom_macro = ['-DDEBUG', '-DLINUX', '-DVERSION="v0.0.1"', '-DVER=""', '-DPKG=""']
 current_project = ['-I', '.', '-I', './include', '-I', './src/include']
 final_inclues = []
 final_macros  = []
+kernel_version = subprocess.check_output(["uname", "-r"]).strip()
 
 include_pattern = re.compile(r"(?<=-I)\s*\S+")
 macro_pattern  = re.compile(r"-D\s*\S+")
@@ -37,6 +41,8 @@ flags = [
 '/usr/include',
 '-isystem',
 '/usr/local/include',
+'-isystem',
+'/lib/modules/'+kernel_version+'/build/include',
 ]
 flags = flags + final_inclues + final_macros
 
