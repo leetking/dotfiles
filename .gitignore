@@ -6,7 +6,7 @@ csdatabase/
 states/
 vim/vim/
 !vim/vim/makeprg.sh
-!vim/vim/ycm_extra_conf.py
+!vim/vim/ycm_common_conf.py
 sdcv/
 !sdcv/download_dicts.sh
 config/

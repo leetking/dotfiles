@@ -1,57 +1,37 @@
 import os
 import ycm_core
 import re
+import subprocess
 
-# Add your custom `include' of library to variable `justneed'
-justneed = ("sdl2", "gtk+-2.0", "lua5.1", "libndpi")
-custom_macro = ['-DDEBUG', '-DLINUX', '-DVERSION="v0.0.1"']
-current_project = ['-I', '.', '-I', './include', '-I', './src/include']
-final_inclues = []
-final_macros  = []
+def pkg_config(pkg):
+    output = subprocess.check_output(["pkg-config", "--cflags", pkg], universal_newlines=True).strip()
+    return list(filter(lambda s: not (s=='' or s=='\n'), output.split(' ')))
 
-include_pattern = re.compile(r"(?<=-I)\s*\S+")
-macro_pattern  = re.compile(r"-D\s*\S+")
-strings = []
-tmp_includes = []
-tmp_macros   = []
-for i in justneed:
-    strings = strings + os.popen("pkg-config --cflags "+i).readlines()
-for i in strings:
-    tmp_macros  = tmp_macros    + macro_pattern.findall(i)
-    tmp_includes = tmp_includes + include_pattern.findall(i)
-for i in tmp_includes:
-    final_inclues = final_inclues + ['-isystem', i]
-final_macros = tmp_macros + custom_macro
-final_inclues = current_project + final_inclues
+pkgs = ("sdl2", "gtk+-2.0", "lua5.1")
+kernel_version = subprocess.check_output(["uname", "-r"]).strip()
 
-# These are the compilation flags that will be used in case there's no
-# compilation database set (by default, one is not set).
-# CHANGE THIS LIST OF FLAGS. YES, THIS IS THE DROID YOU HAVE BEEN LOOKING FOR.
 flags = [
-'-Wall',
-'-Wextra',
-'-fexceptions',
-'-Wno-long-long',
+    '-Wall',
+    '-Wextra',
+    '-fexceptions',
+    '-pedantic',
+    '-Wno-long-long',
+    '-DNDEBUG',
+    '-D_POSIX_C_SOURCE=200809L',
 
-'-isystem',
-'/usr/include',
-'-isystem',
-'/usr/local/include',
+    '-DLINUX',
+    '-DVERSION="v0.0.1"',
+    '-DVER=""',
+    '-DPKG=""',
+
+    '-I/usr/include',
+    '-I/usr/local/include',
+    '-I/lib/modules/'+kernel_version+'/build/include',
 ]
-flags = flags + final_inclues + final_macros
+for pkg in pkgs:
+    flags += pkg_config(pkg)
 
-# Set this to the absolute path to the folder (NOT the file!) containing the
-# compile_commands.json file to use that instead of 'flags'. See here for
-# more details: http://clang.llvm.org/docs/JSONCompilationDatabase.html
-#
-# Most projects will NOT need to set this to anything; you can just change the
-# 'flags' list of compilation flags.
-compilation_database_folder = ''
-
-if os.path.exists( compilation_database_folder ):
-  database = ycm_core.CompilationDatabase( compilation_database_folder )
-else:
-  database = None
+database = None
 
 SOURCE_EXTENSIONS = [ '.cpp', '.cxx', '.cc', '.c', '.m', '.mm' ]
 
@@ -64,7 +44,7 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
     return list( flags )
   new_flags = []
   make_next_absolute = False
-  path_flags = [ '-isystem', '-I', '-iquote', '--sysroot=' ]
+  path_flags = ['-I', '-isystem', '-iquote', '--sysroot=' ]
   for flag in flags:
     new_flag = flag
 
@@ -128,4 +108,7 @@ def FlagsForFile( filename, **kwargs ):
     relative_to = DirectoryOfThisScript()
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
 
-  return { 'flags': final_flags }
+  return {
+     'flags': final_flags,
+     'do_cache': True,
+  }
