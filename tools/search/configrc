@@ -1,0 +1,9 @@
+# configure file for search.sh
+
+USE_BROWER=1
+
+# only xdg-open、chromium、chrome or firefox, default is xdg-open
+BROWER=xdg-open
+
+# only duckduckgo、google or baidu
+SEARCH_ENGINE=duckduckgo

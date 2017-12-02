@@ -4,11 +4,13 @@
 -- it is invoked by shell script to implement command `cd`.
 -- GPL v3 (C) leetking <li_Tking@163.com>
 
+local debug = false
+
 local max = math.max
 local abs = math.abs
 local tolower = string.lower
 local match = string.match
-local _D = function(...) io.stderr:write(...) end
+local _D = function(...) if debug then io.stderr:write(...) end end
 local ver = function()
     s, e = string.find(_G._VERSION, "5%.%d+")
     return tonumber(_G._VERSION:sub(s, e))*10
@@ -41,11 +43,11 @@ local function lcsfind(pat, ...)
     if match(pat, "%u+") then fuzzy = false end
     pat = fuzzy and tolower(pat) or pat
     local arg = type(...) == "table" and ... or {...}
-    --_D(#arg, "\n")
+    _D(#arg, "\n")
     for i = 1, #arg do
         local str = fuzzy and tolower(arg[i]) or arg[i]
         local lcst = lcs(pat, str)
-        --_D(pat, " ", str, " ", arg[i], " ", lcst, "\n")
+        _D(pat, " ", str, " ", arg[i], " ", lcst, "\n")
         local abst = abs(#pat - #str)
         if lcst > maxlcs then
             maxi   = i

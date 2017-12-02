@@ -18,3 +18,4 @@ config/
 !config/vifm/
 !config/compton.conf
 !config/Xorg/
+!config/init.py
