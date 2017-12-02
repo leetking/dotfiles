@@ -1,0 +1,5 @@
+#!/bin/sh
+# launch Xorg server
+
+exec /usr/bin/X -nolisten tcp "$@"
+# XDG_VTNR indicates which tty I use, normally, it is 1

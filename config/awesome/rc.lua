@@ -645,7 +645,7 @@ client.connect_signal("mouse::enter", function(c)
 end)
 
 -- Start some app
-os.execute("fcitx &")
-os.execute("compton -b -CG")
+-- os.execute("fcitx &")
+-- os.execute("compton -b -CG")
 
 -- }}}

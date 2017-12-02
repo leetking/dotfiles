@@ -17,3 +17,4 @@ config/
 !config/termite/
 !config/vifm/
 !config/compton.conf
+!config/Xorg/

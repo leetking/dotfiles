@@ -3,12 +3,17 @@ import ycm_core
 import re
 import subprocess
 
+def tostr(byte):
+    if type(byte) == bytes:
+        return byte.decode()
+    return str(byte)
+
 def pkg_config(pkg):
     output = subprocess.check_output(["pkg-config", "--cflags", pkg], universal_newlines=True).strip()
     return list(filter(lambda s: not (s=='' or s=='\n'), output.split(' ')))
 
-pkgs = ("sdl2", "gtk+-2.0", "lua5.1")
-kernel_version = subprocess.check_output(["uname", "-r"]).strip()
+pkgs = ("sdl2", "gtk+-2.0")
+kernel_version = tostr(subprocess.check_output(["uname", "-r"]).strip())
 
 flags = [
     '-Wall',

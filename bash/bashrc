@@ -158,4 +158,4 @@ export EDITOR=vim
 #export SDKMAN_DIR="/home/ultk/.sdkman"
 #[[ -s "/home/ultk/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ultk/.sdkman/bin/sdkman-init.sh"
 # Own shell scripts. #tools-tag
-PATH=$PATH:/home/ultk/.dotfiles/tools/bin #tools-tag
+PATH=$PATH:/home/altk/.dotfiles/tools/bin #tools-tag
