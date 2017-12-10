@@ -46,11 +46,12 @@ auto_starts=(
     "fcitx"
     "compton -b -CG"        # 窗口混合器
 )
-
+ifs="$IFS"
+IFS=''
 for prm in ${auto_starts[@]}; do
     "$prm" &
-    echo "$prm &" >> /tmp/xorg.my.log
 done &
+IFS=$ifs
 unset prm
 unset auto_starts
 
