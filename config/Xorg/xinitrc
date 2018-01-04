@@ -28,32 +28,25 @@ if [ -f "$usermodmap" ]; then
     xmodmap "$usermodmap"
 fi
 
-# start some nice programs
+# start some nice programs setting by system
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
-	for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
-		[ -x "$f" ] && . "$f"
-	done
-	unset f
+    for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+        [ -x "$f" ] && . "$f"
+    done
+    unset f
+fi
+# auto start program for user
+if [ -d ${HOME}/.config/Xorg/xinit.d ]; then
+    for f in ${HOME}/.config/Xorg/xinit.d/?*.sh; do
+        [ -x "$f" ] && . "$f"
+    done
+    unset f
 fi
 
 # environment variables for fcitx input
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
-
-# This may can be put into awesome configure file
-auto_starts=(
-    "fcitx"
-    "compton -b -CG"        # 窗口混合器
-)
-ifs="$IFS"
-IFS=''
-for prm in ${auto_starts[@]}; do
-    "$prm" &
-done &
-IFS=$ifs
-unset prm
-unset auto_starts
 
 # MUST LET wmname AND awesome AT THE LAST
 wmname LG3D             # Fix java (GUI appears gray only)

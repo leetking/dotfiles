@@ -12,7 +12,7 @@ def pkg_config(pkg):
     output = subprocess.check_output(["pkg-config", "--cflags", pkg], universal_newlines=True).strip()
     return list(filter(lambda s: not (s=='' or s=='\n'), output.split(' ')))
 
-pkgs = ("sdl2", "gtk+-2.0")
+pkgs = ("sdl2", "gtk+-3.0", "vte-2.91")
 kernel_version = tostr(subprocess.check_output(["uname", "-r"]).strip())
 
 flags = [
@@ -29,9 +29,14 @@ flags = [
     '-DVER=""',
     '-DPKG=""',
 
+    '-I./',
     '-I/usr/include',
     '-I/usr/local/include',
     '-I/lib/modules/'+kernel_version+'/build/include',
+
+    '-stc=c++11',
+    '-x'
+    'c++',
 ]
 for pkg in pkgs:
     flags += pkg_config(pkg)

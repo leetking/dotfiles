@@ -28,12 +28,11 @@ which dircolors > /dev/null 2>&1 && {
     alias ll='ls -l'
     alias la='ls -A'
     alias l='ls -CF'
-    alias hg='history | grep'
 }
 
 which fortune > /dev/null 2>&1 && fortune
 host=''
-if [ "$(who -m | grep -oP '\(.*\)')" != "" ]; then
+if [ "$(who -m | grep -o '(.*)')" != "" ]; then
     host="$(hostname) "
 fi
 _red=''
@@ -153,8 +152,9 @@ ulimit -c 20480
 [ -e /etc/bash_completion ] && . /etc/bash_completion
 
 export EDITOR=vim
+export SYSTEMD_EDITOR=$EDITOR
 
 export PYTHONSTARTUP=~/.config/init.py
 
 # Own shell scripts. #tools-tag
-PATH=$PATH:/home/altk/.dotfiles/tools/bin #tools-tag
+PATH=$PATH:/home/ltk/.dotfiles/tools/bin #tools-tag

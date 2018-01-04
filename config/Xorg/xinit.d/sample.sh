@@ -1,3 +1,1 @@
-#!/usr/bin/env bash
-
-echo "sample"
+apps/sample.sh

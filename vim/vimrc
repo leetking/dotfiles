@@ -43,12 +43,14 @@ set completeopt=longest,menu
 "set textwidth=80 fo+=Mm
 "set novisualbell
 "设置256色
-if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
-            \ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
-            \ $TERM == "vte-256color" || $TERM == "screen-256color"
-    set t_Co=256
-    colorscheme desert
-endif
+"if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
+"            \ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
+"            \ $TERM == "vte-256color" || $TERM == "screen-256color"
+"    set t_Co=256
+"    colorscheme desert
+"endif
+set t_Co=256
+colorscheme desert
 
 
 "set shortmess=atI  "去掉欢迎界面
@@ -63,6 +65,9 @@ set foldenable
 "空格折叠
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<cr>
 set foldlevel=9                 "深入9层自动折叠
+" Suffixes that get lower priority when doing tab completion for filenames.
+" These are files we are not likely to want to edit or read.
+set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.png,.jpg
 
 "===========================================================
 "gvim的设置在.gvimrc中
@@ -79,7 +84,7 @@ set expandtab
 autocmd FileType txt            call SetNormalOptions()
 autocmd FileType c,cpp          call SetCCppOptions()
 autocmd FileType java,groovy    call SetJavaOptions()
-autocmd FileType html,xml,xhtml,ant,markdown call SetHtmlXml()
+autocmd FileType html,xml,xhtml,ant,markdown,rst call SetHtmlXml()
 autocmd FileType python         call SetPythonOptions()
 autocmd FileType lisp,scheme    call SetLispOptions()
 autocmd FileType lua            call SetLuaOptions()
@@ -174,7 +179,7 @@ Plugin 'bling/vim-bufferline'
 Plugin 'scrooloose/nerdtree'
 "Plugin 'majutsushi/tagbar'
 Plugin 'yianwillis/vimcdoc'
-Plugin 'artur-shaik/vim-javacomplete2'
+"Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'lervag/vimtex'                  "tex补全
 Plugin 'Valloric/YouCompleteMe'         "YCM!
 Plugin 'marijnh/tern_for_vim'

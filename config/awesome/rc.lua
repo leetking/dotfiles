@@ -44,12 +44,12 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_dir("config") .. "themes/custom/theme.lua")
+beautiful.init(gears.filesystem.get_dir("config") .. "themes/A/init.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "termite"
 editor = os.getenv("EDITOR") or "nano"
-editor_cmd = terminal .. " -e " .. editor
+--editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -98,8 +98,8 @@ end
 -- Create a launcher widget and a main menu
 myawesomemenu = {
    { "hotkeys", function() return false, hotkeys_popup.show_help end},
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
+   { "manual", terminal .. " -e \"man awesome\"" },
+   { "edit config", ("%s -e %q"):format(terminal, editor .. " " .. awesome.conffile) },
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end}
 }
@@ -447,11 +447,17 @@ end ,
 awful.key({ }, "XF86AudioLowerVolume",
 function ()
   awful.util.spawn("amixer -q sset Master 2dB-")
+  naughty.notify({ title = "Master volume",
+                    timeout = 0.5,
+                    text = "2dB-"})
 end,
 {description = "Fn+← turn Down volume.", group="Fn"}),
 awful.key({ }, "XF86AudioRaiseVolume",
 function ()
   awful.util.spawn("amixer -q sset Master 2dB+")
+  naughty.notify({ title = "Master volume",
+                    timeout = 0.5,
+                    text = "2dB+"})
 end,
 {description = "Fn+→ turn Up volume", group="Fn"}),
 awful.key({ }, "Print",
@@ -645,7 +651,9 @@ client.connect_signal("mouse::enter", function(c)
 end)
 
 -- Start some app
--- os.execute("fcitx &")
--- os.execute("compton -b -CG")
+os.execute("fcitx &")
+os.execute("compton -b -CG &")
+os.execute("nm-applet &")
+--os.execute("pcmanfm --desktop &")   -- start pcmanfm as desktop
 
 -- }}}
