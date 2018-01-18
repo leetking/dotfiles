@@ -12,6 +12,7 @@ local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 -- Enable VIM help for hotkeys widget when client with matching name is opened:
 require("awful.hotkeys_popup.keys.vim")
+local widget = require("widget")
 
 --local tags_label = { "甲", "乙", "丙", "丁", }
 local tags_label = { "❻", "❼", "❽", "❾", }
@@ -48,7 +49,7 @@ beautiful.init(gears.filesystem.get_dir("config") .. "themes/A/init.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "termite"
-editor = os.getenv("EDITOR") or "nano"
+editor = os.getenv("EDITOR")
 --editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -101,7 +102,8 @@ myawesomemenu = {
    { "manual", terminal .. " -e \"man awesome\"" },
    { "edit config", ("%s -e %q"):format(terminal, editor .. " " .. awesome.conffile) },
    { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end}
+   { "quit", function() awesome.quit() end },
+   { "shutdown", function() os.execute("shutdown -h now") end },
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
@@ -120,9 +122,6 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 local mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
--- Create a textclock widget
-local mytextclock = wibox.widget.textclock("%I:%M:%S %p", 1)
-
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
@@ -193,8 +192,8 @@ awful.screen.connect_for_each_screen(function(s)
     s.mypromptbox = awful.widget.prompt()
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
-    s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(gears.table.join(
+    s.layout = awful.widget.layoutbox(s)
+    s.layout:buttons(gears.table.join(
                            awful.button({ }, 1, function () awful.layout.inc( 1) end),
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
@@ -205,63 +204,16 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
 
-    -- Create a battery widge
-    s.myenergy = wibox.widget.textbox()
-    local function update_energy(adapter)
-      local path = "/sys/class/power_supply/"..adapter.."/"
-      local energy_now  = io.open(path.."energy_now", "r")
-      local energy_full = io.open(path.."energy_full", "r")
-      local bat_status  = io.open(path.."status", "r")
-      local now = energy_now:read()
-      local full = energy_full:read()
-      local status = bat_status:read()
-      local precentage = ("%.1f"):format(now*100/full)
-      if status:match("Full") then
-        s.myenergy:set_markup("🔌(F ≡) ")
-      elseif status:match("Charging") then
-        s.myenergy:set_markup("⚡("..precentage.."% ↑) ")
-      else
-        s.myenergy:set_markup("🔋("..precentage.."% ↓) ")
-      end
-      energy_now:close()
-      energy_full:close()
-      bat_status:close()
-    end
-    update_energy("BAT1")
-    local timer_energy = gears.timer({
-      timeout = 1,
-      autostart = true,
-      callback = function() update_energy("BAT1") end,
-    })
-
-    -- Create a temperature widget
-    s.mytemperature = wibox.widget.textbox()
-    local function update_temperature()
-      local path = "/sys/class/hwmon/hwmon1/temp1_input"
-      local cputemperature = io.open(path, "r")
-      local temp_raw = cputemperature:read()
-      local temp = ("%.0f"):format(tonumber(temp_raw)/1000)
-      s.mytemperature.markup = " "..temp.."℃ "
-      cputemperature:close()
-    end
-    update_temperature()
-    local timer_temperature = gears.timer({
-      timeout = 5,
-      autostart = true,
-      callback = function() update_temperature() end,
-    })
-
-    -- Create a system load widget via `graph`
-    --[[
-    s.mysysload = wibox.widget({
-      width = 50,
-      max_value = 100,
-      step_width = 1,
-      color = beautiful.graph_fg or beautiful.fg_normal,
-      background_color = beautiful.graph_bg or beautiful.bg_normal,
-      widget = wibox.widget.graph,
-    })
-    --]]
+    s.power = widget.power("BAT1")
+    s.volume = widget.volume()
+    s.sensor = widget.sensor("hwmon1")
+    s.clock = widget.clock()
+    s.cpu = widget.cpu()
+    s.mem = widget.mem()
+    s.sysload = widget.sysload()
+    s.weather = widget.weather()
+    s.net = widget.net("wlp8s0")
+    s.sprtr = wibox.widget.textbox("  ")
 
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s })
@@ -278,13 +230,19 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytasklist, -- Middle widget
     { -- Right widgets
       layout = wibox.layout.fixed.horizontal,
-      mykeyboardlayout,
-      wibox.widget.systray(),
-      s.mysysload,
-      s.mytemperature,
-      s.myenergy,
-      mytextclock,
-      s.mylayoutbox,
+
+      --mykeyboardlayout,
+
+      wibox.widget.systray(), s.sprtr,
+
+      s.weather, s.sprtr,
+      s.net,     s.sprtr,
+      s.cpu, s.mem, s.sysload, s.sprtr,
+      s.sensor,  s.sprtr,
+      s.volume,  s.sprtr,
+      s.power,   s.sprtr,
+      s.clock,
+      s.layout,
     },
   }
 end)
@@ -381,11 +339,15 @@ end,
 {description = "restore minimized", group = "client"}),
 
 -- Prompt
-awful.key({ modkey }, "r",
+awful.key({ modkey }, ";",
 function ()
-  awful.screen.focused().mypromptbox:run()
+  --awful.screen.focused().mypromptbox:run()
+  awful.util.spawn("rofi -show run")
 end,
 {description = "run prompt", group = "launcher"}),
+awful.key({ modkey }, "'",
+function () awful.util.spawn("rofi -show window") end,
+{description = "switch window", group = "launcher"}),
 
 awful.key({ modkey }, "x",
 function ()
@@ -444,22 +406,22 @@ function (c)
   c:raise()
 end ,
 {description = "(un)maximize horizontally", group = "client"}),
+
 awful.key({ }, "XF86AudioLowerVolume",
-function ()
-  awful.util.spawn("amixer -q sset Master 2dB-")
-  naughty.notify({ title = "Master volume",
-                    timeout = 0.5,
-                    text = "2dB-"})
-end,
-{description = "Fn+← turn Down volume.", group="Fn"}),
+function() awful.screen.focused().volume:drain(5) end,
+{description = "Fn+← turn Down volume", group="Fn"}),
+
+awful.key({"Control"}, "XF86AudioLowerVolume",
+function() awful.screen.focused().volume:mute() end,
+{description = "Ctrl+Fn+← Mute volmue", group="Fn"}),
+
 awful.key({ }, "XF86AudioRaiseVolume",
-function ()
-  awful.util.spawn("amixer -q sset Master 2dB+")
-  naughty.notify({ title = "Master volume",
-                    timeout = 0.5,
-                    text = "2dB+"})
-end,
+function () awful.screen.focused().volume:raise(5) end,
 {description = "Fn+→ turn Up volume", group="Fn"}),
+awful.key({"Control"}, "XF86AudioRaiseVolume",
+function () awful.screen.focused().volume:unmute() end,
+{description = "Ctrl+Fn+→ Unmute volume", group="Fn"}),
+
 awful.key({ }, "Print",
 function()
   os.execute("scrot ~/Screenshots/'%Y-%m-%d-%I%M%S_$wx$h.png' 2> /dev/null")
