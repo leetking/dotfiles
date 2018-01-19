@@ -9,10 +9,9 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 
 # for NVIDIA card
 # specify screen
-xrandr --setprovideroutputsource modesetting NVIDIA-0
-xrandr --auto
-# What is dpi, 像素密度
-xrandr --dpi 96
+#xrandr --setprovideroutputsource modesetting NVIDIA-0
+#xrandr --auto
+#xrandr --dpi 96
 
 # merge in defaults and keymaps
 if [ -f $sysresources ]; then
@@ -38,7 +37,7 @@ fi
 # auto start program for user
 if [ -d ${HOME}/.config/Xorg/xinit.d ]; then
     for f in ${HOME}/.config/Xorg/xinit.d/?*.sh; do
-        [ -x "$f" ] && . "$f"
+        [ -x "$f" ] && "$f"
     done
     unset f
 fi
@@ -50,4 +49,4 @@ export XMODIFIERS="@im=fcitx"
 
 # MUST LET wmname AND awesome AT THE LAST
 wmname LG3D             # Fix java (GUI appears gray only)
-exec awesome
+exec awesome &> /tmp/awesome.log

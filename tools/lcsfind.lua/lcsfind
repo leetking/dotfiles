@@ -12,8 +12,7 @@ local tolower = string.lower
 local match = string.match
 local _D = function(...) if debug then io.stderr:write(...) end end
 local ver = function()
-    s, e = string.find(_G._VERSION, "5%.%d+")
-    return tonumber(_G._VERSION:sub(s, e))*10
+    return _G._VERSION:match("5%.%d+")*10
 end
 
 local function lcs(s1, s2)

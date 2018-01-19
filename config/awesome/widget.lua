@@ -4,14 +4,16 @@ local awful = require("awful")
 local naughty = require("naughty")
 local beautiful = require("beautiful")
 
+local popen = require("common").popen
+local with  = require("common").with
 local tonumber = tonumber
 
-local function popen(cmd, fun)
-    local file = io.popen(cmd, "r")
-    local out
-    out = file:read("*a")
-    file:close()
-    return fun(out)
+local function cat(name, fun)
+    return with(io.open(name, "r"),
+            function(file)
+                local ret = file:read("*a")
+                return fun and fun(ret) or ret
+            end)
 end
 
 -- Add: Remain time for power and mouse event
@@ -20,12 +22,9 @@ local function power(adapter)
     local i = 0
     obj.update = function(this)
         local path = "/sys/class/power_supply/"..adapter.."/"
-        local power_cur  = io.open(path.."energy_now", "r")
-        local power_cap = io.open(path.."energy_full", "r")
-        local bat_sts = io.open(path.."status", "r")
-        local cur = power_cur:read()
-        local cap = power_cap:read()
-        local sts = bat_sts:read()
+        local cur = cat(path.."energy_now")
+        local cap = cat(path.."energy_full")
+        local sts = cat(path.."status")
         if sts:match("Full") then
             this:set_markup("<span color='#0000ff' size='large'>🔌</span>")
         else
@@ -54,9 +53,6 @@ local function power(adapter)
             end
             this:set_markup(("<span %s font_family='Ionicons' size='large'>%s</span>"):format(color, icon)..precentage)
         end
-        power_cur:close()
-        power_cap:close()
-        bat_sts:close()
     end
     obj:update()
     obj.timer = gears.timer({
@@ -224,6 +220,11 @@ end
 
 local function clock()
     local obj = wibox.widget.textclock("%I:%M:%S %p", 1)
+    obj:connect_signal("button::press", function(_, _, _, button)
+        if 1 == button then
+            --local calendar = wibox.widget.calendar.month(os.date('*t'))
+        end
+    end)
     return obj
 end
 
