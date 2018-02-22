@@ -123,9 +123,9 @@ local function volume()
         if button == 1 then
             obj:toggle()
         elseif button == 4 then
-            obj:raise(5)
+            obj:raise(1)
         elseif button == 5 then
-            obj:drain(5)
+            obj:drain(1)
         end
     end)
 
@@ -138,13 +138,14 @@ local function cpu()
         width = 15,
         max_value = 100,
         color = color,
-        background_color = "#1e252c",
+        --background_color = "#1e252c",
+        background_color = beautiful.bg_normal,
         step_width = 1,
         --step_spacing = 0,
         widget = wibox.widget.graph
     })
     local last_idle, last_total = 0, 0
-    local obj = awful.widget.watch("cat /proc/stat | grep '^cpu '", 1,
+    local obj = awful.widget.watch("grep '^cpu ' /proc/stat", 1,
             function(widget, stdout)
                 local user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice =
                         stdout:match('(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s')
@@ -174,7 +175,8 @@ local function sysload()
     local graph = wibox.widget({
         width = 15,
         max_value = cores,
-        background_color = "#1e252c",
+        --background_color = "#1e252c",
+        background_color = beautiful.bg_normal,
         step_width = 1,
         widget = wibox.widget.graph
     })
@@ -192,7 +194,8 @@ local function mem()
         width = 15,
         max_value = 100,
         color = "#bf27bb",
-        background_color = "#1e252c",
+        --background_color = "#1e252c",
+        background_color = beautiful.bg_normal,
         step_width = 1,
         widget = wibox.widget.graph
     })

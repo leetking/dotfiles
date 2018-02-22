@@ -323,13 +323,13 @@ end,
 {description = "restore minimized", group = "client"}),
 
 -- Prompt
-awful.key({ modkey }, ";",
+awful.key({modkey}, ";",
         function() awful.spawn("rofi -show run") end,
         {description = "run rofi to launcher a app", group = "rofi"}),
-awful.key({ modkey }, "'",
+awful.key({modkey}, "'",
         function() awful.spawn("rofi -show window") end,
         {description = "switch a window", group = "rofi"}),
-awful.key({ modkey }, "x",
+awful.key({modkey}, "x",
         function()
             awful.prompt.run({
                 prompt       = "Lua% ",
@@ -347,6 +347,7 @@ awful.key({modkey}, ",",
             awful.prompt.run({
                 prompt       = "tran: ",
                 textbox      = awful.screen.focused().prompt.widget,
+                bg_cursor    = '#cccccc',
                 exe_callback = function(input)
                     awful.spawn.easy_async("sdcv "..input, function(stdout)
                         local notify = awful.screen.focused().prompt.notify
@@ -357,6 +358,7 @@ awful.key({modkey}, ",",
                                 title = "Translation",
                                 text = stdout,
                                 timeout = 3,
+                                hover_timeout = 60,
                                 position = "top_left",
                             })
                     end)
@@ -370,8 +372,9 @@ awful.key({modkey}, ".",
             awful.prompt.run({
                 prompt       = "$ ",
                 textbox      = awful.screen.focused().prompt.widget,
+                bg_cursor    = '#cccccc',
                 exe_callback = function(cmd)
-                    awful.spawn.easy_async(cmd, function(stdout)
+                    awful.spawn.easy_async_with_shell(cmd, function(stdout)
                         local notify = awful.screen.focused().prompt.notify
                         if notify then
                             naughty.destroy(notify)
@@ -380,9 +383,11 @@ awful.key({modkey}, ".",
                                 title = ("Output of the command: \n$ %s"):format(cmd),
                                 text = stdout,
                                 timeout = 3,
+                                hover_timeout = 60,
                             })
                     end)
                 end,
+                completion_callback = awful.completion.shell,
                 history_path = awful.util.get_cache_dir().."/command.history"
             })
         end,
@@ -408,7 +413,7 @@ awful.key({}, "Print",
         {description = "Screenshot to /tmp", group="screenshot"}),
 awful.key({"Control",}, "Print",
         function()
-            os.execute("maim -s | xclip -t image/png -i -selection clipboard")
+            os.execute("maim -m 10 -s | xclip -t image/png -i -selection clipboard")
         end,
         {description = "select screenshot to clipboard", group="screenshot"})
 

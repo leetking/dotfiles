@@ -34,9 +34,9 @@ flags = [
     '-I/usr/local/include',
     '-I/lib/modules/'+kernel_version+'/build/include',
 
-    '-stc=c++11',
-    '-x'
-    'c++',
+    #'-stc=c++11',
+    #'-x'
+    #'c++',
 ]
 for pkg in pkgs:
     flags += pkg_config(pkg)

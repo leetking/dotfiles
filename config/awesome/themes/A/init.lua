@@ -4,6 +4,8 @@ local gears = require("gears")
 local randomseed = math.randomseed
 local random     = math.random
 local THEMES     = gears.filesystem.get_dir("config").."themes/"
+--local xresources = require("beautiful.xresources")
+--local dpi        = xresources.apply_dpi
 local LOCATION   = THEMES..NAME.."/"
 
 local theme = {}
@@ -25,8 +27,9 @@ popen("ls "..LOCATION.."wallpapers/", function(stdout)
 end)
 local function set_wallpaper(s)
     gears.wallpaper.maximized(wallpapers[random(#wallpapers)], s, false)
+    --gears.wallpaper.maximized(LOCATION.."wallpaper", s, false)
     gears.timer({
-        timeout = 60*60,    -- 1 hour = 60*60 s
+        timeout = 5*60,
         autostart = true,
         callback = function()
             gears.wallpaper.maximized(wallpapers[random(#wallpapers)], s, false)
@@ -42,10 +45,13 @@ theme.font = "sans 8"
 theme.fg_normal  = "#DCDCCC"
 theme.fg_focus   = "#F0DFAF"
 theme.fg_urgent  = "#CC9393"
-theme.bg_normal  = "#3F3F3F"
-theme.bg_focus   = "#1E2320"
-theme.bg_urgent  = "#3F3F3F"
+theme.bg_normal  = "#3F3F3F99"
+theme.bg_focus   = "#1E232099"
+theme.bg_urgent  = "#3F3F3F99"
 theme.bg_systray = theme.bg_normal
+theme.notification_bg = "#3F3F3F"
+theme.hotkeys_bg = "#3F3F3FF0"
+--theme.systray_icon_spacing = dpi(1)
 -- }}}
 
 -- {{{ Borders
