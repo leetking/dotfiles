@@ -49,7 +49,7 @@ theme.bg_normal  = "#3F3F3F99"
 theme.bg_focus   = "#1E232099"
 theme.bg_urgent  = "#3F3F3F99"
 theme.bg_systray = theme.bg_normal
-theme.notification_bg = "#3F3F3F"
+theme.notification_bg = "#3F3F3FF0"
 theme.hotkeys_bg = "#3F3F3FF0"
 --theme.systray_icon_spacing = dpi(1)
 -- }}}

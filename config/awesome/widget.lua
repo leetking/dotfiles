@@ -6,6 +6,7 @@ local beautiful = require("beautiful")
 
 local popen = require("common").popen
 local with  = require("common").with
+local lunar = require("common").lunar
 local tonumber = tonumber
 
 local function cat(name, fun)
@@ -224,9 +225,18 @@ end
 local function clock()
     local obj = wibox.widget.textclock("%I:%M:%S %p", 1)
     obj:connect_signal("button::press", function(_, _, _, button)
-        if 1 == button then
-            --local calendar = wibox.widget.calendar.month(os.date('*t'))
+        if 1 ~= button then
+            return
         end
+
+        if obj.notify then
+            naughty.destroy(obj.notify)
+        end
+        obj.notify = naughty.notify({
+            text = table.concat(lunar(), "\n"),
+            timeout = 3,
+            position = "top_right",
+        })
     end)
     return obj
 end
