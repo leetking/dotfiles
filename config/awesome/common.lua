@@ -96,9 +96,9 @@ local function lunar()
         })
         cache = {
             date, ldate,
-            FESTIVAL[100*json:match(pat:format("month"))+json:match(pat:format("day"))],
-            FESTIVAL_LUNAR[100*json:match(pat:format("lunarMonth"))+json:match(pat:format("lunarDay"))],
         }
+        table.insert(cache, FESTIVAL[100*json:match(pat:format("month"))+json:match(pat:format("day"))])
+        table.insert(cache, FESTIVAL_LUNAR[100*json:match(pat:format("lunarMonth"))+json:match(pat:format("lunarDay"))])
         return cache
     end
 end

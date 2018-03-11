@@ -52,8 +52,8 @@ makeccpp() {
             gdb ${FILENAME%.*}
             ;;
         *)
-            echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -O0 -std=c99 -pedantic -Wall -Wformat -lm -g -DDEBUG -fsanitize=address"
-            ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -O0 -std=c99 -pedantic -Wall -Wformat -lm -g -DDEBUG -fsanitize=address
+            echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -O0 -std=gnu99 -pedantic -Wall -Wformat -lm -g -DDEBUG -fsanitize=address"
+            ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -O0 -std=gnu99 -pedantic -Wall -Wformat -lm -g -DDEBUG -fsanitize=address
             ;;
     esac
     exit 0

@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <stdarg.h>
 
-#define ARR_SIZE(x)     ((int)sizeof(x)/sizeof(x[0]))
+#define ARR_SIZE(x)     ((int)(sizeof(x)/sizeof(x[0])))
 
 #define MAX(x, y)   ((x)>(y)? (x): (y))
 #define MIN(x, y)   ((x)<(y)? (x): (y))
