@@ -3,8 +3,8 @@ if [[ $- != *i* ]]; then
     return
 fi
 
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=10000
+HISTFILESIZE=20000
 
 black=$'\[\e[1;30m\]'
 red=$'\[\e[1;31m\]'
@@ -159,3 +159,4 @@ alias scheme='chez-scheme'
 
 # Own shell scripts. #tools-tag
 PATH=$PATH:/home/ltk/.dotfiles/tools/bin #tools-tag
+

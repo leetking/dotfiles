@@ -12,7 +12,7 @@ def pkg_config(pkg):
     output = subprocess.check_output(["pkg-config", "--cflags", pkg], universal_newlines=True).strip()
     return list(filter(lambda s: not (s=='' or s=='\n'), output.split(' ')))
 
-pkgs = ("sdl2", "gtk+-3.0", "vte-2.91")
+pkgs = ("sdl2", "gtk+-3.0")
 kernel_version = tostr(subprocess.check_output(["uname", "-r"]).strip())
 
 flags = [
@@ -21,13 +21,15 @@ flags = [
     '-fexceptions',
     '-pedantic',
     '-Wno-long-long',
-    '-DNDEBUG',
-    '-D_POSIX_C_SOURCE=200809L',
+    #'-DNDEBUG',
+    #'-D_POSIX_C_SOURCE=200809L',
+    '-D_C_SOURCE',
 
     '-DLINUX',
     '-DVERSION="v0.0.1"',
     '-DVER=""',
     '-DPKG=""',
+    '-DAPP=""',
 
     '-I./',
     '-I/usr/include',

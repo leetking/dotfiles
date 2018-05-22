@@ -1,3 +1,5 @@
+local awful = require("awful")
+
 local DEBUG = false
 
 local function D(...)
@@ -61,6 +63,7 @@ local function lunar()
     local cache = nil
     local https = require("ssl.https")
     local ltn12 = require("ltn12")
+    local http = require("socket.http")
     return function ()
         if cache then
             return cache
@@ -69,6 +72,7 @@ local function lunar()
         local URL = "https://www.sojson.com/open/api/lunar/json.shtml"
         local pat = "\"%s\":%%s*\"?([^,\"]+)\"?"
         local json = {}
+        -- TODO Add timeout
         local res, code, reshd, s = https.request({
             url = URL,
             method = "GET",
@@ -103,9 +107,49 @@ local function lunar()
     end
 end
 
+function brightness(device)
+    local obj = {}
+
+    obj.brightness = 1      -- default value
+    obj.DEVICE = "eDP-1"
+    obj.MAX_VALUE = 1.15
+    obj.MIN_VALUE = 0.2
+
+    if "string" == type(device) then
+        obj.DEVICE = device
+    end
+
+    function obj.raise(this, v)
+        if this.brightness >= this.MAX_VALUE then
+            return
+        end
+        this.brightness = this.brightness + v/100.0
+        awful.spawn(("xrandr --output %s --brightness %f"):format(this.DEVICE, this.brightness))
+    end
+
+    function obj.drain(this, v)
+        if this.brightness <= this.MIN_VALUE then
+            return
+        end
+        this.brightness = this.brightness - v/100.0
+        awful.spawn(("xrandr --output %s --brightness %f"):format(this.DEVICE, this.brightness))
+    end
+
+    function obj.max(this)
+        awful.spawn(("xrandr --output %s --brightness %f"):format(this.DEVICE, this.MAX_VALUE))
+    end
+
+    function obj.min(this)
+        awful.spawn(("xrandr --output %s --brightness %f"):format(this.DEVICE, this.MIN_VALUE))
+    end
+
+    return obj
+end
+
 return {
     popen = popen,
     D = D,
     with = with,
     lunar = lunar(),
+    brightness = brightness,
 }

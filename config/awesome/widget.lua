@@ -8,6 +8,7 @@ local popen = require("common").popen
 local with  = require("common").with
 local lunar = require("common").lunar
 local tonumber = tonumber
+local tointeger = math.tointeger
 
 local function cat(name, fun)
     return with(io.open(name, "r"),
@@ -214,10 +215,23 @@ local function weather()
     return obj
 end
 local function sensor(hwmon)
+    local i = 1
     local obj = awful.widget.watch(("cat /sys/class/hwmon/%s/temp1_input"):format(hwmon),
             2,  -- 2s
             function(widget, stdout)
-                widget:set_markup(("<span font_family='Ionicons' size='large'></span> %.0f℃"):format(tonumber(stdout)/1000))
+                local tp = tonumber(stdout)/1000
+                local c = 'green'
+                if tp < 40 then
+                    c = '#0053b4'       -- blue
+                elseif tp < 60 then
+                    c = 'orange'
+                elseif tp < 70 then
+                    c = 'orange'
+                else
+                    c = 'red'
+                end
+
+                widget:set_markup(("<span color='%s'><span font_family='Ionicons' size='large'></span> %.0f℃</span>"):format(c, tp))
             end)
     return obj
 end
@@ -241,7 +255,8 @@ local function clock()
     return obj
 end
 
-local function net(iface)
+local function net(...)
+    local obj = wibox.widget.textbox()
     local t_out = 1
     local last_t, last_r = 0, 0
     local function str(speed)
@@ -253,15 +268,35 @@ local function net(iface)
         end
         return ("%3.1f%s"):format(speed, units[i])
     end
-    local obj = awful.widget.watch(("cat /sys/class/net/%s/statistics/tx_bytes "..
-                                        "/sys/class/net/%s/statistics/rx_bytes "):format(iface, iface),
-            t_out,
-            function(widget, stdout)
-                local now_t, now_r = stdout:match("(%d+)%s+(%d+)")
-                local speed_t, speed_r = str((now_t-last_t)/t_out), str((now_r-last_r)/t_out)
-                last_t, last_r = now_t, now_r
-                widget:set_markup(("↑%s ↓%s"):format(speed_t, speed_r))
-            end)
+    local args = {...}
+    local ifaces = {"wlp8s0"}
+    if "table" == type(args[1]) then
+        ifaces = args[1]
+    elseif "string" == type(args[1]) then
+        ifaces = args
+    else
+        obj:set_markup("cant find interface")
+        return obj
+    end
+
+    obj.timer = gears.timer({
+        timeout = t_out,
+        autostart = true,
+        callback = function()
+            local sum_t = 0
+            local sum_r = 0
+            for _, iface in pairs(ifaces) do
+                local now_t = cat(("/sys/class/net/%s/statistics/tx_bytes"):format(iface))
+                local now_r = cat(("/sys/class/net/%s/statistics/rx_bytes"):format(iface))
+                sum_t = sum_t+tointeger(now_t)
+                sum_r = sum_r+tointeger(now_r)
+            end
+            --local sum_t, sum_r = stdout:match("(%d+)%s+(%d+)")
+            local speed_t, speed_r = str((sum_t-last_t)/t_out), str((sum_r-last_r)/t_out)
+            last_t, last_r = sum_t, sum_r
+            obj:set_markup(("↑%s ↓%s"):format(speed_t, speed_r))
+        end,
+    })
 
     return obj
 end

@@ -37,6 +37,7 @@ local function set_wallpaper(s)
     })
 end
 theme.wallpaper = set_wallpaper
+--theme.wallpaper = LOCATION.."wallpaper"
 
 -- {{{ Styles
 theme.font = "sans 8"

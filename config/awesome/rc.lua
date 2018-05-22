@@ -11,6 +11,7 @@ require("awful.hotkeys_popup.keys.vim")
 
 local widget = require("widget")
 local popen = require("common").popen
+local brightness = require("common").brightness
 
 --local tags_label = { "❻", "❼", "❽", "❾", }
 local tags_label = { "Main", "Code", "Essay", "Amuse", }
@@ -172,6 +173,7 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+awful.screen.brightness = brightness("eDP-1")
 -- Init a screen
 awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
@@ -199,7 +201,7 @@ awful.screen.connect_for_each_screen(function(s)
     s.mem = widget.mem()
     s.sysload = widget.sysload()
     s.weather = widget.weather()
-    s.net = widget.net("wlp8s0")
+    s.net = widget.net("wlp8s0", "enp7s0")
     s.sprtr = wibox.widget.textbox("  ")
 
     -- Create the status bar
@@ -330,6 +332,9 @@ awful.key({modkey}, ";",
 awful.key({modkey}, "'",
         function() awful.spawn("rofi -show window") end,
         {description = "switch a window", group = "rofi"}),
+awful.key({modkey}, "/",
+        function() awful.spawn("rofi -show ssh") end,
+        {description = "ssh remote marchine", group = "rofi"}),
 awful.key({modkey}, "x",
         function()
             awful.prompt.run({
@@ -350,7 +355,7 @@ awful.key({modkey}, ",",
                 textbox      = awful.screen.focused().prompt.widget,
                 bg_cursor    = '#cccccc',
                 exe_callback = function(input)
-                    awful.spawn.easy_async_with_shell("sdcv "..input.." < /dev/null",  function(stdout)
+                    awful.spawn.easy_async_with_shell(("sdcv -n \"%s\""):format(input),  function(stdout)
                         local notify = awful.screen.focused().prompt.notify
                         if notify then
                             naughty.destroy(notify)
@@ -409,6 +414,18 @@ awful.key({"Control"}, "XF86AudioRaiseVolume",
 awful.key({}, "XF86AudioMute",
         function() awful.screen.focused().volume:toggle() end,
         {description = "(Un)mute volume", group="Fn"}),
+awful.key({}, "XF86MonBrightnessDown",
+        function() awful.screen.brightness:drain(5) end,
+        {description = "Turn Down Brightness 5%", group="Fn"}),
+awful.key({"Control"}, "XF86MonBrightnessDown",
+        function() awful.screen.brightness:min() end,
+        {description = "Minimize Brightness", group="Fn"}),
+awful.key({}, "XF86MonBrightnessUp",
+        function() awful.screen.brightness:raise(5) end,
+        {description = "Turn Up Brightness 5%", group="Fn"}),
+awful.key({"Control"}, "XF86MonBrightnessUp",
+        function() awful.screen.brightness:max() end,
+        {description = "Maximize Brightness", group="Fn"}),
 
 awful.key({}, "Print",
         function()
@@ -543,7 +560,8 @@ awful.rules.rules = {
             keys = clientkeys,
             buttons = clientbuttons,
             screen = awful.screen.preferred,
-            placement = awful.placement.no_overlap+awful.placement.no_offscreen
+            placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+            --opacity = 0.8,
         },
     },
 
@@ -563,18 +581,45 @@ awful.rules.rules = {
                 "Wpa_gui",
                 "pinentry",
                 "veromix",
-                "xtightvncviewer"},
-
-                name = {
-                    "Event Tester",  -- xev.
-                },
-                role = {
-                    "AlarmWindow",  -- Thunderbird's calendar.
-                    "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-                }
+                "xtightvncviewer",
+            },
+            name = {
+                "Event Tester",  -- xev.
+            },
+            role = {
+                "AlarmWindow",  -- Thunderbird's calendar.
+                "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
+            },
+            type = {
+                "dialog",
+            },
         },
         properties = {
             floating = true,
+            --placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+            placement = function(d)
+                -- First, place drawable object under mouse, then fix it to no part of it out off screen
+                --awful.placement.under_mouse(d)
+                --return awful.placement.no_offscreen(d)
+                return awful.placement.align(d, {position = "centered",})
+            end,
+        },
+    },
+
+    -- Put some apps to the tag, Amuse.
+    {
+        rule_any = {
+            class = {
+                "netease-cloud-music",
+            },
+            -- command name
+            instance = {
+                "netease-cloud-music",
+                "telegram-desktop", "telegram",
+            },
+        },
+        properties = {
+            tag = "Amuse",
         },
     },
 
@@ -599,8 +644,8 @@ client.connect_signal("manage", function(c)
   -- i.e. put it at the end of others instead of setting it master.
   -- if not awesome.startup then awful.client.setslave(c) end
 
-  if awesome.startup and
-      not c.size_hints.user_position
+  if awesome.startup
+      and not c.size_hints.user_position
       and not c.size_hints.program_position then
           -- Prevent clients from being unreachable after screen count changes.
           awful.placement.no_offscreen(c)
@@ -675,3 +720,6 @@ local apps = {
 for _, i in pairs(apps) do
     run_once(i)
 end
+
+-- TODO start app from ~/.config/autostart[-script]
+
