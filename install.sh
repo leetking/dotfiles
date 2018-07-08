@@ -49,7 +49,7 @@ InstallConfig() {
 InstallTools() {
     sed --follow-symlinks -i '/#tools-tag/d' ~/.bashrc
     echo "# Own shell scripts. #tools-tag" >> ~/.bashrc
-    echo "PATH=\$PATH:${CURR_PATH}/tools/bin #tools-tag" >> ~/.bashrc
+    echo "add-path \"${CURR_PATH}/tools/bin\" #tools-tag" >> ~/.bashrc
 }
 
 Install() {

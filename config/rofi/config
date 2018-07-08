@@ -1,3 +1,4 @@
 rofi.theme: /usr/share/rofi/themes/android_notification.rasi
 rofi.ssh-command: {terminal} -e "{ssh-client} {host}"
+rofi.matching: fuzzy
 

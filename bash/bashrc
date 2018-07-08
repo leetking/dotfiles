@@ -6,19 +6,19 @@ fi
 HISTSIZE=10000
 HISTFILESIZE=20000
 
-black=$'\[\e[1;30m\]'
-red=$'\[\e[1;31m\]'
-green=$'\[\e[1;32m\]'
-yellow=$'\[\e[1;33m\]'
-blue=$'\[\e[1;34m\]'
-magenta=$'\[\e[1;35m\]'
-cyan=$'\[\e[1;36m\]'
-white=$'\[\e[1;37m\]'
-normal=$'\[\e[m\]'
+black=$'\e[1;30m'
+red=$'\e[1;31m'
+green=$'\e[1;32m'
+yellow=$'\e[1;33m'
+blue=$'\e[1;34m'
+magenta=$'\e[1;35m'
+cyan=$'\e[1;36m'
+white=$'\e[1;37m'
+normal=$'\e[m'
 
 which dircolors > /dev/null 2>&1 && {
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
+    alias ls='ls -F --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -29,23 +29,20 @@ alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
 
-which fortune > /dev/null 2>&1 && fortune
+which fortune &> /dev/null && fortune
 host=''
 if [ "$(who -m | grep -o '(.*)')" != "" ]; then
     host="$(hostname) "
 fi
-_red=''
-if [ 0 == `id -u` ]; then
-    _red="$red"
+prompt_color="$white"
+if [ 0 == $(id -u) ]; then
+    prompt_color="$red"
 fi
-git_branch='\W'
-short_workspace=''
 gen_short_workpath() {
-    short_workspace=''
-    local home="$HOME"
+    local short_workspace=''
     local dir="$PWD"
     if [ "$dir" == "/" ]; then
-        short_workspace="/"
+        echo "/"
         return
     fi
     if [[ $dir == ${HOME}* ]]; then
@@ -53,23 +50,25 @@ gen_short_workpath() {
         dir=${dir#${HOME}}
     fi
     local SAVEIFS="$IFS"
-    IFS="$(echo -ne "\n\b")"
-    local tmp=($(echo $dir | sed -n "s/\//\n/g; p"))
-    local len=$((${#tmp[@]}-1))
-    if [ $len -lt 0 ]; then
+    IFS=$'\n\b'
+    local tmp=($(echo $dir | sed "s/\//\n/g"))
+    local lastidx=$((${#tmp[@]}-1))
+    if [ $lastidx -lt 0 ]; then
         IFS="$SAVEIFS"
+        echo "$short_workspace"
         return
     fi
     dir=""
-    for ((i = 0; i < len; ++i)); do
-        local t=$(echo "${tmp[$i]}" | grep -Po "^\.*[^/]?")
-        dir="${dir}/$t"
+    for ((i = 0; i < lastidx; ++i)); do
+        dir="${dir}/$(echo ${tmp[$i]} | grep -Po '^\.*[^/]?')"
     done
-    dir="${dir}/${tmp[$len]}"
+    dir="${dir}/${tmp[$lastidx]}"
     short_workspace=$short_workspace$dir
     IFS="$SAVEIFS"
+    echo "$short_workspace"
 }
 find_git_branch () {
+    local git_branch=''
     local dir=. head
     until [ "$dir" -ef / ]; do
         if [ -f "$dir/.git/HEAD" ]; then
@@ -81,15 +80,15 @@ find_git_branch () {
             else
                 git_branch="((unknow))"
             fi
+            echo $git_branch
             return
         fi
         dir="../$dir"
     done
-    git_branch=''
 }
 # PROMPT_COMMAND is invoked before displaying PS1
-PROMPT_COMMAND="gen_short_workpath; find_git_branch; $PROMPT_COMMAND"
-export PS1="${cyan}\$host\$short_workspace${yellow}\$git_branch${white}${_red}\\$ ${normal}"
+#PROMPT_COMMAND="gen_short_workpath; $PROMPT_COMMAND"
+export PS1="$cyan\$host\$(gen_short_workpath)$yellow\$(find_git_branch)$prompt_color\\$ $normal"
 export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
 
 # improve command cd through `lcsfind`
@@ -97,38 +96,41 @@ export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
 cd() {
     if [ $# -lt 1 ]; then
         builtin cd
-        return 0
+        return $?
     fi
     ! which lcsfind > /dev/null 2>&1 && {
         builtin cd "$1"
-    return 0
-}
-local SAVEIFS="$IFS"
-IFS="$(echo -ne "\n\b")"
-local wks="$PWD"
-[ '/' == "${1:0:1}" ] && wks=""
-local dir=($(echo "$1" | sed -n "s/\//\n/g; p"))
-for ((i = 0; i < ${#dir[@]}; ++i)); do
-    local pat=${dir[i]}
-    local cddirs=()
-    local idx=0
-    for j in `ls -a $wks/`; do
-        [ -d "$wks/$j" ] && {
-            [ "." == "${pat:0:1}" -a "." == "${j:0:1}" ] && {
-            cddirs[$idx]="$j"
+        return $?
     }
-    [ "." != "${j:0:1}" ] && {
-        cddirs[$idx]="$j"
-}
+    local SAVEIFS="$IFS"
+    IFS=$'\n\b'
+    local wks="$PWD"
+    [ '/' == "${1:0:1}" ] && wks=""
+    local dir=($(echo "$1" | sed "s/\//\n/g"))
+    for ((i = 0; i < ${#dir[@]}; ++i)); do
+        local pat=${dir[i]}
+        local cddirs=()
+        local idx=0
+        for j in $(\ls -a $wks/ 2> /dev/null); do
+            [ -d "$wks/$j" ] && {
+                [ "." == "${pat:0:1}" -a "." == "${j:0:1}" ] && {
+                    cddirs[$idx]="$j"
+                }
+                [ "." != "${j:0:1}" ] && {
+                    cddirs[$idx]="$j"
+                }
             }
             ((idx = idx + 1))
         done
-        local nextdir=`lcsfind $pat ${cddirs[@]}`
-        wks="$wks/$nextdir"
+        if [ $idx -lt 1 ]; then
+            echo "cd: $1: No matchable directory or path"
+            return 1
+        fi
+        wks="$wks/$(lcsfind $pat ${cddirs[@]})"
     done
     builtin cd "$wks/"
     IFS="$SAVEIFS"
-    return 0
+    return $?
 }
 alias r='builtin cd /'          # '/' can't be as a command name and is instead of 'r'.
 alias ..='builtin cd ..'
@@ -154,9 +156,53 @@ export EDITOR=vim
 export SYSTEMD_EDITOR=$EDITOR
 
 export PYTHONSTARTUP=~/.config/init.py
-alias luai='lua -e "package.path=package.path..\";$HOME/.config/init.lua\"" -i -linit'
 alias scheme='chez-scheme'
+alias bc='bc -lq'
+
+_add_path() {
+    local VAR=$1
+    local d="$2"
+    shift 2
+    eval local path=\"$d\$$VAR$d\"
+    for i in $@; do
+        case "$path" in
+            *"$d$i$d"*) :;; # already here
+            *) eval $VAR=\"\$$VAR$d$i\";;
+        esac
+    done
+}
+
+add-path() {
+    _add_path PATH ':' $@
+}
+lua_add-path() {
+    _add_path LUA_PATH ';' $@
+}
+lua_add-cpath() {
+    _add_path LUA_CPATH ';' $@
+}
+
+dump-path() {
+    echo "list order of searching"
+    echo "======================="
+    echo $PATH | sed 's/:/\n/g'
+}
+
+# Add other rocks tree: $HOME/.local
+alias luai='lua -e "package.path=package.path..\";$HOME/.config/init.lua\"" -i -linit'
+LUA_VERSION=$(lua -e 'print(_VERSION:match("%d.%d"))')
+LUA_PATH=$(lua -e 'print(package.path)')
+LUA_CPATH=$(lua -e 'print(package.cpath)')
+lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?.lua"
+lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?/init.lua"
+lua_add-cpath "$HOME/.local/lib/lua/$LUA_VERSION/?.so"
+export LUA_PATH LUA_CPATH
+
+# Binaries of Python package for this user
+add-path "~/.local/bin"
+# Binaries of Python package for this user
+add-path "~/.gem/ruby/2.5.0/bin"
 
 # Own shell scripts. #tools-tag
-PATH=$PATH:/home/ltk/.dotfiles/tools/bin #tools-tag
+add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 
--- a script for find a string by lcs algorithm.
--- it is invoked by shell script to implement command `cd`.
+-- a script for finding the most common string by a extended longest common subsequence (LCS) algorithm.
+-- it is invoked by shell script to implement the command `cd`.
 -- GPL v3 (C) leetking <li_Tking@163.com>
 
 local debug = false
@@ -15,7 +15,10 @@ local ver = function()
     return _G._VERSION:match("5%.%d+")*10
 end
 
+-- the normal LCS algorithm
+-- return: a count of common characters
 local function lcs(s1, s2)
+    -- Declare and initialize 2D array `dp`
     local dp={}
     for i = 0, max(#s1, #s2) do
         dp[i] = {}
@@ -34,6 +37,13 @@ local function lcs(s1, s2)
     return dp[#s1][#s2]
 end
 
+--[[
+-- @pat: pattern
+--       if @pat has upper character, match exactly;
+--       else ignore case sensitive
+-- @...: next searched strings
+--
+--]]
 local function lcsfind(pat, ...)
     local maxi   = 1
     local maxlcs = -1
@@ -72,15 +82,14 @@ end
 -- main interface
 if #arg < 2 then
     print([[
-Usage: lcsfind pat str1 ... strn
-Find a string most same as `pat` from `str1 ... strn` by extending lcs algorithm.
-GPL v3 (C) leetking <li_Tking@163.com>
-]])
+Usage: lcsfind pattern strings
+Find the likest string in `strings'  by `pattern` , implementing by a extended longest common subsequence (LCS) algorithm.
+GPL v3 (C) leetking <li_Tking@163.com>]])
     return 1
 end
 if ver() < 51 then
     print([[
-WARN: MAYBE DONT SUPPORT NO-ASICC CHARACTOR SET.]])
+WARN: MAYBE DONT SUPPORT NO-ASICC CHARACTER SET.]])
 end
 local pat = arg[1]
 for i = 1, #arg do

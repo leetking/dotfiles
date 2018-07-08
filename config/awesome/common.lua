@@ -72,7 +72,9 @@ local function lunar()
         local URL = "https://www.sojson.com/open/api/lunar/json.shtml"
         local pat = "\"%s\":%%s*\"?([^,\"]+)\"?"
         local json = {}
-        -- TODO Add timeout
+        -- It effects the global
+        -- the thraed at https://github.com/brunoos/luasec/issues/112
+        http.TIMEOUT = 10
         local res, code, reshd, s = https.request({
             url = URL,
             method = "GET",
