@@ -6,26 +6,39 @@ fi
 HISTSIZE=10000
 HISTFILESIZE=20000
 
-black=$'\e[1;30m'
-red=$'\e[1;31m'
-green=$'\e[1;32m'
-yellow=$'\e[1;33m'
-blue=$'\e[1;34m'
-magenta=$'\e[1;35m'
-cyan=$'\e[1;36m'
-white=$'\e[1;37m'
-normal=$'\e[m'
+# \[ \] to indicate a special string amid them.
+black=$'\[\e[1;30m\]'
+red=$'\[\e[1;31m\]'
+green=$'\[\e[1;32m\]'
+yellow=$'\[\e[1;33m\]'
+blue=$'\[\e[1;34m\]'
+magenta=$'\[\e[1;35m\]'
+cyan=$'\[\e[1;36m\]'
+white=$'\[\e[1;37m\]'
+normal=$'\[\e[m\]'
 
-which dircolors > /dev/null 2>&1 && {
+#black=$'\e[1;30m'
+#red=$'\e[1;31m'
+#green=$'\e[1;32m'
+#yellow=$'\e[1;33m'
+#blue=$'\e[1;34m'
+#magenta=$'\e[1;35m'
+#cyan=$'\e[1;36m'
+#white=$'\e[1;37m'
+#normal=$'\e[m'
+
+which dircolors &> /dev/null && {
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls -F --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
     alias sdcv='sdcv --color'
+    alias ldcv='proxychains -q ldcv'
+    which bat &> /dev/null && alias cat='bat'
 }
 alias tree='tree -F -C --charset=ascii'
-alias ll='ls -l'
+alias ll='ls -hl'
 alias la='ls -A'
 alias l='ls -CF'
 
@@ -199,9 +212,9 @@ lua_add-cpath "$HOME/.local/lib/lua/$LUA_VERSION/?.so"
 export LUA_PATH LUA_CPATH
 
 # Binaries of Python package for this user
-add-path "~/.local/bin"
+add-path "$HOME/.local/bin"
 # Binaries of Python package for this user
-add-path "~/.gem/ruby/2.5.0/bin"
+add-path "$HOME/.gem/ruby/2.5.0/bin"
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag

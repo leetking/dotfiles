@@ -9,12 +9,24 @@ function map(fun, ...)
     end
     return ret
 end
+
 function reduce(fun, ...)
     local list = (type(({...})[1]) == "table") and ... or {...}
     local ret = list[1]
     if #list < 2 then return ret end
     for i = 2, #list do
         ret = fun(ret, list[i])
+    end
+    return ret
+end
+
+function filter(fun, ...)
+    local list = (type(({...})[1]) == "table") and ... or {...}
+    local ret = {}
+    for _, v in pairs(list) do
+        if fun(v) then
+            table.insert(ret, v)
+        end
     end
     return ret
 end

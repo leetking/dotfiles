@@ -90,6 +90,7 @@ autocmd FileType ruby           call SetRubyOptions()
 autocmd FileType lisp,scheme    call SetLispOptions()
 autocmd FileType lua            call SetLuaOptions()
 autocmd FileType javascript     call SetJSOptions()
+autocmd FileType tex            call SetTexOptions()
 
 "普通文件设置
 func! SetNormalOptions()
@@ -140,6 +141,10 @@ endfunc
 "javaScript
 func! SetJSOptions()
     setlocal makeprg=node\ %
+endfunc
+"Tex
+func! SetTexOptions()
+    setlocal makeprg=xelatex\ -halt-on-error\ %
 endfunc
 
 
