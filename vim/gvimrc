@@ -3,3 +3,4 @@ set guifont=monaco\ 9
 set columns=82
 set cursorline
 set guicursor=a:blinkon0    "gvim光标不闪烁
+set guioptions=

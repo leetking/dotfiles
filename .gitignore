@@ -1,14 +1,11 @@
-.~
 !.gitignore
+.*
 *~
 obsolete/
 csdatabase/
 states/
-vim/vim/
-!vim/vim/makeprg.sh
-!vim/vim/ycm_common_conf.py
-sdcv/
-!sdcv/download_dicts.sh
+sdcv/stardict-*
+
 config/
 !config/awesome/
 !config/gtk-2.0/

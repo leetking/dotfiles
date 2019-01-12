@@ -34,13 +34,14 @@ which dircolors &> /dev/null && {
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
     alias sdcv='sdcv --color'
-    alias ldcv='proxychains -q ldcv'
-    which bat &> /dev/null && alias cat='bat'
 }
 alias tree='tree -F -C --charset=ascii'
 alias ll='ls -hl'
 alias la='ls -A'
 alias l='ls -CF'
+which bat &> /dev/null && alias cat='bat'
+alias ldcv='proxychains -q ldcv'
+alias clip='xclip -selection clipboard'
 
 which fortune &> /dev/null && fortune
 host=''
@@ -147,8 +148,8 @@ cd() {
 }
 alias r='builtin cd /'          # '/' can't be as a command name and is instead of 'r'.
 alias ..='builtin cd ..'
-alias ...='builtin cd ../..'
-alias 4.='builtin cd ../../../' # we can define more as command 'n.' to implement cd parent directories.
+#alias ...='builtin cd ../..'
+#alias 4.='builtin cd ../../../' # we can define more as command 'n.' to implement cd parent directories.
 
 HISTTIMEFORMAT="%y/%m/%d %T "
 # vi mode
@@ -158,9 +159,6 @@ set -o vi
 export TERM=xterm-256color
 # enable core, 10MB = 20480 blocks
 ulimit -c 20480
-
-# There are some software at /opt, now I append PATH from file /opt/pathsrc
-[ -e /opt/pathsrc ] && . /opt/pathsrc
 
 # bash-completion
 [ -e /etc/bash_completion ] && . /etc/bash_completion

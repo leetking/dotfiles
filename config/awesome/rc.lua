@@ -355,7 +355,7 @@ awful.key({modkey}, ",",
                 textbox      = awful.screen.focused().prompt.widget,
                 bg_cursor    = '#cccccc',
                 exe_callback = function(input)
-                    awful.spawn.easy_async_with_shell(("sdcv -n \"%s\""):format(input),  function(stdout)
+                    awful.spawn.easy_async_with_shell(("ldcv \"%s\""):format(input),  function(stdout)
                         local notify = awful.screen.focused().prompt.notify
                         if notify then
                             naughty.destroy(notify)
