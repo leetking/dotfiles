@@ -1,10 +1,6 @@
 "nerdtree {
 let g:NERDTreeIgnore = ['\~$', '\.pyc', '\.swp$', '\.o$']
-nmap wm :call NerdTree_TagBar_Toggle()<cr>
-func! NerdTree_TagBar_Toggle()
-    exec "NERDTreeToggle"
-    "exec "TagbarToggle"
-endfunc
+nmap <leader>m :NERDTreeToggle<cr>
 "}
 
 "vim-css3-syntax {

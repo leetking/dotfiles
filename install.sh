@@ -17,10 +17,6 @@ InstallVim() {
     # NOTE 不能写成rm -r ~/.vim/这样会把原始文件一起删除掉，这是软链接的坑
     rm -r ~/.vim
     ln -sf ${CURR_PATH}/vim/vim     ~/.vim
-    # clone Vundle.vim
-    git clone --depth=1 https://github.com/VundleVim/Vundle.vim.git ${CURR_PATH}/vim/vim/bundle/Vundle.vim
-    # 通过Vundle安装插件
-    vim +PluginInstall +qall
 }
 
 # sdcv dictionaries

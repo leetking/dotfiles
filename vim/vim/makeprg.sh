@@ -12,10 +12,16 @@ OPTS="$2"
 PRGARGS="${@:3}"
 
 BROWSER=chromium
+CC=gcc
+CXX=g++
+#which clang   > /dev/null 2>&1 && CC=clang
+#which clang++ > /dev/null 2>&1 && CXX=clang++
+CXXOPTS="-O0 -pedantic -Wall -Wformat -lm -g -DDEBUG -fsanitize=address"
+COPTS=$CXXOPTS" -std=gnu99"
 
 # 编译c/c++
 makeccpp() {
-    local _cc="$1"
+    local _cc=$1
     local _makefilelist=(Makefile makefile)
     local _make=make
 
@@ -26,6 +32,12 @@ makeccpp() {
             exit 0
         fi
     done
+
+    if [ "${_cc}" == "$CC" ]; then
+        local opts="$COPTS"
+    else
+        local opts="$CXXOPTS"
+    fi
 
     # 对于简单程序的管理
     case "${OPTS}" in
@@ -52,8 +64,8 @@ makeccpp() {
             gdb ${FILENAME%.*}
             ;;
         *)
-            echo "${_cc} -o ${FILENAME%.*} ${FILENAME} -O0 -std=gnu99 -pedantic -Wall -Wformat -lm -g -DDEBUG -fsanitize=address"
-            ${_cc} -o "${FILENAME%.*}" "${FILENAME}" -O0 -std=gnu99 -pedantic -Wall -Wformat -lm -g -DDEBUG -fsanitize=address
+            echo "${_cc} -o ${FILENAME%.*} ${FILENAME} $opts"
+            ${_cc} -o "${FILENAME%.*}" "${FILENAME}" $opts
             ;;
     esac
     exit 0
@@ -120,11 +132,6 @@ makejava() {
     esac
     exit 0
 }
-
-CC=gcc
-CXX=g++
-#which clang   > /dev/null 2>&1 && CC=clang
-#which clang++ > /dev/null 2>&1 && CXX=clang++
 
 case "${FILENAME##*.}" in
     c|h|s|asm)      makeccpp ${CC};;

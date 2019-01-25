@@ -38,7 +38,7 @@ flags = [
     #'-x'
     #'c++',
 ]
-flags += reduce(add, [pkg_config(pkg) for pkg in PKGS])
+flags += reduce(add, [pkg_config(pkg) for pkg in PKGS], [])
 
 database = None
 

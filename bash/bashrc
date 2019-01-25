@@ -211,8 +211,9 @@ export LUA_PATH LUA_CPATH
 
 # Binaries of Python package for this user
 add-path "$HOME/.local/bin"
-# Binaries of Python package for this user
-add-path "$HOME/.gem/ruby/2.5.0/bin"
+# Binaries of Ruby gem for this user
+RUBY_VERSION=$(ruby -v | grep -o '[0-9]\.[0-9]\.[0-9]')
+add-path "$HOME/.gem/ruby/$RUBY_VERSION/bin"
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag

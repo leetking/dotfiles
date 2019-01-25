@@ -19,22 +19,21 @@ map <C-k> <C-w>k
 map <C-l> <C-w>l
 nmap <M-j> mz:m+<cr>`z
 nmap <M-k> mz:m-2<cr>`z
+nmap <Tab>  :tabnext<cr>
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 "1 tab == 4 spaces
-set tabstop=4
-set shiftwidth=4
+"set tabstop=8      " how much <Space> to SHOW as <Tab>
 set softtabstop=4
 set expandtab
+set shiftwidth=4
 set smarttab
 set fileencodings=ucs-bom,utf-8,gbk,gb2312,cp936,default,latin1
 set fileencoding=utf-8
 "set encoding=utf-8
 "set completeopt=longest,menuone,preview
 set completeopt=longest,menu
-"set textwidth=80 fo+=Mm
 "set novisualbell
-"设置256色
 "if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
 "            \ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
 "            \ $TERM == "vte-256color" || $TERM == "screen-256color"
@@ -61,29 +60,17 @@ set autoindent
 "set list listchars=tab:>-
 set expandtab
 
-autocmd BufNewFile,BufRead *.txt                call SetNormalOptions()
-autocmd BufNewFile,BufRead *.c,*.cpp            call SetCCppOptions()
-autocmd BufNewFile,BufRead *.java,*.groovy      call SetJavaOptions()
-autocmd BufNewFile,BufRead *.html,*.xml,*.xhtml,
-            \ *.ant,*.markdown,*.rst            call SetHtmlXml()
-autocmd BufNewFile,BufRead *.py                 call SetPythonOptions()
-autocmd BufNewFile,BufRead *.rb                 call SetRubyOptions()
-autocmd BufNewFile,BufRead *.lisp,*.scm         call SetLispOptions()
-autocmd BufNewFile,BufRead *.lua                call SetLuaOptions()
-autocmd BufNewFile,BufRead *.js                 call SetJSOptions()
-autocmd BufNewFile,BufRead *.tex                call SetTexOptions()
-
 " normal file
-func! SetNormalOptions()
+func! s:SetNormalOptions()
     "set spell
     set omnifunc=
 endfunc
 
-func! SetLuaOptions()
+func! s:SetLuaOptions()
     setlocal makeprg=lua\ %
 endfunc
 
-func! SetLispOptions()
+func! s:SetLispOptions()
     set nocindent
     set autoindent
     set lisp
@@ -91,23 +78,29 @@ func! SetLispOptions()
     setlocal makeprg=scheme\ --script\ %
 endfunc
 
-func! SetPythonOptions()
+func! s:SetPythonOptions()
     setlocal makeprg=python3\ %
 endfunc
-func! SetRubyOptions()
+
+func! s:SetRubyOptions()
     setlocal makeprg=ruby\ %
+    imap <C-Space> <C-X><C-O>
 endfunc
 
-func! SetCCppOptions()
+func! s:SetCCppOptions()
     set makeprg=$HOME/.vim/makeprg.sh\ %:p:.
 endfunc
 
-func! SetJavaOptions()
+func! s:SetMakeOptions()
+    set makeprg=make\ %:p:.
+endfunc
+
+func! s:SetJavaOptions()
     set omnifunc=javacomplete#Complete
     set makeprg=$HOME/.vim/makeprg.sh\ %:p:.
 endfunc
 
-func! SetHtmlXml()
+func! s:SetHtmlXml()
     set tabstop=2
     set shiftwidth=2
     set smarttab
@@ -120,36 +113,52 @@ func! SetHtmlXml()
 endfunc
 
 " javaScript
-func! SetJSOptions()
+func! s:SetJSOptions()
     setlocal makeprg=node\ %
 endfunc
 
 " Tex
-func! SetTexOptions()
+func! s:SetTexOptions()
     setlocal makeprg=xelatex\ -halt-on-error\ %
 endfunc
 
+autocmd FileType txt            call s:SetNormalOptions()
+autocmd FileType c,cpp          call s:SetCCppOptions()
+autocmd FileType make           call s:SetMakeOptions()
+autocmd FileType java,groovy    call s:SetJavaOptions()
+autocmd FileType html,xml,xhtml,ant,markdown,rst call s:SetHtmlXml()
+autocmd FileType python         call s:SetPythonOptions()
+autocmd FileType ruby           call s:SetRubyOptions()
+autocmd FileType lisp,scheme    call s:SetLispOptions()
+autocmd FileType lua            call s:SetLuaOptions()
+autocmd FileType javascript     call s:SetJSOptions()
+autocmd FileType tex            call s:SetTexOptions()
 
-"TODO 实现到`K'里去
-nmap <F3> :call Mydict()<cr>
-func! Mydict()
-    let expl=system('sdcv -n '.expand("<cword>"))
-    "let expl=system('ldcv '.expand("<cword>"))
-    windo if expand("%")=="dict-tmp" | q! | endif
-    30vsp dict-tmp
+func! Sdcv(word)
+    let BUF_NAME = "sdcv-tmp"
+    let expl = system("sdcv -n ".a:word)
+    "let expl=system('ldcv '.a:word)
+    tabdo if expand("%") ==# BUF_NAME | q! | endif
+    execute "tabnew" BUF_NAME
     setlocal buftype=nofile bufhidden=hide noswapfile
     1s/^/\=expl/
     1
 endfunc
+nmap <leader>k :call Sdcv(expand("<cword>"))<cr>
 
-" highlight the match (>=\S) +$
-highlight CursorLine term=reverse cterm=none ctermbg=8 guibg=Grey40
-highlight Comment cterm=italic term=italic gui=italic
+highlight TabLineFill ctermfg=235 ctermbg=none guifg=Grey15
+highlight TabLine     term=none cterm=none ctermfg=250 ctermbg=235
+                    \ gui=none guifg=Grey74 guibg=Grey15
+highlight TabLineSel  term=bold cterm=bold gui=bold
+highlight CursorLine  cterm=none ctermbg=239 guibg=Grey40
+highlight Comment     term=italic cterm=italic gui=italic
+highlight ColorColumn ctermbg=239 guifg=Maroon guibg=Grey40
 set cursorline
-highlight WhitespaceEOF ctermbg=cyan guibg=cyan
-match WhitespaceEOF /\(\S\)\@<=\ \+$/
-" highlight keyword TODO
-2match Todo /\<NOTE\>/
+set textwidth=80 fo+=Mm
+set colorcolumn=-2
+" highlight the white spaces end of line
+match Matchparen /\(\t\|\s\)\+$/
+2match Todo /\<NOTE\>\|\<TODO\>/
 " for VTE compatible terminal set the shape of cursor at insert mode and
 " normal mode
 let &t_SI = "\<Esc>[6 q"
@@ -159,10 +168,10 @@ let &t_EI = "\<Esc>[2 q"
 " disable auto switch inputmethod for fcitx
 let g:enable_toggle_input = 0
 func! Fcitx2en()
-    let l:a = system("fcitx-remote -c")
+    let _ = system("fcitx-remote -c")
 endfunc
 func! Fcitx2zh()
-    let l:a = system("fcitx-remote -o")
+    let _ = system("fcitx-remote -o")
 endfunc
 func! AutoSwitchInput()
     if g:enable_toggle_input == 1
@@ -204,6 +213,17 @@ call plug#begin('~/.local/share/vim/plugged')
     Plug 'pangloss/vim-javascript'
     Plug 'othree/html5.vim'
     Plug 'hail2u/vim-css3-syntax'
+    Plug 'vim-ruby/vim-ruby'
 call plug#end()
+
+" set for gui
+if has("gui_running")
+    set guifont=monaco\ 9
+    set columns=82
+    set cursorline
+    set guicursor=a:blinkon0
+    set guioptions=
+endif
+
 " import configure file of plugs
 source ~/.vim/plugsconf.vim

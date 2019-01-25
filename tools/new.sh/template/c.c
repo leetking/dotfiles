@@ -11,6 +11,7 @@
 
 #define MAX(x, y)   ((x)>(y)? (x): (y))
 #define MIN(x, y)   ((x)<(y)? (x): (y))
+#define ABS(x)      ((x)<0?  -(x): (x))
 
 #ifdef DEBUG
 # define _D(...)    printf(__VA_ARGS__)
