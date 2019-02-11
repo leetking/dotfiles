@@ -17,12 +17,12 @@ local function with(obj, fun)
     return ret
 end
 
--- 农历
--- depend on `luaspec` and `luasocket`
 -- {
---  "2018-6-1 Friday",
+--  "2018-6-1 Fri",
 --  "戊戌狗年四月十八",
---  {"儿童节",},
+--  "儿童节",
+--  "宜: balabala",
+--  "忌: balabala",
 -- }
 local function lunar()
     local FESTIVAL = {
@@ -64,6 +64,7 @@ local function lunar()
     local https = require("ssl.https")
     local ltn12 = require("ltn12")
     local http = require("socket.http")
+    local JSON = require("json")
 
     return (function()
         if cache then
@@ -83,24 +84,33 @@ local function lunar()
             sink = ltn12.sink.table(json),
             protocol = "tlsv1",
         })
+        json = JSON.decode(table.concat(json))
 
-        json = table.concat(json)
-        if "200" ~= json:match(pat:format("status")) then
-            return {"error!",}
+        if nil == res or "success" ~= json.message then
+            return {os.date("%F %a"), }
         end
 
         local date = os.date("%F %a")
-        local ndate = table.concat({
-            json:match(pat:format("hyear")),
-            json:match(pat:format("animal")),    "年",
-            json:match(pat:format("cnmonth")),   "月",
-            json:match(pat:format("cnday")),
-        })
         cache = {
-            date, ndate,
+            os.date("%F %a"),
+            table.concat({
+                json.data.cnyear,
+                json.data.hyear,
+                json.data.animal, "年",
+                json.data.cnmonth, "月",
+                json.data.cnday,
+            }),
         }
-        table.insert(cache, FESTIVAL[100*json:match(pat:format("month"))+json:match(pat:format("day"))])
-        table.insert(cache, FESTIVAL_LUNAR[100*json:match(pat:format("lunarMonth"))+json:match(pat:format("lunarDay"))])
+        --[[
+        table.insert(cache, FESTIVAL[100*get("month")+get("day")])
+        table.insert(cache, FESTIVAL_LUNAR[100*get("lunarMonth")+get("lunarDay")])
+        --]]
+        if #json.data.festivalList > 0 then
+            table.insert(cache, table.concat(json.data.festivalList, ","))
+        end
+        table.insert(cache, "宜: "..json.data.suit)
+        table.insert(cache, "忌: "..json.data.taboo)
+
         return cache
     end)()
 end
@@ -111,13 +121,9 @@ function brightness(device)
     local obj = {}
 
     obj.brightness = 1      -- default value
-    obj.DEVICE = "eDP-1"
+    obj.DEVICE = device or "eDP-1"
     obj.MAX_VALUE = 1.15
     obj.MIN_VALUE = 0.2
-
-    if "string" == type(device) then
-        obj.DEVICE = device
-    end
 
     function obj.raise(this, v)
         if this.brightness >= this.MAX_VALUE then
@@ -152,6 +158,7 @@ local function weather(city)
     local https = require("ssl.https")
     local ltn12 = require("ltn12")
     local http = require("socket.http")
+    local JSON = require("json")
 
     return (function()
         local url = "https://www.tianqiapi.com/api/"
@@ -165,20 +172,33 @@ local function weather(city)
             sink = ltn12.sink.table(json),
             protocol = "tlsv1",
         })
-        json = table.concat(json)
+        json = JSON.decode(table.concat(json))
 
-        local get = function(field)
-            local pat = "\"%s\":%%s*\"?([^,\"]+)\"?"
-            return json:match(pat:format(field))
+        if nil == res then
+            return {
+                status = false,
+                reason = "error",
+            }
         end
 
         -- build result
         return {
-            ["tem"] = get("tem"):gsub("\\u2103", "℃"),
-            ["tem_hig"] = get("tem1"):gsub("\\u2103", "℃"),
-            ["tem_low"] = get("tem2"):gsub("\\u2103", "℃"),
-            ["weather"] = get("wea_img"),
-            ["air_idx"] = get("air"),
+            status = true,
+            today = {
+                temp_now = json.data[1].tem,
+                temp_min = json.data[1].tem2,
+                temp_max = json.data[1].tem1,
+                weather = json.data[1].wea,
+                air_level = json.data[1].air_level,
+            },
+            tomorrow = {
+                temp_min = json.data[2].tem2,
+                temp_max = json.data[2].tem1,
+            },
+            after_tomorrow = {
+                temp_min = json.data[3].tem2,
+                temp_max = json.data[3].tem1,
+            },
         }
     end)()
 end

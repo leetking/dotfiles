@@ -14,7 +14,8 @@ local popen = require("common").popen
 local brightness = require("common").brightness
 
 --local tags_label = { "❻", "❼", "❽", "❾", }
-local tags_label = { "Main", "Code", "Essay", "Amuse", }
+--local tags_label = {"Main", "Code", "Essay", "Amuse", }
+local tags_label = {"壹", "貳", "叄", "肆", "伍", "陆", "柒",}
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -619,7 +620,8 @@ awful.rules.rules = {
             },
         },
         properties = {
-            tag = "Amuse",
+            -- tag = "Amuse"
+            tag = "柒",
         },
     },
 

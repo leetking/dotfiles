@@ -218,17 +218,17 @@ local function weather(city)
     local t_out = 60    -- 1 minute
     -- http://www.weather.com.cn/static/html/legend.shtml
     local icons = {
-        ["qing"] = "☀",
-        ["yin"] = "☁",
-        [""] = "⛅",
-        [""] = "",
-        [""] = "⛈",
+        ["晴"] = "☀",
+        ["阴"] = "☁",
+        ["多云"] = "⛅",
         [""] = "🌤",
         [""] = "🌥",
-        [""] = "🌦",
+        ["阵雨"] = "🌦",
         [""] = "🌧",
         [""] = "🌨",
         [""] = "🌩",
+        [""] = "⚡",
+        ["雷阵雨"] = "⛈",
         [""] = "🌪",
         [""] = "☂ ",
         [""] = "☔",
@@ -236,13 +236,15 @@ local function weather(city)
         [""] = "🌁",
     }
 
-    local fmtstr = "<span font_family='Ionicons' size='large'>%s</span> %s"
+    local fmtstr = "<span size='large'>%s</span> %s"
     local w = nil
-    obj:set_markup(fmtstr:format("☀", "10℃"))
+    obj:set_markup(fmtstr:format("?", "-℃"))
     obj.update = function(this)
         w = get_weather(city)
-        local icon = icons[w["weather"]] or icons["qing"]
-        this:set_markup(fmtstr:format(icon, w["tem"]))
+        if not w.status then return end
+
+        local icon = icons[w.today.weather] or "?"
+        this:set_markup(fmtstr:format(icon, w.today.temp_now))
     end
     obj:update()
 
@@ -264,12 +266,20 @@ local function weather(city)
                           "Current Temperature: %s\n"..
                           "Min/Max Temperature: %s/%s\n"..
                           "Weather: %s\n"..
-                          "Air Index: %s"
+                          "Air Level: %s\n\n"..
+                          "Tomorrow: %s/%s\n"..
+                          "After Tomorrow: %s/%s"
         obj.notify = naughty.notify({
             --title = city,
-            text = teamplate:format(city, w["tem"], w["tem_low"],
-                       w["tem_hig"], w["weather"], w["air_idx"]),
+            text = teamplate:format(city,
+                       w.today.temp_now,
+                       w.today.temp_min, w.today.temp_max,
+                       w.today.weather,
+                       w.today.air_level,
+                       w.tomorrow.temp_min, w.tomorrow.temp_max,
+                       w.after_tomorrow.temp_min, w.after_tomorrow.temp_max),
             timeout = 3,
+            hover_timeout = 20,
             position = "top_right",
         })
     end)
@@ -317,6 +327,7 @@ local function clock()
         obj.notify = naughty.notify({
             text = table.concat(lunar(), "\n"),
             timeout = 3,
+            hover_timeout = 20,
             position = "top_right",
         })
     end)
