@@ -6,7 +6,6 @@ local beautiful = require("beautiful")
 
 local popen = require("common").popen
 local with  = require("common").with
-local lunar = require("common").lunar
 local tonumber = tonumber
 local tointeger = math.tointeger
 
@@ -18,7 +17,7 @@ local function cat(name, fun)
             end)
 end
 
--- Add: Remain time for power and mouse event
+-- TODO Remain time for power and mouse event
 local function power(adapter)
     local obj = wibox.widget.textbox()
     local i = 0
@@ -210,13 +209,78 @@ local function mem()
     return obj
 end
 
-local function weather()
-    local obj = wibox.widget.textbox("weather")
+local function weather(city)
+    local city = city or "丹棱"
+
+    local get_weather = require("common").weather
+
+    local obj = wibox.widget.textbox()
+    local t_out = 60    -- 1 minute
+    -- http://www.weather.com.cn/static/html/legend.shtml
+    local icons = {
+        ["qing"] = "☀",
+        ["yin"] = "☁",
+        [""] = "⛅",
+        [""] = "",
+        [""] = "⛈",
+        [""] = "🌤",
+        [""] = "🌥",
+        [""] = "🌦",
+        [""] = "🌧",
+        [""] = "🌨",
+        [""] = "🌩",
+        [""] = "🌪",
+        [""] = "☂ ",
+        [""] = "☔",
+        [""] = "🌫",
+        [""] = "🌁",
+    }
+
+    local fmtstr = "<span font_family='Ionicons' size='large'>%s</span> %s"
+    local w = nil
+    obj:set_markup(fmtstr:format("☀", "10℃"))
+    obj.update = function(this)
+        w = get_weather(city)
+        local icon = icons[w["weather"]] or icons["qing"]
+        this:set_markup(fmtstr:format(icon, w["tem"]))
+    end
+    obj:update()
+
+    obj.timer = gears.timer({
+        timeout = t_out,
+        autostart = true,
+        callback = function() obj:update() end,
+    })
+
+    obj:connect_signal("button::press", function(_, _, _, button)
+        if 1 ~= button then
+            return
+        end
+
+        if obj.notify then
+            naughty.destroy(obj.notify)
+        end
+        local teamplate = "City: %s\n"..
+                          "Current Temperature: %s\n"..
+                          "Min/Max Temperature: %s/%s\n"..
+                          "Weather: %s\n"..
+                          "Air Index: %s"
+        obj.notify = naughty.notify({
+            --title = city,
+            text = teamplate:format(city, w["tem"], w["tem_low"],
+                       w["tem_hig"], w["weather"], w["air_idx"]),
+            timeout = 3,
+            position = "top_right",
+        })
+    end)
+
     return obj
 end
+
 local function sensor(hwmon)
     local i = 1
-    local obj = awful.widget.watch(("cat /sys/class/hwmon/%s/temp1_input"):format(hwmon),
+    local obj = awful.widget.watch(("cat /sys/class/hwmon/%s"..
+                    "/temp1_input"):format(hwmon),
             2,  -- 2s
             function(widget, stdout)
                 local tp = tonumber(stdout)/1000
@@ -231,12 +295,16 @@ local function sensor(hwmon)
                     c = 'red'
                 end
 
-                widget:set_markup(("<span color='%s'><span font_family='Ionicons' size='large'></span> %.0f℃</span>"):format(c, tp))
+                widget:set_markup(("<span color='%s'>"..
+                        "<span font_family='Ionicons' size='large'></span>"..
+                        "%.0f℃</span>"):format(c, tp))
             end)
     return obj
 end
 
 local function clock()
+    local lunar = require("common").lunar
+
     local obj = wibox.widget.textclock("%I:%M:%S %p", 1)
     obj:connect_signal("button::press", function(_, _, _, button)
         if 1 ~= button then
@@ -260,13 +328,21 @@ local function net(...)
     local t_out = 1
     local last_t, last_r = 0, 0
     local function str(speed)
-        local units = {"B/s", "KB/s", "MB/s", "GB/s", "TB/s", "PB/s",}
+        local units = {"B/s", "K/s", "M/s", "G/s", "T/s", "P/s",}
         local i = 1
         while speed > 1024 do
             i = i+1
             speed = speed/1024
         end
-        return ("%3.1f%s"):format(speed, units[i])
+        local fstr = "%.2f%s"
+        if speed < 10 then
+            fstr = "%.2f%s"
+        elseif speed < 100 then
+            fstr = "%.1f%s"
+        else
+            fstr = "%.0f%s"
+        end
+        return fstr:format(speed, units[i])
     end
     local args = {...}
     local ifaces = {"wlp8s0"}

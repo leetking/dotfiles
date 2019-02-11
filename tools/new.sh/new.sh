@@ -14,7 +14,7 @@ PROJECT_LOCATION=https://github.com/leetking/dotfiles/tree/master/tools/new.sh
 Usage() {
     echo "Usage: new [<category>] [<type>] | filename.type"
     echo "           <category>: p  --project."
-    echo "           type: c/cpp/acm"
+    echo "           type: c/cc/acm"
     echo ""
     echo "More details please see "
     echo " > ${PROJECT_LOCATION} ."
@@ -22,7 +22,7 @@ Usage() {
     echo "(C) leetking <li_Tking@163.com>"
 }
 
-CheckExist() {
+ExistOrQuit() {
     if [ -e "$1" ]; then
         echo "There are \"$1\", I cant create!"
         exit 1
@@ -34,7 +34,7 @@ NewProject() {
         c)
             new-c-project "${WORK_PATH}"
             ;;
-        cpp)
+        cc)
             new-cpp-project "${WORK_PATH}"
             ;;
         java)
@@ -59,19 +59,19 @@ else
     while [ 0 -ne $# ]; do
         case "${1##*.}" in
             c)
-                CheckExist "$1"
+                ExistOrQuit "$1"
                 # echo "cp $INSTALL_PATH/template/c.c $WORK_PATH/\"$1\""
                 cp $INSTALL_PATH/template/c.c $WORK_PATH/"$1"
                 ;;
-            cpp)
-                # echo "cp $INSTALL_PATH/template/cpp.cpp $WORK_PATH/\"$1\""
-                CheckExist "$1"
-                cp $INSTALL_PATH/template/cpp.cpp $WORK_PATH/"$1"
+            cc)
+                # echo "cp $INSTALL_PATH/template/cpp.cc $WORK_PATH/\"$1\""
+                ExistOrQuit "$1"
+                cp $INSTALL_PATH/template/cpp.cc $WORK_PATH/"$1"
                 ;;
             acm)
-                # echo "cp $INSTALL_PATH/template/acm.cpp $WORK_PATH/\"${1%%.acm}.cpp\""
-                CheckExist "${1%%.acm}.cpp"
-                cp $INSTALL_PATH/template/acm.cpp $WORK_PATH/"${1%%.acm}.cpp"
+                # echo "cp $INSTALL_PATH/template/acm.cc $WORK_PATH/\"${1%%.acm}.cc\""
+                ExistOrQuit "${1%%.acm}.cc"
+                cp $INSTALL_PATH/template/acm.cc $WORK_PATH/"${1%%.acm}.cc"
                 ;;
             *)
                 echo "NewFile: Cant support template of \"${1##*.}\"."

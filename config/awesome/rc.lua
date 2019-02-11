@@ -200,7 +200,7 @@ awful.screen.connect_for_each_screen(function(s)
     s.cpu = widget.cpu()
     s.mem = widget.mem()
     s.sysload = widget.sysload()
-    s.weather = widget.weather()
+    s.weather = widget.weather("丹棱")
     s.net = widget.net("wlp8s0", "enp7s0")
     s.sprtr = wibox.widget.textbox("  ")
 

@@ -1,5 +1,3 @@
-local awful = require("awful")
-
 local DEBUG = false
 
 local function D(...)
@@ -60,11 +58,14 @@ local function lunar()
         [1223] = "祭灶神", [1224] = "祭灶神",
         -- 29 或 30 "除夕",
     }
+
+    -- http://www.zdic.net/nongli/inc/ll2.asp
     local cache = nil
     local https = require("ssl.https")
     local ltn12 = require("ltn12")
     local http = require("socket.http")
-    return function ()
+
+    return (function()
         if cache then
             return cache
         end
@@ -88,28 +89,25 @@ local function lunar()
             return {"error!",}
         end
 
-        local date = table.concat({
-            json:match(pat:format("year")),  "-",
-            json:match(pat:format("month")), "-",
-            json:match(pat:format("day")),   " ",
-            json:match(pat:format("week")),
-        })
-        local ldate = table.concat({
+        local date = os.date("%F %a")
+        local ndate = table.concat({
             json:match(pat:format("hyear")),
             json:match(pat:format("animal")),    "年",
             json:match(pat:format("cnmonth")),   "月",
             json:match(pat:format("cnday")),
         })
         cache = {
-            date, ldate,
+            date, ndate,
         }
         table.insert(cache, FESTIVAL[100*json:match(pat:format("month"))+json:match(pat:format("day"))])
         table.insert(cache, FESTIVAL_LUNAR[100*json:match(pat:format("lunarMonth"))+json:match(pat:format("lunarDay"))])
         return cache
-    end
+    end)()
 end
 
 function brightness(device)
+    local awful = require("awful")
+
     local obj = {}
 
     obj.brightness = 1      -- default value
@@ -148,10 +146,48 @@ function brightness(device)
     return obj
 end
 
+local function weather(city)
+    local city = city or "成都"
+
+    local https = require("ssl.https")
+    local ltn12 = require("ltn12")
+    local http = require("socket.http")
+
+    return (function()
+        local url = "https://www.tianqiapi.com/api/"
+        local json = {}
+        http.TIMEOUT = 3
+        local res, code, reshd, s = https.request({
+            url = url,
+            method = "GET",
+            query = "version=v1&city="..city,
+
+            sink = ltn12.sink.table(json),
+            protocol = "tlsv1",
+        })
+        json = table.concat(json)
+
+        local get = function(field)
+            local pat = "\"%s\":%%s*\"?([^,\"]+)\"?"
+            return json:match(pat:format(field))
+        end
+
+        -- build result
+        return {
+            ["tem"] = get("tem"):gsub("\\u2103", "℃"),
+            ["tem_hig"] = get("tem1"):gsub("\\u2103", "℃"),
+            ["tem_low"] = get("tem2"):gsub("\\u2103", "℃"),
+            ["weather"] = get("wea_img"),
+            ["air_idx"] = get("air"),
+        }
+    end)()
+end
+
 return {
     popen = popen,
     D = D,
     with = with,
-    lunar = lunar(),
+    lunar = lunar,
+    weather = weather,
     brightness = brightness,
 }

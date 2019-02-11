@@ -92,7 +92,7 @@ func! s:SetCCppOptions()
 endfunc
 
 func! s:SetMakeOptions()
-    set makeprg=make\ %:p:.
+    set makeprg=make
 endfunc
 
 func! s:SetJavaOptions()
@@ -134,12 +134,12 @@ autocmd FileType lua            call s:SetLuaOptions()
 autocmd FileType javascript     call s:SetJSOptions()
 autocmd FileType tex            call s:SetTexOptions()
 
+let s:SDCV_BUF_NAME = "sdcv-tmp"
 func! Sdcv(word)
-    let BUF_NAME = "sdcv-tmp"
     let expl = system("sdcv -n ".a:word)
     "let expl=system('ldcv '.a:word)
-    tabdo if expand("%") ==# BUF_NAME | q! | endif
-    execute "tabnew" BUF_NAME
+    tabdo if expand("%") ==# s:SDCV_BUF_NAME | q! | endif
+    execute "tabnew" s:SDCV_BUF_NAME
     setlocal buftype=nofile bufhidden=hide noswapfile
     1s/^/\=expl/
     1
@@ -149,10 +149,12 @@ nmap <leader>k :call Sdcv(expand("<cword>"))<cr>
 highlight TabLineFill ctermfg=235 ctermbg=none guifg=Grey15
 highlight TabLine     term=none cterm=none ctermfg=250 ctermbg=235
                     \ gui=none guifg=Grey74 guibg=Grey15
+highlight VertSplit ctermfg=236
 highlight TabLineSel  term=bold cterm=bold gui=bold
 highlight CursorLine  cterm=none ctermbg=239 guibg=Grey40
 highlight Comment     term=italic cterm=italic gui=italic
 highlight ColorColumn ctermbg=239 guifg=Maroon guibg=Grey40
+set fillchars=vert:\ 
 set cursorline
 set textwidth=80 fo+=Mm
 set colorcolumn=-2
@@ -199,7 +201,7 @@ endif
 
 call plug#begin('~/.local/share/vim/plugged')
     Plug 'vim-airline/vim-airline'
-    Plug 'bling/vim-bufferline'
+    "Plug 'bling/vim-bufferline'
     Plug 'scrooloose/nerdtree'
     Plug 'yianwillis/vimcdoc'
     Plug 'kien/ctrlp.vim'
@@ -224,6 +226,8 @@ if has("gui_running")
     set guicursor=a:blinkon0
     set guioptions=
 endif
+
+" TODO communicate with terminal
 
 " import configure file of plugs
 source ~/.vim/plugsconf.vim

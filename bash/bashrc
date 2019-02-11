@@ -3,8 +3,9 @@ if [[ $- != *i* ]]; then
     return
 fi
 
+
 HISTSIZE=10000
-HISTFILESIZE=20000
+#HISTFILESIZE=20000
 
 # \[ \] to indicate a special string amid them.
 black=$'\[\e[1;30m\]'
@@ -40,22 +41,32 @@ alias ll='ls -hl'
 alias la='ls -A'
 alias l='ls -CF'
 which bat &> /dev/null && alias cat='bat'
-alias ldcv='proxychains -q ldcv'
-alias clip='xclip -selection clipboard'
+which proxychains &> /dev/null && alias ldcv='proxychains -q ldcv'
+#alias clip='xclip -selection clipboard'
 
-which fortune &> /dev/null && fortune
+clip() {
+    # clip [pattern] [file]
+    if [[ -e "$1" ]]; then
+        xclip -selection clipboard -i "$1"
+    else
+        # a small trick: $2 without quote if no argument given then put
+        #                nothing as STDIN
+        sed -n "$1p" $2 | xclip -selection clipboard
+    fi
+}
+
 host=''
-if [ "$(who -m | grep -o '(.*)')" != "" ]; then
+if [[ "$(who -m | grep -o '(.*)')" != "" ]]; then
     host="$(hostname) "
 fi
 prompt_color="$white"
-if [ 0 == $(id -u) ]; then
+if [[ 0 == $(id -u) ]]; then
     prompt_color="$red"
 fi
 gen_short_workpath() {
     local short_workspace=''
     local dir="$PWD"
-    if [ "$dir" == "/" ]; then
+    if [[ "$dir" == "/" ]]; then
         echo "/"
         return
     fi
@@ -67,7 +78,7 @@ gen_short_workpath() {
     IFS=$'\n\b'
     local tmp=($(echo $dir | sed "s/\//\n/g"))
     local lastidx=$((${#tmp[@]}-1))
-    if [ $lastidx -lt 0 ]; then
+    if [[ $lastidx -lt 0 ]]; then
         IFS="$SAVEIFS"
         echo "$short_workspace"
         return
@@ -84,8 +95,8 @@ gen_short_workpath() {
 find_git_branch () {
     local git_branch=''
     local dir=. head
-    until [ "$dir" -ef / ]; do
-        if [ -f "$dir/.git/HEAD" ]; then
+    until [[ "$dir" -ef / ]]; do
+        if [[ -f "$dir/.git/HEAD" ]]; then
             local head=$(< "$dir/.git/HEAD")
             if [[ $head = ref:\ refs/heads/* ]]; then
                 git_branch="(${head#*/*/})"
@@ -100,15 +111,11 @@ find_git_branch () {
         dir="../$dir"
     done
 }
-# PROMPT_COMMAND is invoked before displaying PS1
-#PROMPT_COMMAND="gen_short_workpath; $PROMPT_COMMAND"
-export PS1="$cyan\$host\$(gen_short_workpath)$yellow\$(find_git_branch)$prompt_color\\$ $normal"
-export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
 
 # improve command cd through `lcsfind`
 # that is a lua script implemented by lcs algorithm.
 cd() {
-    if [ $# -lt 1 ]; then
+    if [[ $# -lt 1 ]]; then
         builtin cd
         return $?
     fi
@@ -136,7 +143,7 @@ cd() {
             }
             ((idx = idx + 1))
         done
-        if [ $idx -lt 1 ]; then
+        if [[ $idx -lt 1 ]]; then
             echo "cd: $1: No matchable directory or path"
             return 1
         fi
@@ -151,22 +158,13 @@ alias ..='builtin cd ..'
 #alias ...='builtin cd ../..'
 #alias 4.='builtin cd ../../../' # we can define more as command 'n.' to implement cd parent directories.
 
-HISTTIMEFORMAT="%y/%m/%d %T "
+HISTTIMEFORMAT="%y-%m-%d %T "
 # vi mode
 # The implement of clearing screan by 'ctrl+l' is in file ~/.inputrc
 set -o vi
-# enable 256colors
-export TERM=xterm-256color
 # enable core, 10MB = 20480 blocks
 ulimit -c 20480
 
-# bash-completion
-[ -e /etc/bash_completion ] && . /etc/bash_completion
-
-export EDITOR=vim
-export SYSTEMD_EDITOR=$EDITOR
-
-export PYTHONSTARTUP=~/.config/init.py
 alias scheme='chez-scheme'
 alias bc='bc -lq'
 
@@ -174,24 +172,29 @@ _add_path() {
     local VAR=$1
     local d="$2"
     shift 2
-    eval local path=\"$d\$$VAR$d\"
+    eval "local path=\"$d\$$VAR$d\""
     for i in $@; do
         case "$path" in
             *"$d$i$d"*) :;; # already here
-            *) eval $VAR=\"\$$VAR$d$i\";;
+            *) eval "$VAR=\"\$$VAR$d$i\"";;
         esac
     done
 }
 
-add-path() {
-    _add_path PATH ':' $@
+_gen_add_path() {
+    # a little Meta Programming in Bash
+    local funcs=("add-path      PATH        :"
+                 "lua_add-path  LUA_PATH    ;"
+                 "lua_add-cpath LUA_CPATH   ;")
+    for func in "${funcs[@]}"; do
+        local func=($func)
+        eval "${func[0]}() {
+            _add_path ${func[1]} \"${func[2]}\" \$@
+        }"
+    done
 }
-lua_add-path() {
-    _add_path LUA_PATH ';' $@
-}
-lua_add-cpath() {
-    _add_path LUA_CPATH ';' $@
-}
+_gen_add_path
+unset _gen_add_path
 
 dump-path() {
     echo "list order of searching"
@@ -207,13 +210,24 @@ LUA_CPATH=$(lua -e 'print(package.cpath)')
 lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?.lua"
 lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?/init.lua"
 lua_add-cpath "$HOME/.local/lib/lua/$LUA_VERSION/?.so"
-export LUA_PATH LUA_CPATH
 
 # Binaries of Python package for this user
 add-path "$HOME/.local/bin"
 # Binaries of Ruby gem for this user
 RUBY_VERSION=$(ruby -v | grep -o '[0-9]\.[0-9]\.[0-9]')
 add-path "$HOME/.gem/ruby/$RUBY_VERSION/bin"
+
+export EDITOR=vim
+export SYSTEMD_EDITOR=$EDITOR
+export PYTHONSTARTUP=~/.config/init.py
+[[ $MAKEFLAGS != *-j4* ]] && export MAKEFLAGS+='-j4'
+# enable 256colors
+export TERM=xterm-256color
+# PROMPT_COMMAND is invoked before displaying PS1
+#PROMPT_COMMAND="gen_short_workpath; $PROMPT_COMMAND"
+export PS1="$cyan\$host\$(gen_short_workpath)$yellow\$(find_git_branch)$prompt_color\\$ $normal"
+export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
+export LUA_PATH LUA_CPATH
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag
