@@ -1,0 +1,73 @@
+#!/usr/bin/env lua
+
+-- Ensure the json.lua can be found
+local other_lib = arg[0]:match("(.*)bin/weather")
+if other_lib then
+    other_lib = (other_lib == "") and "." or other_lib
+    other_lib = (other_lib:sub(-1) == "/") and other_lib:sub(1, -2) or other_lib
+    package.path = package.path .. (";%s/?.lua"):format(other_lib)
+end
+
+local JSON = require("json")
+
+local function weather(city)
+    local city = city or "成都"
+
+    local https = require("ssl.https")
+    local ltn12 = require("ltn12")
+    local http = require("socket.http")
+
+    local url = "https://www.tianqiapi.com/api/"
+    local json = {}
+    http.TIMEOUT = 3
+    local res, code, reshd, s = https.request({
+        url = url,
+        method = "GET",
+        query = "version=v1&city="..city,
+
+        sink = ltn12.sink.table(json),
+        protocol = "tlsv1",
+    })
+    json = JSON.decode(table.concat(json))
+
+    if nil == res then
+        return {
+            status = false,
+            reason = "error",
+        }
+    end
+
+    -- build result
+    return {
+        status = true,
+        today = {
+            temp_now = json.data[1].tem,
+            temp_min = json.data[1].tem2,
+            temp_max = json.data[1].tem1,
+            weather = json.data[1].wea,
+            air_level = json.data[1].air_level,
+        },
+        tomorrow = {
+            temp_min = json.data[2].tem2,
+            temp_max = json.data[2].tem1,
+        },
+        after_tomorrow = {
+            temp_min = json.data[3].tem2,
+            temp_max = json.data[3].tem1,
+        },
+    }
+end
+
+local function parse_args()
+    return {
+        city = nil,
+    }
+end
+
+local function main()
+    args = parse_args()
+    w = weather(args.city)
+    print(JSON.encode(w))
+end
+
+main()

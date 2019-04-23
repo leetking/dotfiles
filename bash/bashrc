@@ -4,7 +4,7 @@ if [[ $- != *i* ]]; then
 fi
 
 
-HISTSIZE=10000
+HISTSIZE=200000
 #HISTFILESIZE=20000
 
 # \[ \] to indicate a special string amid them.
@@ -28,8 +28,13 @@ normal=$'\[\e[m\]'
 #white=$'\e[1;37m'
 #normal=$'\e[m'
 
-which dircolors &> /dev/null && {
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+has_cmd() {
+    hash "$1" &> /dev/null
+    return $?
+}
+
+has_cmd dircolors && {
+    [ -r ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls -F --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
@@ -40,9 +45,9 @@ alias tree='tree -F -C --charset=ascii'
 alias ll='ls -hl'
 alias la='ls -A'
 alias l='ls -CF'
-which bat &> /dev/null && alias cat='bat'
-which proxychains &> /dev/null && alias ldcv='proxychains -q ldcv'
-#alias clip='xclip -selection clipboard'
+has_cmd bat && alias cat='bat'
+has_cmd proxychains && alias ldcv='proxychains -q ldcv'
+unset has_cmd
 
 clip() {
     # clip [pattern] [file]
@@ -55,14 +60,26 @@ clip() {
     fi
 }
 
+rm() {
+    local trash="/tmp/rm.trash"
+    mkdir -p $trash
+    for f in "$@"; do
+        suffix="$(md5sum <(ls -ld "$f") | cut -d' ' -f1).$(date +%F_%H%M%S).bak"
+        #echo "rm $f"
+        mv "$f" "$trash/${f%/}.$suffix"
+    done
+}
+alias truerm='/bin/rm'
+
 host=''
-if [[ "$(who -m | grep -o '(.*)')" != "" ]]; then
+if [[ "$(grep -o '(.*)' <(who -m))" != "" ]]; then
     host="$(hostname) "
 fi
 prompt_color="$white"
 if [[ 0 == $(id -u) ]]; then
     prompt_color="$red"
 fi
+
 gen_short_workpath() {
     local short_workspace=''
     local dir="$PWD"
@@ -76,7 +93,7 @@ gen_short_workpath() {
     fi
     local SAVEIFS="$IFS"
     IFS=$'\n\b'
-    local tmp=($(echo $dir | sed "s/\//\n/g"))
+    local tmp=(${dir//\//$'\n'})
     local lastidx=$((${#tmp[@]}-1))
     if [[ $lastidx -lt 0 ]]; then
         IFS="$SAVEIFS"
@@ -85,13 +102,14 @@ gen_short_workpath() {
     fi
     dir=""
     for ((i = 0; i < lastidx; ++i)); do
-        dir="${dir}/$(echo ${tmp[$i]} | grep -Po '^\.*[^/]?')"
+        dir="${dir}/$(grep -Po '^\.*[^/]?' <<< ${tmp[$i]})"
     done
     dir="${dir}/${tmp[$lastidx]}"
     short_workspace=$short_workspace$dir
     IFS="$SAVEIFS"
     echo "$short_workspace"
 }
+
 find_git_branch () {
     local git_branch=''
     local dir=. head
@@ -119,7 +137,7 @@ cd() {
         builtin cd
         return $?
     fi
-    ! which lcsfind > /dev/null 2>&1 && {
+    ! which lcsfind &> /dev/null && {
         builtin cd "$1"
         return $?
     }
@@ -127,7 +145,7 @@ cd() {
     IFS=$'\n\b'
     local wks="$PWD"
     [ '/' == "${1:0:1}" ] && wks=""
-    local dir=($(echo "$1" | sed "s/\//\n/g"))
+    local dir=(${1//\//$'\n'})
     for ((i = 0; i < ${#dir[@]}; ++i)); do
         local pat=${dir[i]}
         local cddirs=()
@@ -147,7 +165,7 @@ cd() {
             echo "cd: $1: No matchable directory or path"
             return 1
         fi
-        wks="$wks/$(lcsfind $pat ${cddirs[@]})"
+        wks="$wks/$(lcsfind $pat "${cddirs[@]}")"
     done
     builtin cd "$wks/"
     IFS="$SAVEIFS"
@@ -199,7 +217,7 @@ unset _gen_add_path
 dump-path() {
     echo "list order of searching"
     echo "======================="
-    echo $PATH | sed 's/:/\n/g'
+    echo "${PATH//:/$'\n'}"
 }
 
 # Add other rocks tree: $HOME/.local
@@ -231,4 +249,3 @@ export LUA_PATH LUA_CPATH
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag
-

@@ -64,6 +64,7 @@ set expandtab
 func! s:SetNormalOptions()
     "set spell
     set omnifunc=
+    "set textwidth=0
 endfunc
 
 func! s:SetLuaOptions()
@@ -122,7 +123,7 @@ func! s:SetTexOptions()
     setlocal makeprg=xelatex\ -halt-on-error\ %
 endfunc
 
-autocmd FileType txt            call s:SetNormalOptions()
+autocmd FileType text           call s:SetNormalOptions()
 autocmd FileType c,cpp          call s:SetCCppOptions()
 autocmd FileType make           call s:SetMakeOptions()
 autocmd FileType java,groovy    call s:SetJavaOptions()
@@ -149,7 +150,7 @@ nmap <leader>k :call Sdcv(expand("<cword>"))<cr>
 highlight TabLineFill ctermfg=235 ctermbg=none guifg=Grey15
 highlight TabLine     term=none cterm=none ctermfg=250 ctermbg=235
                     \ gui=none guifg=Grey74 guibg=Grey15
-highlight VertSplit ctermfg=236
+highlight VertSplit   ctermfg=236
 highlight TabLineSel  term=bold cterm=bold gui=bold
 highlight CursorLine  cterm=none ctermbg=239 guibg=Grey40
 highlight Comment     term=italic cterm=italic gui=italic
@@ -157,9 +158,9 @@ highlight ColorColumn ctermbg=239 guifg=Maroon guibg=Grey40
 set fillchars=vert:\ 
 set cursorline
 set textwidth=80 fo+=Mm
-set colorcolumn=-2
+set colorcolumn=+1
 " highlight the white spaces end of line
-match Matchparen /\(\t\|\s\)\+$/
+match MatchParen /\(\t\|\s\)\+$/
 2match Todo /\<NOTE\>\|\<TODO\>/
 " for VTE compatible terminal set the shape of cursor at insert mode and
 " normal mode

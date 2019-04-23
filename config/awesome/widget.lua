@@ -8,6 +8,8 @@ local popen = require("common").popen
 local with  = require("common").with
 local tonumber = tonumber
 local tointeger = math.tointeger
+local JSON = require("json")
+local HERE = gears.filesystem.get_dir("config")
 
 local function cat(name, fun)
     return with(io.open(name, "r"),
@@ -210,12 +212,6 @@ local function mem()
 end
 
 local function weather(city)
-    local city = city or "丹棱"
-
-    local get_weather = require("common").weather
-
-    local obj = wibox.widget.textbox()
-    local t_out = 60    -- 1 minute
     -- http://www.weather.com.cn/static/html/legend.shtml
     local icons = {
         ["晴"] = "☀",
@@ -235,27 +231,30 @@ local function weather(city)
         [""] = "🌫",
         [""] = "🌁",
     }
-
     local fmtstr = "<span size='large'>%s</span> %s"
-    local w = nil
-    obj:set_markup(fmtstr:format("?", "-℃"))
-    obj.update = function(this)
-        w = get_weather(city)
-        if not w.status then return end
 
-        local icon = icons[w.today.weather] or "?"
-        this:set_markup(fmtstr:format(icon, w.today.temp_now))
+    local obj = wibox.widget.textbox()
+    obj.city = city or "成都"
+    obj.t_out = 60    -- 1 minute
+    obj.update = function(this)
+        awful.spawn.easy_async({HERE.."/bin/weather", this.city},
+                function(stdout, stderr, _, _)
+            this.cache = JSON.decode(stdout)
+            -- TODO handle error!
+
+            local icon = icons[this.cache.today.weather] or "?"
+            this:set_markup(fmtstr:format(icon, this.cache.today.temp_now))
+        end)
     end
-    obj:update()
 
     obj.timer = gears.timer({
-        timeout = t_out,
+        timeout = obj.t_out,
         autostart = true,
         callback = function() obj:update() end,
     })
 
     obj:connect_signal("button::press", function(_, _, _, button)
-        if 1 ~= button then
+        if 1 ~= button or not obj.cache then
             return
         end
 
@@ -269,9 +268,10 @@ local function weather(city)
                           "Air Level: %s\n\n"..
                           "Tomorrow: %s/%s\n"..
                           "After Tomorrow: %s/%s"
+        local w = obj.cache
         obj.notify = naughty.notify({
             --title = city,
-            text = teamplate:format(city,
+            text = teamplate:format(obj.city,
                        w.today.temp_now,
                        w.today.temp_min, w.today.temp_max,
                        w.today.weather,
@@ -284,6 +284,8 @@ local function weather(city)
         })
     end)
 
+    obj:set_markup(fmtstr:format("?", "-℃"))
+    obj:update()
     return obj
 end
 
@@ -313,23 +315,35 @@ local function sensor(hwmon)
 end
 
 local function clock()
-    local lunar = require("common").lunar
-
     local obj = wibox.widget.textclock("%I:%M:%S %p", 1)
+
+    obj.show_notification = function(this)
+        if this.notify then
+            naughty.destroy(this.notify)
+        end
+        this.notify = naughty.notify({
+            text = this.lunar_cache,
+            timeout = 3,
+            hover_timeout = 20,
+            position = "top_right",
+        })
+    end
+
     obj:connect_signal("button::press", function(_, _, _, button)
         if 1 ~= button then
             return
         end
 
-        if obj.notify then
-            naughty.destroy(obj.notify)
+        if not obj.lunar_cache then
+            awful.spawn.easy_async({HERE.."/bin/lunar", }, function(stdout, stderr, _, _)
+                obj.lunar_cache = table.concat(JSON.decode(stdout), "\n")
+
+                obj:show_notification()
+            end)
+        else
+            obj:show_notification()
         end
-        obj.notify = naughty.notify({
-            text = table.concat(lunar(), "\n"),
-            timeout = 3,
-            hover_timeout = 20,
-            position = "top_right",
-        })
+
     end)
     return obj
 end
