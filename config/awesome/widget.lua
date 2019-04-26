@@ -22,7 +22,7 @@ end
 -- TODO Remain time for power and mouse event
 local function power(adapter)
     local obj = wibox.widget.textbox()
-    local i = 0
+    local idx = 0
     obj.update = function(this)
         local path = "/sys/class/power_supply/"..adapter.."/"
         local cur = cat(path.."energy_now")
@@ -39,30 +39,55 @@ local function power(adapter)
                 [0] = "", "", "", "", "",
             }
             if sts:match("Charging") then
+                this.notify_warn = false
+                this.notify_urgent = false
                 color = "color='#00ff00'"
-                icon = ICONS[i]
-                precentage = ""
-                i = (i+1)%(#ICONS+1)
-            else
-                local idx
-                if     precentage >= 90 then idx = 3
-                elseif precentage >= 40 then idx = 2
-                elseif precentage >= 15 then idx = 1
-                else idx = 0
-                end
                 icon = ICONS[idx]
-                color = (idx == 0) and "color='#ff0000'" or ""
+                precentage = ""
+                idx = (idx+1)%(#ICONS+1)
+            else
+                local i
+                if     precentage >= 90 then i = 3
+                elseif precentage >= 40 then i = 2
+                elseif precentage >= 15 then i = 1
+                else
+                    i = 0
+                    if precentage >= 10 and not this.notify_warn then
+                        this.notify_warn = true
+                        this.notify = naughty.notify({
+                            title = "LOW BATTERY",
+                            text = "The power of battery is lower than 15%!",
+                            timeout = 7,
+                            hover_timeout = 20,
+                            position = "top_right",
+                        })
+                    elseif not this.notify_urgent then
+                        this.notify_urgent = true
+                        this.notify = naughty.notify({
+                            title = "LOW BATTERY",
+                            text = "The power of battery is lower than 10%!",
+                            timeout = 10,
+                            hover_timeout = 60,
+                            position = "top_right",
+                        })
+                    elseif precentage < 5 then
+                        -- TODO hibernate to HDD
+                    end
+                end
+                icon = ICONS[i]
+                color = (i == 0) and "color='#ff0000'" or ""
                 precentage = ("<span %s> %.1f%%</span>"):format(color, precentage)
             end
             this:set_markup(("<span %s font_family='Ionicons' size='large'>%s</span>"):format(color, icon)..precentage)
         end
     end
-    obj:update()
     obj.timer = gears.timer({
         timeout = 1,
         autostart = true,
         callback = function() obj:update() end,
     })
+
+    obj:update()
     return obj
 end
 
@@ -219,6 +244,8 @@ local function weather(city)
         ["多云"] = "⛅",
         [""] = "🌤",
         [""] = "🌥",
+        ["小雨"] = "☂ ",
+        [""] = "☔",
         ["阵雨"] = "🌦",
         [""] = "🌧",
         [""] = "🌨",
@@ -226,8 +253,6 @@ local function weather(city)
         [""] = "⚡",
         ["雷阵雨"] = "⛈",
         [""] = "🌪",
-        [""] = "☂ ",
-        [""] = "☔",
         [""] = "🌫",
         [""] = "🌁",
     }

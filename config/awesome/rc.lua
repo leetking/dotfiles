@@ -709,15 +709,15 @@ end)
 -- Start some app
 local function run_once(cmd)
     local prg = cmd:match("([^%s]+)%s*.*$")
-    popen(("pgrep -u $USER -x %s"):format(prg),
-            function(_, code)
-                if 0 ~= code then
-                    awful.spawn(cmd)
-                end
-            end)
+    popen(("pgrep -u $USER -i -f '%s'"):format(prg), function(_, code)
+        if 0 ~= code then
+            awful.spawn.easy_async(cmd, function() end)
+        end
+    end)
 end
 local apps = {
-    "fcitx", "compton -b -CG", "nm-applet"
+    "fcitx", "compton -b -CG", "nm-applet",
+    "libinput-gestures",
 }
 for _, i in pairs(apps) do
     run_once(i)

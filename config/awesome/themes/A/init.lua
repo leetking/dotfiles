@@ -111,7 +111,7 @@ theme.taglist_squares_unsel = LOCATION.."taglist/squarez.png"
 
 -- {{{ Misc
 theme.awesome_icon           = LOCATION.."logo"
-theme.menu_submenu_icon      = LOCATION.."default/submenu.png"
+-- theme.menu_submenu_icon      = LOCATION.."default/submenu.png"
 -- }}}
 
 -- {{{ Layout

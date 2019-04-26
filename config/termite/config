@@ -19,7 +19,7 @@ browser = chromium
 [colors]
 foreground = #ffffff
 #background = #232c32
-background = rgba(35, 44, 50, 0.9)
+background = rgba(35, 44, 50, 0.84)
 
 
 # Solarized-dark
