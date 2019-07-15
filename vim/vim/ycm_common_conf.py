@@ -10,7 +10,7 @@ import ycm_core
 def pkg_config(pkg):
     return subprocess.check_output(['pkg-config', '--cflags', pkg], universal_newlines=True).split()
 
-PKGS = ('sdl2', 'gtk+-3.0')
+PKGS = ('sdl2', 'SDL2_image', 'SDL2_mixer', 'gtk+-3.0', 'gtkmm-3.0')
 kernel_version = subprocess.check_output(['uname', '-r'], universal_newlines=True).strip()
 
 flags = [

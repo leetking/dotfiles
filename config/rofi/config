@@ -1,4 +1,5 @@
 rofi.theme: /usr/share/rofi/themes/android_notification.rasi
-rofi.ssh-command: {terminal} -e "{ssh-client} {host}"
+rofi.terminal: "termite"
+rofi.ssh-command: {terminal} -e "{ssh-client} {host} [-p {port}]"
 rofi.matching: fuzzy
 

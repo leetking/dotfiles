@@ -28,6 +28,8 @@ normal=$'\[\e[m\]'
 #white=$'\e[1;37m'
 #normal=$'\e[m'
 
+unexport_cmds=("has_cmd" "_gen_add_path")
+
 has_cmd() {
     hash "$1" &> /dev/null
     return $?
@@ -47,7 +49,6 @@ alias la='ls -A'
 alias l='ls -CF'
 has_cmd bat && alias cat='bat'
 has_cmd proxychains && alias ldcv='proxychains -q ldcv'
-unset has_cmd
 
 clip() {
     # clip [pattern] [file]
@@ -61,15 +62,21 @@ clip() {
 }
 
 rm() {
-    local trash="/tmp/rm.trash"
+    local trash="/tmp/.rm.trash"
     mkdir -p $trash
     for f in "$@"; do
         suffix="$(md5sum <(ls -ld "$f") | cut -d' ' -f1).$(date +%F_%H%M%S).bak"
         #echo "rm $f"
-        mv "$f" "$trash/${f%/}.$suffix"
+        mv "$f" "$trash/${f##*/}.$suffix"
     done
 }
+
 alias truerm='/bin/rm'
+
+empty-trash() {
+    local trash="/tmp/.rm.trash"
+    truerm -rf $trash/*
+}
 
 host=''
 if [[ "$(grep -o '(.*)' <(who -m))" != "" ]]; then
@@ -171,6 +178,7 @@ cd() {
     IFS="$SAVEIFS"
     return $?
 }
+
 alias r='builtin cd /'          # '/' can't be as a command name and is instead of 'r'.
 alias ..='builtin cd ..'
 #alias ...='builtin cd ../..'
@@ -212,7 +220,6 @@ _gen_add_path() {
     done
 }
 _gen_add_path
-unset _gen_add_path
 
 dump-path() {
     echo "list order of searching"
@@ -221,19 +228,25 @@ dump-path() {
 }
 
 # Add other rocks tree: $HOME/.local
-alias luai='lua -e "package.path=package.path..\";$HOME/.config/init.lua\"" -i -linit'
-LUA_VERSION=$(lua -e 'print(_VERSION:match("%d.%d"))')
-LUA_PATH=$(lua -e 'print(package.path)')
-LUA_CPATH=$(lua -e 'print(package.cpath)')
-lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?.lua"
-lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?/init.lua"
-lua_add-cpath "$HOME/.local/lib/lua/$LUA_VERSION/?.so"
+has_cmd lua && {
+    alias luai='lua -e "package.path=package.path..\";$HOME/.config/init.lua\"" -i -linit'
+    LUA_VERSION=$(lua -e 'print(_VERSION:match("%d.%d"))')
+    LUA_PATH=$(lua -e 'print(package.path)')
+    LUA_CPATH=$(lua -e 'print(package.cpath)')
+    lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?.lua"
+    lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?/init.lua"
+    lua_add-cpath "$HOME/.local/lib/lua/$LUA_VERSION/?.so"
+
+    export LUA_PATH LUA_CPATH
+}
 
 # Binaries of Python package for this user
 add-path "$HOME/.local/bin"
 # Binaries of Ruby gem for this user
-RUBY_VERSION=$(ruby -v | grep -o '[0-9]\.[0-9]\.[0-9]')
-add-path "$HOME/.gem/ruby/$RUBY_VERSION/bin"
+has_cmd ruby && {
+    RUBY_VERSION=$(ruby -v | grep -o '[[:digit:]]\.[[:digit:]]\.[[:digit:]]')
+    add-path "$HOME/.gem/ruby/$RUBY_VERSION/bin"
+}
 
 export EDITOR=vim
 export SYSTEMD_EDITOR=$EDITOR
@@ -245,7 +258,12 @@ export TERM=xterm-256color
 #PROMPT_COMMAND="gen_short_workpath; $PROMPT_COMMAND"
 export PS1="$cyan\$host\$(gen_short_workpath)$yellow\$(find_git_branch)$prompt_color\\$ $normal"
 export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
-export LUA_PATH LUA_CPATH
+
+for fun in "${unexport_cmds[@]}"; do
+    eval "unset $fun"
+done
+unset unexport_cmds
+
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag

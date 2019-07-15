@@ -54,9 +54,13 @@ function brightness(device)
     return obj
 end
 
+local function start_dotdesktop(path)
+end
+
 return {
     popen = popen,
     D = D,
     with = with,
     brightness = brightness,
+    start_dotdesktop = start_dotdesktop,
 }

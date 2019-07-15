@@ -23,6 +23,9 @@ end
 local function power(adapter)
     local obj = wibox.widget.textbox()
     local idx = 0
+
+    obj.notify_warn = false
+    obj.notify_urgent = false
     obj.update = function(this)
         local path = "/sys/class/power_supply/"..adapter.."/"
         local cur = cat(path.."energy_now")
@@ -39,6 +42,9 @@ local function power(adapter)
                 [0] = "", "", "", "", "",
             }
             if sts:match("Charging") then
+                if this.notify then
+                    naughty.destroy(this.notify)
+                end
                 this.notify_warn = false
                 this.notify_urgent = false
                 color = "color='#00ff00'"
@@ -66,7 +72,7 @@ local function power(adapter)
                         this.notify = naughty.notify({
                             title = "LOW BATTERY",
                             text = "The power of battery is lower than 10%!",
-                            timeout = 10,
+                            timeout = 30,
                             hover_timeout = 60,
                             position = "top_right",
                         })
@@ -248,7 +254,7 @@ local function weather(city)
         [""] = "☔",
         ["阵雨"] = "🌦",
         [""] = "🌧",
-        [""] = "🌨",
+        ["暴雨"] = "🌨",
         [""] = "🌩",
         [""] = "⚡",
         ["雷阵雨"] = "⛈",

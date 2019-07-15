@@ -17,18 +17,19 @@ map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
-nmap <Tab>  :tabnext<cr>
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+nmap <M-j> mz:m+<CR>`z
+nmap <M-k> mz:m-2<CR>`z
+nmap <Tab>  :tabnext<CR>
+nmap <S-Tab>  :tabprevious<CR>
+vmap <M-j> :m'>+<CR>`<my`>mzgv`yo`z
+vmap <M-k> :m'<-2<CR>`>my`<mzgv`yo`z
 "1 tab == 4 spaces
 "set tabstop=8      " how much <Space> to SHOW as <Tab>
 set softtabstop=4
 set expandtab
 set shiftwidth=4
 set smarttab
-set fileencodings=ucs-bom,utf-8,gbk,gb2312,cp936,default,latin1
+set fileencodings=ucs-bom,utf-8,gb18030,gb2312,bgk,default,latin1
 set fileencoding=utf-8
 "set encoding=utf-8
 "set completeopt=longest,menuone,preview
@@ -49,11 +50,11 @@ colorscheme desert
 set foldmethod=indent
 "set foldmethod=syntax|manual
 set foldenable
-nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<cr>
+nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
 set foldlevel=9
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.png,.jpg
 
-set cino=:0                 "case与switch对齐 TODO 但是注释没对齐
+set cinoptions=:0                 "case与switch对齐 TODO 但是注释没对齐
 set cindent
 set smartindent
 set autoindent
@@ -110,7 +111,7 @@ func! s:SetHtmlXml()
     let g:user_emmet_install_global=0
     EmmetInstall
     "USE: <C-y>展开
-    setlocal makeprg=xdg-open\ %\ &
+    setlocal makeprg=chromium\ %:p\ &
 endfunc
 
 " javaScript
@@ -145,7 +146,7 @@ func! Sdcv(word)
     1s/^/\=expl/
     1
 endfunc
-nmap <leader>k :call Sdcv(expand("<cword>"))<cr>
+nmap <leader>k :call Sdcv(expand("<cword>"))<CR>
 
 highlight TabLineFill ctermfg=235 ctermbg=none guifg=Grey15
 highlight TabLine     term=none cterm=none ctermfg=250 ctermbg=235
@@ -157,7 +158,7 @@ highlight Comment     term=italic cterm=italic gui=italic
 highlight ColorColumn ctermbg=239 guifg=Maroon guibg=Grey40
 set fillchars=vert:\ 
 set cursorline
-set textwidth=80 fo+=Mm
+set textwidth=79 fo+=Mm
 set colorcolumn=+1
 " highlight the white spaces end of line
 match MatchParen /\(\t\|\s\)\+$/
@@ -189,8 +190,9 @@ call AutoSwitchInput()
 
 " save as root
 command W w !sudo tee % > /dev/null
-nmap <F5> :redraw!<cr>
-let g:markdown_fenced_languages = ['c', 'cpp', 'lua', 'python', 'css', 'java']
+nmap <F5> :redraw!<CR>
+let g:markdown_fenced_languages = ['c', 'cpp', 'lua', 'python', 'css', 'java',
+      \ 'javascript']
 
 
 " use vim-plug
@@ -221,11 +223,19 @@ call plug#end()
 
 " set for gui
 if has("gui_running")
-    set guifont=monaco\ 9
     set columns=82
-    set cursorline
     set guicursor=a:blinkon0
     set guioptions=
+    " set gui font
+    if has("gui_win32")
+        set guifont=consolas:h12
+    else
+        if has("gui_gtk2") || has("gui_gtk3")
+            set guifont=Monaco\ 9
+        else
+            set guifont=Monaco:h9
+        endif
+    endif
 endif
 
 " TODO communicate with terminal

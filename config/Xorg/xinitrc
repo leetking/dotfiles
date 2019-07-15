@@ -46,6 +46,8 @@ fi
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
+# set and expor the environment BROWSER for xdg-open
+export BROWSER=chromium
 
 # MUST LET wmname AND awesome AT THE LAST
 wmname LG3D             # Fix java (GUI appears gray only)
