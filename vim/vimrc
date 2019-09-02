@@ -65,7 +65,7 @@ set expandtab
 func! s:SetNormalOptions()
     "set spell
     set omnifunc=
-    "set textwidth=0
+    set textwidth=0
 endfunc
 
 func! s:SetLuaOptions()
@@ -107,6 +107,7 @@ func! s:SetHtmlXml()
     set shiftwidth=2
     set smarttab
     set autoindent
+    set textwidth=0
     "configure emmet
     let g:user_emmet_install_global=0
     EmmetInstall

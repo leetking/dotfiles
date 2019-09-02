@@ -724,4 +724,5 @@ for _, i in pairs(apps) do
 end
 
 -- TODO start app from ~/.config/autostart[-script]
+-- stop some app when awesome quit
 

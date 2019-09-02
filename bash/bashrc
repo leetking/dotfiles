@@ -47,8 +47,16 @@ alias tree='tree -F -C --charset=ascii'
 alias ll='ls -hl'
 alias la='ls -A'
 alias l='ls -CF'
+alias v='vim'
+alias py='ipython'
 has_cmd bat && alias cat='bat'
 has_cmd proxychains && alias ldcv='proxychains -q ldcv'
+
+alias gd='git diff -w'
+alias gdm='git diff -w master'
+alias gma='git commit -a'
+alias gmaa='git commit -a --amend'
+
 
 clip() {
     # clip [pattern] [file]
@@ -71,11 +79,11 @@ rm() {
     done
 }
 
-alias truerm='/bin/rm'
+alias rm!='/bin/rm'
 
 empty-trash() {
     local trash="/tmp/.rm.trash"
-    truerm -rf $trash/*
+    rm! -rf $trash/*
 }
 
 host=''
@@ -121,7 +129,7 @@ find_git_branch () {
     local git_branch=''
     local dir=. head
     until [[ "$dir" -ef / ]]; do
-        if [[ -f "$dir/.git/HEAD" ]]; then
+        if [[ -r "$dir/.git/HEAD" ]]; then
             local head=$(< "$dir/.git/HEAD")
             if [[ $head = ref:\ refs/heads/* ]]; then
                 git_branch="(${head#*/*/})"
@@ -191,8 +199,8 @@ set -o vi
 # enable core, 10MB = 20480 blocks
 ulimit -c 20480
 
-alias scheme='chez-scheme'
-alias bc='bc -lq'
+has_cmd chez-scheme && alias scheme='chez-scheme'
+has_cmd bc && alias bc='bc -lq'
 
 _add_path() {
     local VAR=$1
@@ -248,8 +256,6 @@ has_cmd ruby && {
     add-path "$HOME/.gem/ruby/$RUBY_VERSION/bin"
 }
 
-export EDITOR=vim
-export SYSTEMD_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/.config/init.py
 [[ $MAKEFLAGS != *-j4* ]] && export MAKEFLAGS+='-j4'
 # enable 256colors
@@ -264,6 +270,7 @@ for fun in "${unexport_cmds[@]}"; do
 done
 unset unexport_cmds
 
+[[ -r ~/.environment ]] && source ~/.environment
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag

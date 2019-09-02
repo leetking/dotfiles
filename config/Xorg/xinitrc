@@ -7,12 +7,6 @@ usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
 
-# for NVIDIA card
-# specify screen
-#xrandr --setprovideroutputsource modesetting NVIDIA-0
-#xrandr --auto
-#xrandr --dpi 96
-
 # merge in defaults and keymaps
 if [ -f $sysresources ]; then
     xrdb -merge $sysresources
@@ -42,10 +36,14 @@ if [ -d ${HOME}/.config/Xorg/xinit.d ]; then
     unset f
 fi
 
+# Xorg environment
 # environment variables for fcitx input
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
+#export GTK_IM_MODULE=fcitx5
+#export QT_IM_MODULE=fcitx5
+#export XMODIFIERS="@im=fcitx5"
 # set and expor the environment BROWSER for xdg-open
 export BROWSER=chromium
 

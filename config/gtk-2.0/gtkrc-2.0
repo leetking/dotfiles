@@ -1,5 +1,6 @@
 gtk-theme-name = "Zukitwo"
-gtk-icon-theme-name = "Arc"
+gtk-icon-theme-name = "Papirus"
+#gtk-icon-theme-name = "Arc"
 style "user-font" {
 	font_name = "Noto Sans UI 10"
 }
