@@ -1,7 +1,8 @@
 [options]
 resize_grip = true
 font = Migu 1M 11
-#font = Droid Sans Mono 8
+#font = Monaco 9
+#font = sarasa mono sc 11
 audible_bell = false
 dynamic_title = true
 clickable_url = true

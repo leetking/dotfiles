@@ -252,8 +252,8 @@ has_cmd lua && {
 add-path "$HOME/.local/bin"
 # Binaries of Ruby gem for this user
 has_cmd ruby && {
-    RUBY_VERSION=$(ruby -v | grep -o '[[:digit:]]\.[[:digit:]]\.[[:digit:]]')
-    add-path "$HOME/.gem/ruby/$RUBY_VERSION/bin"
+    RUBY_VERSION=$(ruby -v | grep -o '[[:digit:]]\.[[:digit:]]')
+    add-path "$HOME/.gem/ruby/$RUBY_VERSION.0/bin"
 }
 
 export PYTHONSTARTUP=~/.config/init.py

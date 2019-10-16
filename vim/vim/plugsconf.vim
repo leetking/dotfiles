@@ -45,3 +45,10 @@ nnoremap <leader>f :YcmCompleter FixIt<cr>
 nnoremap <leader>j :YcmCompleter GoTo<cr>
 nnoremap <leader>i :YcmCompleter GetType<cr>
 "}
+
+" vimtext {
+let g:tex_flavor='xelatex'
+let g:vimtex_view_method='zathura'
+set conceallevel=1
+let g:tex_conceal='abdmg'
+" }

@@ -65,11 +65,11 @@ set expandtab
 func! s:SetNormalOptions()
     "set spell
     set omnifunc=
-    set textwidth=0
 endfunc
 
 func! s:SetLuaOptions()
     setlocal makeprg=lua\ %
+    set textwidth=79 fo+=Mm
 endfunc
 
 func! s:SetLispOptions()
@@ -78,6 +78,7 @@ func! s:SetLispOptions()
     set lisp
     " scheme is a link to chez-scheme
     setlocal makeprg=scheme\ --script\ %
+    set textwidth=79 fo+=Mm
 endfunc
 
 func! s:SetPythonOptions()
@@ -86,18 +87,22 @@ endfunc
 
 func! s:SetRubyOptions()
     setlocal makeprg=ruby\ %
+    set textwidth=79 fo+=Mm
     imap <C-Space> <C-X><C-O>
 endfunc
 
 func! s:SetCCppOptions()
+    set textwidth=79 fo+=Mm
     set makeprg=$HOME/.vim/makeprg.sh\ %:p:.
 endfunc
 
 func! s:SetMakeOptions()
+    set textwidth=79 fo+=Mm
     set makeprg=make
 endfunc
 
 func! s:SetJavaOptions()
+    set textwidth=79 fo+=Mm
     set omnifunc=javacomplete#Complete
     set makeprg=$HOME/.vim/makeprg.sh\ %:p:.
 endfunc
@@ -107,7 +112,6 @@ func! s:SetHtmlXml()
     set shiftwidth=2
     set smarttab
     set autoindent
-    set textwidth=0
     "configure emmet
     let g:user_emmet_install_global=0
     EmmetInstall
@@ -117,6 +121,7 @@ endfunc
 
 " javaScript
 func! s:SetJSOptions()
+    set textwidth=79 fo+=Mm
     setlocal makeprg=node\ %
 endfunc
 
@@ -155,14 +160,14 @@ highlight TabLine     term=none cterm=none ctermfg=250 ctermbg=235
 highlight VertSplit   ctermfg=236
 highlight TabLineSel  term=bold cterm=bold gui=bold
 highlight CursorLine  cterm=none ctermbg=239 guibg=Grey40
+highlight CursorLineNr  cterm=none
 highlight Comment     term=italic cterm=italic gui=italic
 highlight ColorColumn ctermbg=239 guifg=Maroon guibg=Grey40
 set fillchars=vert:\ 
 set cursorline
-set textwidth=79 fo+=Mm
 set colorcolumn=+1
 " highlight the white spaces end of line
-match MatchParen /\(\t\|\s\)\+$/
+match MatchParen /\s\+$/
 2match Todo /\<NOTE\>\|\<TODO\>/
 " for VTE compatible terminal set the shape of cursor at insert mode and
 " normal mode
