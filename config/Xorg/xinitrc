@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-CURR_PATH=$(cd `dirname $0`; pwd -P)
+#!/bin/sh
 
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
@@ -36,16 +34,8 @@ if [ -d ${HOME}/.config/Xorg/xinit.d ]; then
     unset f
 fi
 
-# Xorg environment
-# environment variables for fcitx input
-export GTK_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
-export XMODIFIERS="@im=fcitx"
-#export GTK_IM_MODULE=fcitx5
-#export QT_IM_MODULE=fcitx5
-#export XMODIFIERS="@im=fcitx5"
-# set and expor the environment BROWSER for xdg-open
-export BROWSER=chromium
+[[ -r "$HOME/.profile" ]] && . "$HOME/.profile"
+[[ -r "$HOME/.xprofile" ]] && . "$HOME/.xprofile"
 
 # MUST LET wmname AND awesome AT THE LAST
 wmname LG3D             # Fix java (GUI appears gray only)

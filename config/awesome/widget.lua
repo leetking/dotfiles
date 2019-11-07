@@ -271,10 +271,10 @@ local function weather(city)
         awful.spawn.easy_async({HERE.."/bin/weather", this.city},
                 function(stdout, stderr, _, _)
             this.cache = JSON.decode(stdout)
-            -- TODO handle error!
-
-            local icon = icons[this.cache.today.weather] or "?"
-            this:set_markup(fmtstr:format(icon, this.cache.today.temp_now))
+            if this.cache.status == true then
+                local icon = icons[this.cache.today.weather] or "?"
+                this:set_markup(fmtstr:format(icon, this.cache.today.temp_now))
+            end
         end)
     end
 

@@ -196,7 +196,7 @@ awful.screen.connect_for_each_screen(function(s)
     s.prompt = awful.widget.prompt()
     s.power = widget.power("BAT1")
     s.volume = widget.volume()
-    s.sensor = widget.sensor("hwmon1")
+    s.sensor = widget.sensor("hwmon3")
     s.clock = widget.clock()
     s.cpu = widget.cpu()
     s.mem = widget.mem()
@@ -572,6 +572,7 @@ awful.rules.rules = {
             instance = {
                 "DTA",      -- Firefox addon DownThemAll.
                 "copyq",    -- Includes session name in class.
+                "qq",       -- linuxqq
             },
             class = {
                 "Arandr",
@@ -716,8 +717,11 @@ local function run_once(cmd)
     end)
 end
 local apps = {
-    "fcitx", "compton -b -CG", "nm-applet",
-    "libinput-gestures",
+    "fcitx",
+    "compton -b -CG",
+    "nm-applet",
+    --"libinput-gestures",  -- It be removed.
+    --"optimus-manager-qt",
 }
 for _, i in pairs(apps) do
     run_once(i)

@@ -30,7 +30,7 @@ local function weather(city)
     })
     json = JSON.decode(table.concat(json))
 
-    if nil == res then
+    if nil == res or json.errcode == 100 then
         return {
             status = false,
             reason = "error",

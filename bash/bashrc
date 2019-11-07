@@ -51,6 +51,7 @@ alias v='vim'
 alias py='ipython'
 has_cmd bat && alias cat='bat'
 has_cmd proxychains && alias ldcv='proxychains -q ldcv'
+has_cmd ccal && alias cal='ccal -u'
 
 alias gd='git diff -w'
 alias gdm='git diff -w master'
@@ -270,7 +271,7 @@ for fun in "${unexport_cmds[@]}"; do
 done
 unset unexport_cmds
 
-[[ -r ~/.environment ]] && source ~/.environment
+[[ -r $HOME/.profile ]] && source $HOME/.profile
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag
