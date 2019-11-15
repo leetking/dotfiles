@@ -52,6 +52,7 @@ alias py='ipython'
 has_cmd bat && alias cat='bat'
 has_cmd proxychains && alias ldcv='proxychains -q ldcv'
 has_cmd ccal && alias cal='ccal -u'
+#has_cmd bear && alias make='bear make'
 
 alias gd='git diff -w'
 alias gdm='git diff -w master'
@@ -196,7 +197,7 @@ alias ..='builtin cd ..'
 HISTTIMEFORMAT="%y-%m-%d %T "
 # vi mode
 # The implement of clearing screan by 'ctrl+l' is in file ~/.inputrc
-set -o vi
+#set -o vi
 # enable core, 10MB = 20480 blocks
 ulimit -c 20480
 

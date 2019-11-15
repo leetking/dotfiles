@@ -26,6 +26,7 @@ local function power(adapter)
 
     obj.notify_warn = false
     obj.notify_urgent = false
+    obj.hibernate_timeout = 10
     obj.update = function(this)
         local path = "/sys/class/power_supply/"..adapter.."/"
         local cur = cat(path.."energy_now")
@@ -33,60 +34,90 @@ local function power(adapter)
         local sts = cat(path.."status")
         if sts:match("Full") then
             this:set_markup("<span color='#0000ff' size='large'>🔌</span>")
+            return
+        end
+
+        local precentage = cur*100/cap
+        local ICONS = {
+            -- empty, low, 1/2, full, charging
+            [0] = "", "", "", "", "",
+        }
+        if sts:match("Charging") then
+            if this.notify then
+                naughty.destroy(this.notify)
+            end
+            this.notify_warn = false
+            this.notify_urgent = false
+            this.hibernate_timeout = 10
+            local color = "#00ff00"
+            local icon = ICONS[idx]
+            idx = (idx+1)%(#ICONS+1)
+            this:set_markup(("<span color='%s' font_family='Ionicons' size='large'>%s</span>"):format(color, icon))
+            return
+        end
+
+        if precentage >= 15 and this.notify then
+            naughty.destroy(this.notify)
+        end
+
+        local color = ""
+        local i
+        if     precentage >= 90 then i = 3
+        elseif precentage >= 40 then i = 2
+        elseif precentage >= 15 then i = 1
         else
-            local color
-            local icon
-            local precentage = cur*100/cap
-            local ICONS = {
-                -- empty, low, 1/2, full, charging
-                [0] = "", "", "", "", "",
-            }
-            if sts:match("Charging") then
+            i = 0
+            if precentage >= 10 then
+                color = "orange"
+                if not this.notify_warn then
+                    this.notify_warn = true
+                    this.notify = naughty.notify({
+                      title = "Battery",
+                      text = "The power of battery is lower than 15%!",
+                      timeout = 30,
+                      hover_timeout = 60,
+                      position = "top_right",
+                    })
+                end
+            elseif precentage >= 5 then
+                color = "red"
+                if not this.notify_urgent then
+                    this.notify_urgent = true
+                    this.notify = naughty.notify({
+                        title = "Battery",
+                        text = "The power of battery is lower than 10%!",
+                        timeout = 30,
+                        hover_timeout = 60,
+                        position = "top_right",
+                    })
+                end
+            elseif precentage < 5 then
+                color = "red"
                 if this.notify then
                     naughty.destroy(this.notify)
                 end
-                this.notify_warn = false
-                this.notify_urgent = false
-                color = "color='#00ff00'"
-                icon = ICONS[idx]
-                precentage = ""
-                idx = (idx+1)%(#ICONS+1)
-            else
-                local i
-                if     precentage >= 90 then i = 3
-                elseif precentage >= 40 then i = 2
-                elseif precentage >= 15 then i = 1
-                else
-                    i = 0
-                    if precentage >= 10 and not this.notify_warn then
-                        this.notify_warn = true
-                        this.notify = naughty.notify({
-                            title = "LOW BATTERY",
-                            text = "The power of battery is lower than 15%!",
-                            timeout = 7,
-                            hover_timeout = 20,
-                            position = "top_right",
-                        })
-                    elseif not this.notify_urgent then
-                        this.notify_urgent = true
-                        this.notify = naughty.notify({
-                            title = "LOW BATTERY",
-                            text = "The power of battery is lower than 10%!",
-                            timeout = 30,
-                            hover_timeout = 60,
-                            position = "top_right",
-                        })
-                    elseif precentage < 5 then
-                        -- TODO hibernate to HDD
-                    end
+                this.notify = naughty.notify({
+                    title = "Battery",
+                    text = "The power of battery is lower than 5%!\n"
+                           .."The computer will hibernate after "
+                           ..this.hibernate_timeout
+                           .." second(s) to save your work.",
+                    timeout = 1,
+                    position = "top_middle",
+                })
+                if this.hibernate_timeout == 0 then
+                    this.hibernate_timeout = 10
+                    awful.spawn("systemctl hibernate")
                 end
-                icon = ICONS[i]
-                color = (i == 0) and "color='#ff0000'" or ""
-                precentage = ("<span %s> %.1f%%</span>"):format(color, precentage)
+                this.hibernate_timeout = this.hibernate_timeout -1
             end
-            this:set_markup(("<span %s font_family='Ionicons' size='large'>%s</span>"):format(color, icon)..precentage)
         end
+        local icon = ICONS[i]
+        color = (color ~= "") and "color='"..color.."'" or ""
+        precentage = ("<span %s> %.1f%%</span>"):format(color, precentage)
+        this:set_markup(("<span %s font_family='Ionicons' size='large'>%s</span>"):format(color, icon)..precentage)
     end
+
     obj.timer = gears.timer({
         timeout = 1,
         autostart = true,

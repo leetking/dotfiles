@@ -14,7 +14,7 @@ cursor_blink = off
 cursor_shape = block
 
 # $BROWSER is used by default
-browser = chromium
+#browser = chromium
 
 # Custom
 [colors]

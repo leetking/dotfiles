@@ -1,0 +1,4 @@
+set selection-clipboard clipboard
+set statusbar-home-tilde
+# The default is normal model, but it causes broken of chromium
+set sandbox none
