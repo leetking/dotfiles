@@ -1,0 +1,16 @@
+## -*- Conf -*-
+#ORGMAIL = /var/mail/$USER
+#MAILDIR = $HOME/.cache/email/
+#LOGFILE = $HOME/.cache/email/procmail.log
+##SHELL = /bin/bash
+#LOCKFILE = $HOME/.cache/email/maildir.lock
+#VERBOSE = no
+#
+## webmaster always sends junk mail~~
+#:0
+#* ^From: webmaster@st\.zju\.edu\.cn
+#/dev/null
+#
+## all other mail goes to inbox
+#:0:
+#inbox/

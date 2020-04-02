@@ -12,11 +12,15 @@ C_SOURCE_EXTENSIONS = ['.c', ]
 CPP_SOURCE_EXTENSIONS = ['.cc', '.cpp', '.cxx', '.C', '.m', '.mm' ]
 
 def pkg_config(pkg):
-    return subprocess.check_output(['pkg-config', '--cflags', pkg], universal_newlines=True).split()
+    try:
+        output = subprocess.check_output(['pkg-config', '--cflags', pkg], universal_newlines=True)
+    except:
+        return []
+    return output.split()
 
 def gcc_version():
     output = subprocess.check_output(['gcc', '--version']).decode()
-    version = re.search(r'\d\.\d\.\d', output)[0]
+    version = re.search(r'\d\.\d\.\d', output).group(0)
     return version
 
 PKGS = ('sdl2', 'SDL2_image', 'SDL2_mixer', 'gtk+-3.0', 'gtkmm-3.0',)
@@ -105,7 +109,7 @@ def Settings( **kwargs ):
     if kwargs[ 'language' ] != 'cfamily':
         return {}
 
-    settings = generate_specificial_settings(kwargs[ 'filename' ])
+    settings = generate_specificial_settings(kwargs['filename'])
 
     if not database:
         return settings
@@ -120,5 +124,12 @@ def Settings( **kwargs ):
     return {
         'flags': final_flags,
         'include_paths_relative_to_dir': compilation_info.compiler_working_dir_,
-        'override_filename': filename
+        'override_filename': filename,
     }
+
+# old fanshion
+def FlagsForFile(filename, **kwargs):
+    kwargs['filename'] = filename
+    kwargs['language'] = 'cfamily'
+    kwargs['do_cache'] = True
+    return Settings(**kwargs)

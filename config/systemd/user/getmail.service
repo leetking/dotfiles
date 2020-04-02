@@ -1,0 +1,8 @@
+[Unit]
+Description=Run getmail to get new email
+
+[Service]
+ExecStart=/usr/bin/getmail --verbose
+
+[Install]
+WantedBy=default.target
