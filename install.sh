@@ -12,11 +12,9 @@ InstallBash() {
 
 # vim
 InstallVim() {
-    ln -sf ${CURR_PATH}/vim/vimrc   ~/.vimrc
-    ln -sf ${CURR_PATH}/vim/gvimrc  ~/.gvimrc
     # NOTE 不能写成rm -r ~/.vim/这样会把原始文件一起删除掉，这是软链接的坑
     rm -r ~/.vim
-    ln -sf ${CURR_PATH}/vim/vim     ~/.vim
+    ln -s ${CURR_PATH}/vim/vim     ~/.vim
 }
 
 # sdcv dictionaries

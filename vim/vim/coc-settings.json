@@ -2,11 +2,12 @@
   "languageserver": {
     "ccls": {
       "command": "ccls",
+      //"args": ["--log-file=/tmp/lsp_ccls.log"],
       "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
       "rootPatterns": [".ccls-root", "compile_commands.json"],
       "initializationOptions": {
         "cache": {
-          "directory": ".ccls-cache"
+          "directory": "/tmp/.cache/ccls"
         },
         "client": {
           "snippetSupport": true
@@ -15,10 +16,10 @@
     },
 
     "python": {
-      "command": "python",
-      "args": ["-mpyls", "-vv", "--log-file", "/tmp/lsp_python.log"],
-      "trace.server": "verbose",
+      "command": "pyls",
+      "args": ["-v", "--log-file", "/tmp/lsp_python.log"],
       "filetypes": ["python"],
+      "trace.server": "verbose",
       "settings": {
         "pyls": {
           "enable": true,
@@ -81,7 +82,8 @@
     "bash": {
       "command": "bash-language-server",
       "args": ["start"],
-      "filetypes": ["sh", "bash"]
+      "filetypes": ["sh", "bash"],
+      "ignoredRootPaths": ["~"]
     },
 
     "cmake": {
@@ -93,6 +95,18 @@
       "initializationOptions": {
         "buildDirectory": "build"
       }
+    },
+
+    "latex": {
+      "command": "texlab",
+      // not start server at home directory, since it won't work.
+      "ignoredRootPaths": ["~"],
+      "filetypes": ["tex", "bib", "plaintex", "context"]
     }
+
+    //"jdtls": {
+    //  "command": "jdtls",
+    //  "filetypes": ["java"]
+    //}
   }
 }

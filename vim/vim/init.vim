@@ -1,1 +1,1 @@
-/home/ltk/.vimrc
+vimrc
