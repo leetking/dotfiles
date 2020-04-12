@@ -1,0 +1,77 @@
+body {
+    font-family: 'Dejavu sans', 'Avenir', 'Arial', sans-serif;
+}
+
+pre, code {
+    font-size: 14px;
+    font-family: 'migu 1m', Consolas, monospace;
+}
+
+/* for *emphasis* */
+/*
+em, i {
+    font-weight: bold;
+    font-style: normal;
+}
+*/
+
+/* for **strong emphasis** */
+/*
+strong, b {
+    font-weight: bold;
+    font-style: italic;
+}
+*/
+
+h1 {
+    text-align: center !important;
+    counter-reset: h2;
+}
+
+h2:before, h3:before, h4:before, h5:before {
+    line-height: 1.5em;
+    font-weight: bold;
+}
+
+h2 {
+    counter-reset: h3;
+    counter-increment: h2;
+}
+
+h2:before {
+    content: "§ " counter(h2, cjk-ideographic) "、";
+    font-family: initial;
+}
+
+h3 {
+    counter-reset: h4;
+    counter-increment: h3;
+}
+h3:before {
+    content: "§ " counter(h2) "." counter(h3) ". ";
+    font-family: initial;
+}
+
+h4 {
+    counter-reset: h5;
+    counter-increment: h4;
+}
+h4:before {
+    content: "§ " counter(h2) "." counter(h3) "." counter(h4) ". ";
+    font-family: initial;
+}
+
+h5{
+    counter-reset: h6;
+    counter-increment: h5;
+}
+h5:before {
+    content: "§ " counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) ". ";
+    font-family: initial;
+}
+
+
+p:hover:after {
+    content: " ¶";
+    font-color: #444;
+}
