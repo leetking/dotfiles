@@ -8,7 +8,9 @@ local function popen(cmd, fun)
     local out
     out = file:read("*a")
     local _, _, code = file:close()
-    return fun(out, code)
+    if type(fun) == "function" then
+        return fun(out, code)
+    end
 end
 
 local function with(obj, fun)
@@ -17,7 +19,7 @@ local function with(obj, fun)
     return ret
 end
 
-function brightness(device)
+local function brightness(device)
     local awful = require("awful")
 
     local obj = {}

@@ -85,13 +85,13 @@ makejava() {
     done
 
     # 单个java文件
-    package=$(grep -oP '(?<=package)\s+[\w\.]+' "${FILENAME}" | grep -oP '[\w\.]+')
+    package=$(grep -oP '[\w\.]+' <(grep -oP '(?<=package)\s+[\w\.]+' "${FILENAME}"))
     case "${OPTS}" in
         cleanall|ca)
             echo "rm -f *.class"
             rm -f *.class
             for i in `ls *.java 2> /dev/null`; do
-                package=$(grep -oP '(?<=package)\s+[\w\.]+' "$i" | grep -oP '[\w\.]+')
+                package=$(grep -oP '[\w\.]+' <(grep -oP '(?<=package)\s+[\w\.]+' "$i"))
                 if [ -z "${package}" ]; then
                     echo "rm -f ${FILENAME%.*}.class"
                     rm -f ${FILENAME%.*}.class
