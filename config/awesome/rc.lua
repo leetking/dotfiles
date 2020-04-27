@@ -49,7 +49,8 @@ end
 beautiful.init(gears.filesystem.get_dir("config") .. "themes/A/init.lua")
 
 -- This is used later as the default terminal and editor to run.
-local terminal = "termite"
+--local terminal = "termite"
+local terminal = "alacritty"
 local editor = os.getenv("EDITOR")
 --editor_cmd = terminal .. " -e " .. editor
 

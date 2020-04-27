@@ -48,16 +48,23 @@ alias ll='ls -hl'
 alias la='ls -A'
 alias l='ls -CF'
 alias v='vim'
-alias py='ipython'
+alias py='ipython3'
 has_cmd bat && alias cat='bat'
 has_cmd proxychains && alias ldcv='proxychains -q ldcv'
 has_cmd ccal && alias cal='ccal -u'
+has_cmd neomutt && alias mutt='neomutt'
+#has_cmd nvim && {
+#    alias vimdiff='nvim -d'
+#    alias vim='nvim'
+#}
 #has_cmd bear && alias make='bear make'
 
-alias gd='git diff -w'
-alias gdm='git diff -w master'
-alias gma='git commit -a'
-alias gmaa='git commit -a --amend'
+has_cmd git && {
+    alias gd='git diff -w'
+    alias gdm='git diff -w master'
+    alias gma='git commit -a'
+    alias gmaa='git commit -a --amend'
+}
 
 
 clip() {
@@ -69,6 +76,40 @@ clip() {
         #                nothing as STDIN
         sed -n "$1p" $2 | xclip -selection clipboard
     fi
+}
+
+up() {
+    # up [file]
+    local host="https://paste.ubuntu.com"
+    local expiration=year
+    local url
+    if [[ -f "$1" ]]; then
+        url=$(curl --include \
+             --silent \
+             --data-urlencode poster="$USER" \
+             --data-urlencode syntax=text \
+             --data-urlencode expiration=$expiration \
+             --data-urlencode content@"$1" \
+             $host | grep -o '/p/\(.\+\)')
+    elif [[ -z "$1" ]]; then
+        url=$(cat | curl --include \
+             --silent \
+             --data-urlencode poster="$USER" \
+             --data-urlencode syntax=text \
+             --data-urlencode expiration=$expiration \
+             --data-urlencode content@- \
+             $host | grep -o '/p/\(.\+\)')
+    else
+        url=$(curl --include \
+             --silent \
+             --data-urlencode poster="$USER" \
+             --data-urlencode syntax=text \
+             --data-urlencode expiration=$expiration \
+             --data-urlencode content="$1" \
+             $host | grep -o '/p/\(.\+\)')
+    fi
+
+    echo "$host$url"
 }
 
 rm() {
@@ -273,6 +314,8 @@ done
 unset unexport_cmds
 
 [[ -r $HOME/.profile ]] && source $HOME/.profile
+
+CHROOT=/var/lib/archbuild/
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag

@@ -1,0 +1,1 @@
+../plug.conf.avail/coc.vim

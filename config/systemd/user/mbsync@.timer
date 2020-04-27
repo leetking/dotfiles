@@ -1,0 +1,10 @@
+[Unit]
+Description=Run mbsync every %i minute(s)
+
+[Timer]
+OnActiveSec=%imin
+OnUnitActiveSec=%imin
+Unit=mbsync.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+tag-add() {
+:
+}
+
+tag-rm() {
+:
+}
+
+tag-ls() {
+:
+}
+
+tag-exa() {
+:
+}
+
+tag-show() {
+:
+}
+
+tag-file() {
+:
+}
+
+tag-help() {
+    echo "tag [add|rm|ls|exa|show|files] {files|tags}"
+}
+
+tag() {
+    local op="$1"
+    case "$1" in
+        add)
+            ;;
+        rm)
+            ;;
+        ls)
+            ;;
+        exa)
+            ;;
+        show)
+            ;;
+        file)
+            ;;
+        *)
+            tag-help
+            ;;
+    esac
+}
+
+
+tag

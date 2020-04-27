@@ -1,0 +1,8 @@
+[Unit]
+Description=Run mbsync to sync my email
+
+[Service]
+ExecStart=/usr/bin/proxychains -q mbsync --all --verbose
+
+[Install]
+WantedBy=default.target

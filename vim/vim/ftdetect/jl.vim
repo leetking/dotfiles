@@ -1,1 +1,1 @@
-autocmd BufRead,BufNewFile *.jl :set filetype=julia
+autocmd BufRead,BufNewFile *.jl setlocal filetype=julia
