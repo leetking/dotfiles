@@ -70,7 +70,6 @@ h5:before {
     font-family: initial;
 }
 
-
 p:hover:after {
     content: " ¶";
     font-color: #444;

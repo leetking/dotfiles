@@ -175,7 +175,7 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
-awful.screen.brightness = brightness("eDP-1")
+awful.screen.brightness = brightness("eDP1")
 -- Init a screen
 awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)

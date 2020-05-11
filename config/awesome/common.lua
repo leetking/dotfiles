@@ -1,8 +1,3 @@
-local DEBUG = false
-
-local function D(...)
-end
-
 local function popen(cmd, fun)
     local file = io.popen(cmd, "r")
     local out
@@ -25,24 +20,18 @@ local function brightness(device)
     local obj = {}
 
     obj.brightness = 1      -- default value
-    obj.DEVICE = device or "eDP-1"
+    obj.DEVICE = device or "eDP1"
     obj.MAX_VALUE = 1.15
     obj.MIN_VALUE = 0.2
 
     function obj.raise(this, v)
-        if this.brightness >= this.MAX_VALUE then
-            return
-        end
-        this.brightness = this.brightness + v/100.0
-        awful.spawn(("xrandr --output %s --brightness %f"):format(this.DEVICE, this.brightness))
+        this.brightness = math.min(this.brightness + v/100.0, this.MAX_VALUE)
+        awful.spawn(("xrandr --output %s --brightness %.4f"):format(this.DEVICE, this.brightness))
     end
 
     function obj.drain(this, v)
-        if this.brightness <= this.MIN_VALUE then
-            return
-        end
-        this.brightness = this.brightness - v/100.0
-        awful.spawn(("xrandr --output %s --brightness %f"):format(this.DEVICE, this.brightness))
+        this.brightness = math.max(this.brightness - v/100.0, this.MIN_VALUE)
+        awful.spawn(("xrandr --output %s --brightness %.4f"):format(this.DEVICE, this.brightness))
     end
 
     function obj.max(this)
@@ -56,13 +45,8 @@ local function brightness(device)
     return obj
 end
 
-local function start_dotdesktop(path)
-end
-
 return {
     popen = popen,
-    D = D,
     with = with,
     brightness = brightness,
-    start_dotdesktop = start_dotdesktop,
 }

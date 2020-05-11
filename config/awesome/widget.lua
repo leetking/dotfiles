@@ -298,6 +298,7 @@ local function weather(city)
     obj.city = city or "成都"
     obj.t_out = 60    -- 1 minute
     obj.update = function(this)
+        --[[
         awful.spawn.easy_async({HERE.."/bin/weather", this.city},
                 function(stdout, _, _, _)
             this.cache = JSON.decode(stdout)
@@ -306,6 +307,7 @@ local function weather(city)
                 this:set_markup(fmtstr:format(icon, this.cache.today.temp_now))
             end
         end)
+        --]]
     end
 
     obj.timer = gears.timer({

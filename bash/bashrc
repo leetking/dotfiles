@@ -125,9 +125,11 @@ rm() {
     local trash="/tmp/.rm.trash"
     mkdir -p $trash
     for f in "$@"; do
-        suffix="$(cut -d' ' -f1 <(sha256sum <(ls -ld "$f"))).$(date +%F_%H%M%S).bak"
-        #echo "rm $f"
-        mv "$f" "$trash/${f##*/}.$suffix"
+        if [[ -e "$f" ]]; then
+            suffix="$(cut -d' ' -f1 <(sha256sum <(ls -ld "$f"))).$(date +%F_%H%M%S).bak"
+            f=${f%%/}       # remove the end '/', if it's a directory
+            mv "$f" "$trash/${f##*/}.$suffix"
+        fi
     done
 }
 
