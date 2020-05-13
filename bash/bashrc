@@ -42,12 +42,12 @@ has_cmd() {
 }
 
 has_cmd dircolors && {
-    [ -r ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls -F --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-    alias sdcv='sdcv --color'
+[ -r ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+alias ls='ls -F --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias sdcv='sdcv --color'
 }
 alias tree='tree -F -C --charset=ascii'
 alias ll='ls -hl'
@@ -60,16 +60,16 @@ has_cmd proxychains && alias ldcv='proxychains -q ldcv'
 has_cmd ccal && alias cal='ccal -u'
 has_cmd neomutt && alias mutt='neomutt'
 #has_cmd nvim && {
-#    alias vimdiff='nvim -d'
-#    alias vim='nvim'
+#alias vimdiff='nvim -d'
+#alias vim='nvim'
 #}
 #has_cmd bear && alias make='bear make'
 
 has_cmd git && {
-    alias gd='git diff -w'
-    alias gdm='git diff -w master'
-    alias gma='git commit -a'
-    alias gmaa='git commit -a --amend'
+alias gd='git diff -w'
+alias gdm='git diff -w master'
+alias gma='git commit -a'
+alias gmaa='git commit -a --amend'
 }
 
 
@@ -122,6 +122,7 @@ up() {
 }
 
 rm() {
+    # move file(s) to $trash (/tmp/.rm.trash/) directory
     local trash="/tmp/.rm.trash"
     mkdir -p $trash
     for f in "$@"; do
@@ -138,6 +139,35 @@ alias rm!='/bin/rm'
 empty-trash() {
     local trash="/tmp/.rm.trash"
     rm! -rf $trash/*
+}
+
+has_cmd gs && {
+mergepdf() {
+    # merge pdf files to one using `gs' command
+    # > mergepdf <pdf-filelist> <output.pdf>
+    local inputlist="${@:1:$#-1}"
+    local output="${@:$#}"
+    gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile="$output" "${inputlist[@]}"
+}
+
+shrinkpdf() {
+    # reduce pdf file size
+    # > shrinkpdf <input.pdf> <output.pdf>
+    local input="$1"
+    local output="$2"
+    if [[ ! -f "$input" ]]; then
+        echo "shrinkpdf <input.pdf> <output.pdf>"
+        echo "input file ($input) not found"
+        return 1
+    fi
+    if [[ -e "$2" ]]; then
+        echo "shrinkpdf <input.pdf> <output.pdf>"
+        echo "output file (\"$output\") existed"
+        return 2
+    fi
+    gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/ebook \
+        -sOutputFile="$output" "$input"
+}
 }
 
 host=''
