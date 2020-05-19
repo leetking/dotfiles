@@ -212,7 +212,7 @@ call plug#begin('~/.local/share/vim/plugged')
     Plug 'vim-airline/vim-airline'
     Plug 'scrooloose/nerdtree'
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    Plug 'jackguo380/vim-lsp-cxx-highlight'
+    "Plug 'jackguo380/vim-lsp-cxx-highlight'
     Plug 'kien/ctrlp.vim'
 
     Plug 'lervag/vimtex'

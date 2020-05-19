@@ -4,8 +4,14 @@ if [[ $- != *i* ]]; then
 fi
 
 
-HISTSIZE=200000
-#HISTFILESIZE=20000
+HISTSIZE=-1         # unlimited size
+HISTFILESIZE=-1
+HISTTIMEFORMAT="%y-%m-%d %T "
+#HISTIGNORE="ls:l:ll:la:vim:v:vi:gh:cd:..:py:history"
+#&: means suppress duplicated entries
+#?: ignore one character input, ?? and so on
+HISTIGNORE="&:?:??:???:history *:gh *"
+shopt -s histappend # append commands to history file, rather than overwrite it
 
 # \[ \] to indicate a special string amid them.
 black=$'\[\e[1;30m\]'
@@ -36,12 +42,12 @@ has_cmd() {
 }
 
 has_cmd dircolors && {
-    [ -r ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls -F --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-    alias sdcv='sdcv --color'
+[ -r ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+alias ls='ls -F --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias sdcv='sdcv --color'
 }
 alias tree='tree -F -C --charset=ascii'
 alias ll='ls -hl'
@@ -54,16 +60,16 @@ has_cmd proxychains && alias ldcv='proxychains -q ldcv'
 has_cmd ccal && alias cal='ccal -u'
 has_cmd neomutt && alias mutt='neomutt'
 #has_cmd nvim && {
-#    alias vimdiff='nvim -d'
-#    alias vim='nvim'
+#alias vimdiff='nvim -d'
+#alias vim='nvim'
 #}
 #has_cmd bear && alias make='bear make'
 
 has_cmd git && {
-    alias gd='git diff -w'
-    alias gdm='git diff -w master'
-    alias gma='git commit -a'
-    alias gmaa='git commit -a --amend'
+alias gd='git diff -w'
+alias gdm='git diff -w master'
+alias gma='git commit -a'
+alias gmaa='git commit -a --amend'
 }
 
 
@@ -74,7 +80,8 @@ clip() {
     else
         # a small trick: $2 without quote if no argument given then put
         #                nothing as STDIN
-        sed -n "$1p" $2 | xclip -selection clipboard
+        #sed -n "$1p" $2 | xclip -selection clipboard
+        xclip -selection clipboard <(sed -n "$1p" $2)
     fi
 }
 
@@ -84,13 +91,14 @@ up() {
     local expiration=year
     local url
     if [[ -f "$1" ]]; then
-        url=$(curl --include \
-             --silent \
-             --data-urlencode poster="$USER" \
-             --data-urlencode syntax=text \
-             --data-urlencode expiration=$expiration \
-             --data-urlencode content@"$1" \
-             $host | grep -o '/p/\(.\+\)')
+        url=$(grep -o '/p/\(.\+\)' \
+                <(curl --include \
+                    --silent \
+                    --data-urlencode poster="$USER" \
+                    --data-urlencode syntax=text \
+                    --data-urlencode expiration=$expiration \
+                    --data-urlencode content@"$1" \
+                $host))
     elif [[ -z "$1" ]]; then
         url=$(cat | curl --include \
              --silent \
@@ -100,25 +108,29 @@ up() {
              --data-urlencode content@- \
              $host | grep -o '/p/\(.\+\)')
     else
-        url=$(curl --include \
-             --silent \
-             --data-urlencode poster="$USER" \
-             --data-urlencode syntax=text \
-             --data-urlencode expiration=$expiration \
-             --data-urlencode content="$1" \
-             $host | grep -o '/p/\(.\+\)')
+        url=$(grep -o '/p/\(.\+\)' \
+                <(curl --include \
+                    --silent \
+                    --data-urlencode poster="$USER" \
+                    --data-urlencode syntax=text \
+                    --data-urlencode expiration=$expiration \
+                    --data-urlencode content="$1" \
+                 $host))
     fi
 
     echo "$host$url"
 }
 
 rm() {
+    # move file(s) to $trash (/tmp/.rm.trash/) directory
     local trash="/tmp/.rm.trash"
     mkdir -p $trash
     for f in "$@"; do
-        suffix="$(md5sum <(ls -ld "$f") | cut -d' ' -f1).$(date +%F_%H%M%S).bak"
-        #echo "rm $f"
-        mv "$f" "$trash/${f##*/}.$suffix"
+        if [[ -e "$f" ]]; then
+            suffix="$(cut -d' ' -f1 <(sha256sum <(ls -ld "$f"))).$(date +%F_%H%M%S).bak"
+            f=${f%%/}       # remove the end '/', if it's a directory
+            mv "$f" "$trash/${f##*/}.$suffix"
+        fi
     done
 }
 
@@ -127,6 +139,35 @@ alias rm!='/bin/rm'
 empty-trash() {
     local trash="/tmp/.rm.trash"
     rm! -rf $trash/*
+}
+
+has_cmd gs && {
+mergepdf() {
+    # merge pdf files to one using `gs' command
+    # > mergepdf <pdf-filelist> <output.pdf>
+    local inputlist="${@:1:$#-1}"
+    local output="${@:$#}"
+    gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile="$output" "${inputlist[@]}"
+}
+
+shrinkpdf() {
+    # reduce pdf file size
+    # > shrinkpdf <input.pdf> <output.pdf>
+    local input="$1"
+    local output="$2"
+    if [[ ! -f "$input" ]]; then
+        echo "shrinkpdf <input.pdf> <output.pdf>"
+        echo "input file ($input) not found"
+        return 1
+    fi
+    if [[ -e "$2" ]]; then
+        echo "shrinkpdf <input.pdf> <output.pdf>"
+        echo "output file (\"$output\") existed"
+        return 2
+    fi
+    gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/ebook \
+        -sOutputFile="$output" "$input"
+}
 }
 
 host=''
@@ -235,7 +276,6 @@ alias ..='builtin cd ..'
 #alias ...='builtin cd ../..'
 #alias 4.='builtin cd ../../../' # we can define more as command 'n.' to implement cd parent directories.
 
-HISTTIMEFORMAT="%y-%m-%d %T "
 # vi mode
 # The implement of clearing screan by 'ctrl+l' is in file ~/.inputrc
 #set -o vi
@@ -278,6 +318,11 @@ dump-path() {
     echo "${PATH//:/$'\n'}"
 }
 
+# grep history
+gh() {
+    grep $@ <(history)
+}
+
 # Add other rocks tree: $HOME/.local
 has_cmd lua && {
     alias luai='lua -e "package.path=package.path..\";$HOME/.config/init.lua\"" -i -linit'
@@ -295,7 +340,7 @@ has_cmd lua && {
 add-path "$HOME/.local/bin"
 # Binaries of Ruby gem for this user
 has_cmd ruby && {
-    RUBY_VERSION=$(ruby -v | grep -o '[[:digit:]]\.[[:digit:]]')
+    RUBY_VERSION=$(grep -o '[[:digit:]]\.[[:digit:]]' <(ruby -v))
     add-path "$HOME/.gem/ruby/$RUBY_VERSION.0/bin"
 }
 

@@ -2,7 +2,9 @@
 
 # configure python environment when it startup
 
-import sys, os, math
+import sys
+import os
+import math
 
 #sys.ps1 = '> '
 #sys.ps2 = ''

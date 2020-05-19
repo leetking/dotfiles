@@ -130,59 +130,52 @@ end
 
 local function volume()
     local obj = wibox.widget.textbox()
-    local notify
-    obj.is_mute = function(this)
-        local mute = false
-        popen("amixer sget Master", function(out) mute = (nil ~= out:find("%[off%]")) end)
-        return mute
+    --local notify
+    obj.muted = false
+    obj.volume = nil
+
+    obj.update_status = function(this)
+        popen("amixer sget Master", function(out)
+            this.muted = (nil ~= out:find("%[off%]"))
+            this.volume = tonumber(out:match("(%d+)%%"))
+        end)
     end
     obj.update = function(this)
+        this:update_status()
         local color = ""
         local icon
-        if this:is_mute() then
+        if this.muted then
             icon = ""
-        elseif this.vlu >= 70 then
+        elseif this.volume >= 70 then
             icon = ""
-        elseif this.vlu >= 40 then
+        elseif this.volume >= 40 then
             icon = ""
         else
             icon = ""
         end
         this:set_markup(("<span %s font_family='Ionicons' size='large'>%s</span> %d%%"):format(
-                color, icon, this.vlu))
+                color, icon, this.volume))
     end
-    popen("amixer sget Master", function(out) obj.vlu = tonumber(out:match("(%d+)%%")) end)
-    obj.raise = function(this, vlu)
-        popen(("amixer sset Master %d%%+"):format(vlu), function(out)
-            this.vlu = tonumber(out:match("(%d+)%%"))
-        end)
+    obj.raise = function(this, delta)
+        popen(("amixer sset Master %d%%+"):format(delta))
         this:update()
     end
-    obj.drain = function(this, vlu)
-        popen(("amixer sset Master %d%%-"):format(vlu), function(out)
-            this.vlu = tonumber(out:match("(%d+)%%"))
-        end)
+    obj.drain = function(this, delta)
+        popen(("amixer sset Master %d%%-"):format(delta))
         this:update()
     end
     obj.toggle = function(this)
-        popen(("amixer sset Master toggle"):format(vlu), function(out)
-            this.vlu = tonumber(out:match("(%d+)%%"))
-        end)
+        popen("amixer sset Master toggle")
         this:update()
     end
     obj.mute = function(this)
-        popen(("amixer sset Master mute"):format(vlu), function(out)
-            this.vlu = tonumber(out:match("(%d+)%%"))
-        end)
+        popen("amixer sset Master mute")
         this:update()
     end
     obj.unmute = function(this)
-        popen(("amixer sset Master unmute"):format(vlu), function(out)
-            this.vlu = tonumber(out:match("(%d+)%%"))
-        end)
+        popen("amixer sset Master unmute")
         this:update()
     end
-    obj:update()
 
     obj:connect_signal("button::release", function(_, _, _, button)
         if button == 1 then
@@ -194,6 +187,13 @@ local function volume()
         end
     end)
 
+    obj.timer = gears.timer({
+        timeout = 1,
+        autostart = true,
+        callback = function() obj:update() end,
+    })
+
+    obj:update()
     return obj
 end
 
@@ -245,7 +245,6 @@ local function sysload()
         step_width = 1,
         widget = wibox.widget.graph
     })
-    local last_idle, last_total = 0, 0
     local obj = awful.widget.watch("uptime", 1,
             function(widget, stdout)
                 local avgload = tonumber(stdout:match("average:%s(%d+%.%d+),"))
@@ -299,14 +298,16 @@ local function weather(city)
     obj.city = city or "成都"
     obj.t_out = 60    -- 1 minute
     obj.update = function(this)
+        --[[
         awful.spawn.easy_async({HERE.."/bin/weather", this.city},
-                function(stdout, stderr, _, _)
+                function(stdout, _, _, _)
             this.cache = JSON.decode(stdout)
             if this.cache.status == true then
                 local icon = icons[this.cache.today.weather] or "?"
                 this:set_markup(fmtstr:format(icon, this.cache.today.temp_now))
             end
         end)
+        --]]
     end
 
     obj.timer = gears.timer({
@@ -352,7 +353,6 @@ local function weather(city)
 end
 
 local function sensor(hwmon)
-    local i = 1
     local obj = awful.widget.watch(("cat /sys/class/hwmon/%s"..
                     "/temp1_input"):format(hwmon),
             2,  -- 2s
@@ -397,7 +397,7 @@ local function clock()
         end
 
         if not obj.lunar_cache then
-            awful.spawn.easy_async({HERE.."/bin/lunar", }, function(stdout, stderr, _, _)
+            awful.spawn.easy_async({HERE.."/bin/lunar", }, function(stdout, _, _, _)
                 obj.lunar_cache = table.concat(JSON.decode(stdout), "\n")
 
                 obj:show_notification()

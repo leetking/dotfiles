@@ -36,3 +36,5 @@ function printtb(t)
         print(k, v)
     end
 end
+
+-- TODO add function inspect()
