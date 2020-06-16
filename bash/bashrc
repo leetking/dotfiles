@@ -10,7 +10,7 @@ HISTTIMEFORMAT="%y-%m-%d %T "
 #HISTIGNORE="ls:l:ll:la:vim:v:vi:gh:cd:..:py:history"
 #&: means suppress duplicated entries
 #?: ignore one character input, ?? and so on
-HISTIGNORE="&:?:??:???:history *:gh *"
+HISTIGNORE="&:?:??:???:history *:gh *:make *"
 shopt -s histappend # append commands to history file, rather than overwrite it
 
 # \[ \] to indicate a special string amid them.

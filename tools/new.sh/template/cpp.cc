@@ -5,13 +5,21 @@
 #include <cstring>
 
 #include <iostream>
-#include <algorithm>
+#include <sstream>
 #include <vector>
-#include <set>
-#include <map>
+#include <array>
+#include <list>
+#include <forward_list>
+#include <deque>
+#include <stack>
 #include <queue>
-
-using namespace std;
+#include <map>
+#include <unordered_map>
+#include <set>
+#include <unordered_set>
+#include <functional>
+#include <algorithm>
+#include <iterator>
 
 #define ARR_SIZE(x)     ((int)sizeof(x)/sizeof(x[0]))
 
