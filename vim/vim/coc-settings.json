@@ -53,7 +53,7 @@
               "enabled": true
             },
             "pycodestyle": {
-              "enabled": true
+              "enabled": false
             },
             "pydocstyle": {
               "enabled": false,
@@ -103,6 +103,18 @@
       "ignoredRootPaths": ["~"],
       "filetypes": ["tex", "bib", "plaintex", "context"]
     }
+
+    //"flow": {
+    //  "command": "flow",
+    //  "args": ["lsp"],
+    //  "filetypes": ["javascript", "javascriptreact"],
+    //  "initializationOptions": {},
+    //  "requireRootPattern": true,
+    //  "rootPatterns": [
+    //      ".flowconfig",
+    //      ".git"
+    //  ]
+    //}
 
     //"jdtls": {
     //  "command": "jdtls",

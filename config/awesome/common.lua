@@ -14,6 +14,7 @@ local function with(obj, fun)
     return ret
 end
 
+--[[
 local function brightness(device)
     local awful = require("awful")
 
@@ -44,9 +45,40 @@ local function brightness(device)
 
     return obj
 end
+--]]
+
+
+local function brightnessctl()
+    local awful = require("awful")
+    local obj = {}
+
+    function obj.raise(_, v)
+        if v < 0 then
+            return
+        end
+        awful.spawn(("brightnessctl set +%.0f%%"):format(v))
+    end
+
+    function obj.drain(_, v)
+        if v < 0 then
+            return
+        end
+        awful.spawn(("brightnessctl set %.0f%%-"):format(v))
+    end
+
+    function obj.max(_)
+        awful.spawn("brightnessctl set 100%")
+    end
+
+    function obj.min(_)
+        awful.spawn("brightnessctl set 100%")
+    end
+
+    return obj
+end
 
 return {
     popen = popen,
     with = with,
-    brightness = brightness,
+    brightness = brightnessctl,
 }

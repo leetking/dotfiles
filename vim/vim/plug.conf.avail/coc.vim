@@ -1,6 +1,8 @@
-let g:coc_global_extensions = ['coc-json', 'coc-vimlsp', 'coc-tsserver']
+let g:coc_global_extensions = ['coc-json', 'coc-vimlsp']
+"let g:coc_global_extensions = ['coc-json', 'coc-vimlsp', 'coc-tsserver']
 
-set updatetime=1000
+"set updatetime=1000
+set updatetime=500
 if has('patch8.1.1068')
     " Use `complete_info` if your (Neo)Vim version supports it.
     inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
