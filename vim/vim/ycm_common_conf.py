@@ -1,9 +1,7 @@
-import platform
 import os, re
 import subprocess
 from operator import add
 from functools import reduce
-from distutils.sysconfig import get_python_inc
 
 import ycm_core
 
