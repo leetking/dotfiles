@@ -2,9 +2,10 @@
   "languageserver": {
     "ccls": {
       "command": "ccls",
-      //"args": ["--log-file=/tmp/lsp_ccls.log"],
-      "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
+      "args": ["-v=2", "--log-file=/tmp/lsp_ccls.log"],
+      "filetypes": ["c", "cc", "cpp", "cuda", "objc", "objcpp"],
       "rootPatterns": [".ccls-root", "compile_commands.json"],
+      "trace.server": "verbose",
       "initializationOptions": {
         "cache": {
           "directory": "/tmp/.cache/ccls"
@@ -12,6 +13,9 @@
         "client": {
           "snippetSupport": true
         }
+        //"clang": {
+        //    "extraArgs": ["-x c++", "-c"]
+        //}
       }
     },
 

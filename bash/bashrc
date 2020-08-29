@@ -34,15 +34,13 @@ normal=$'\[\e[m\]'
 #white=$'\e[1;37m'
 #normal=$'\e[m'
 
-unexport_cmds=("has_cmd" "_gen_add_path")
-
 has_cmd() {
     hash "$1" &> /dev/null
     return $?
 }
 
 has_cmd dircolors && {
-[ -r ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+[[ -r ~/.dircolors ]] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 alias ls='ls -F --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
@@ -125,6 +123,7 @@ rm() {
     # move file(s) to $trash (/tmp/.rm.trash/) directory
     local trash="/tmp/.rm.trash"
     mkdir -p $trash
+    local f
     for f in "$@"; do
         if [[ -e "$f" ]]; then
             suffix="$(cut -d' ' -f1 <(sha256sum <(ls -ld "$f"))).$(date +%F_%H%M%S).bak"
@@ -200,6 +199,7 @@ gen_short_workpath() {
         return
     fi
     dir=""
+    local i
     for ((i = 0; i < lastidx; ++i)); do
         dir="${dir}/$(grep -Po '^\.*[^/]?' <<< ${tmp[$i]})"
     done
@@ -245,10 +245,12 @@ cd() {
     local wks="$PWD"
     [ '/' == "${1:0:1}" ] && wks=""
     local dir=(${1//\//$'\n'})
+    local i
     for ((i = 0; i < ${#dir[@]}; ++i)); do
         local pat=${dir[i]}
         local cddirs=()
         local idx=0
+        local j
         for j in $(\ls -a $wks/ 2> /dev/null); do
             [ -d "$wks/$j" ] && {
                 [ "." == "${pat:0:1}" -a "." == "${j:0:1}" ] && {
@@ -285,30 +287,32 @@ ulimit -c 20480
 has_cmd chez-scheme && alias scheme='chez-scheme'
 has_cmd bc && alias bc='bc -lq'
 
-_add_path() {
-    local VAR=$1
-    local d="$2"
-    shift 2
-    eval "local path=\"$d\$$VAR$d\""
-    for i in $@; do
-        case "$path" in
-            *"$d$i$d"*) :;; # already here
-            *) eval "$VAR=\"\$$VAR$d$i\"";;
-        esac
-    done
-}
-
 _gen_add_path() {
-    # a little Meta Programming in Bash
-    local funcs=("add-path      PATH        :"
-                 "lua_add-path  LUA_PATH    ;"
-                 "lua_add-cpath LUA_CPATH   ;")
-    for func in "${funcs[@]}"; do
-        local func=($func)
-        eval "${func[0]}() {
-            _add_path ${func[1]} \"${func[2]}\" \$@
-        }"
-    done
+     add_path() {
+         local VAR=$1
+         local d="$2"
+         shift 2
+         eval "local path=\"$d\$$VAR$d\""
+         local i
+         for i in $@; do
+             case "$path" in
+                 *"$d$i$d"*) :;; # already here
+                 *) eval "$VAR=\"\$$VAR$d$i\"";;
+             esac
+         done
+     }
+
+     # a little Meta Programming in Bash
+     local funcs=("add-path      PATH        :"
+                  "lua_add-path  LUA_PATH    ;"
+                  "lua_add-cpath LUA_CPATH   ;")
+     local func
+     for func in "${funcs[@]}"; do
+         local func=($func)
+         eval "${func[0]}() {
+             add_path ${func[1]} \"${func[2]}\" \$@
+         }"
+     done
 }
 _gen_add_path
 
@@ -353,6 +357,7 @@ export TERM=xterm-256color
 export PS1="$cyan\$host\$(gen_short_workpath)$yellow\$(find_git_branch)$prompt_color\\$ $normal"
 export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
 
+unexport_cmds=("has_cmd")
 for fun in "${unexport_cmds[@]}"; do
     eval "unset $fun"
 done
@@ -361,6 +366,105 @@ unset unexport_cmds
 [[ -r $HOME/.profile ]] && source $HOME/.profile
 
 CHROOT=/var/lib/archbuild/
+
+vmctl() {
+    is_vm_running() {
+        local vm
+        for vm in $(awk -F'"' '{print $2}' <(vboxmanage list runningvms)); do
+            if [[ "$vm" == "$1" ]]; then
+                return 0
+            fi
+        done
+        return -1
+    }
+
+    has_vm() {
+        local vm
+        for vm in $(awk -F'"' '{print $2}' <(vboxmanage list vms)); do
+            if [[ "$vm" == "$1" ]]; then
+                return 0
+            fi
+        done
+        return -1
+    }
+
+    print_vms() {
+        local idx=1
+        local running=
+        local vm
+        for vm in $(awk -F'"' '{print $2}' <(vboxmanage list vms)); do
+            running=
+            if is_vm_running $vm; then
+                running="running"
+            fi
+            echo -e "$idx. $vm\t$running"
+            ((++idx))
+        done
+    }
+
+    print_useage() {
+        echo "Usage: vmctl {start | restart | stop | status} <vmname>"
+        echo "       vmctl [help | list]"
+        echo "       vmctl <vmname>"
+    }
+
+
+    local arg_cnt=$#
+    local cmd="$1"
+    local vmname="$2"
+
+    if [[ $# == 0 ]]; then
+        print_vms
+        return 0
+    fi
+
+    case "$cmd" in
+        "start")
+            if is_vm_running $vmname; then
+                echo "Virtual Machine $vmname is running"
+            else
+                vboxmanage startvm $vmname --type headless
+            fi
+            ;;
+        "restart")
+            if is_vm_running $vmname; then
+                vboxmanage controlvm $vmname reset
+            else
+                echo "Virtual Machine $vmname is not running or doesn't exist"
+            fi
+            ;;
+        "stop")
+            if is_vm_running $vmname; then
+                vboxmanage controlvm $vmname savestate
+            else
+                echo "Virtual Machine $vmname is not running or doesn't exist"
+            fi
+            ;;
+        "status")
+            if is_vm_running $vmname; then
+                echo "Virtual Machine $vmname is running"
+            elif has_vm $vmname; then
+                echo "Virtual Machine $vmname isn't running"
+            else
+                echo "Virtual Machine $vmname doesn't exist"
+            fi
+            ;;
+        "list")
+            print_vms
+            ;;
+        "help")
+            print_useage
+            ;;
+        *)
+            # not cmd, maybe vmname
+            if has_vm $cmd; then
+                vboxmanage startvm $cmd --type headless
+            else
+                print_useage
+            fi
+            ;;
+    esac
+}
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag
