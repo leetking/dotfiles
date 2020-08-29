@@ -1,7 +1,4 @@
-source $HOME/.vim/plug.conf.d/coc.vim
-source $HOME/.vim/plug.conf.d/vim-airline.vim
-source $HOME/.vim/plug.conf.d/vim-gnutentags.vim
-source $HOME/.vim/plug.conf.d/nerdtree.vim
-"source $HOME/.vim/plug.conf.d/youcompleteme.vim
-
-" TODO implement as a loop
+let s:avail_plug_dir = expand('<sfile>:h').'/plug.conf.d/'
+for s:plug in globpath(s:avail_plug_dir, '*', v:false, v:true)
+    execute 'source '.s:plug
+endfor
