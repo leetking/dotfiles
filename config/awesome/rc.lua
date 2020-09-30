@@ -718,8 +718,8 @@ local function run_once(cmd)
     end)
 end
 local apps = {
-    "fcitx",
-    "compton -b -CG",
+    "fcitx5",
+    "picom -b",
     "nm-applet",
     --"libinput-gestures",  -- It be removed.
     --"optimus-manager-qt",

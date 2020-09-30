@@ -17,29 +17,29 @@ let g:ycm_key_detailed_diagnostics = ''
 let g:ycm_filetype_blacklist = {
     \ 'tagbar': 1, 'nerdtree': 1,
     \}
-let g:ycm_language_server =
-    \[
-    \   {
-    \       'name': 'bash',
-    \       'filetypes': ['sh', 'bash'],
-    \       'cmdline': ['bash-language-server', 'start'],
-    \       'project_root_files': ['.git'],
-    \   },
-    \   {
-    \       'name': 'lua',
-    \       'filetypes': ['lua'],
-    \       'cmdline': ['lua-language-server'],
-    \       'project_root_files': ['.git'],
-    \   },
-    \]
+"let g:ycm_language_server =
+"    \[
+"    \   {
+"    \       'name': 'bash',
+"    \       'filetypes': ['sh', 'bash'],
+"    \       'cmdline': ['bash-language-server', 'start'],
+"    \       'project_root_files': ['.git'],
+"    \   },
+"    \   {
+"    \       'name': 'lua',
+"    \       'filetypes': ['lua'],
+"    \       'cmdline': ['lua-language-server'],
+"    \       'project_root_files': ['.git'],
+"    \   },
+"    \]
 let g:ycm_collect_identifiers_from_tags_files = 1
 " append triggers
 "let g:ycm_semantic_triggers = {
 "    \ 'c,cpp,python,lua,javascript': ['re!\w{2}'],
 "    \ }
 " ycm_semantic_triggers uses Default
-"nnoremap <leader>d :YcmCompleter GoToDefinition<cr>
-"nnoremap <leader>p :YcmCompleter GoToDeclaration<cr>
-"nnoremap <leader>f :YcmCompleter FixIt<cr>
-"nnoremap <leader>j :YcmCompleter GoTo<cr>
-"nnoremap <leader>i :YcmCompleter GetType<cr>
+nnoremap <leader>d :YcmCompleter GoToDefinition<cr>
+nnoremap <leader>p :YcmCompleter GoToDeclaration<cr>
+nnoremap <leader>f :YcmCompleter FixIt<cr>
+nnoremap <leader>j :YcmCompleter GoTo<cr>
+nnoremap <leader>i :YcmCompleter GetType<cr>

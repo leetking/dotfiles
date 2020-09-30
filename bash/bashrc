@@ -10,7 +10,7 @@ HISTTIMEFORMAT="%y-%m-%d %T "
 #HISTIGNORE="ls:l:ll:la:vim:v:vi:gh:cd:..:py:history"
 #&: means suppress duplicated entries
 #?: ignore one character input, ?? and so on
-HISTIGNORE="&:?:??:???:history *:gh *:make *"
+HISTIGNORE="&:?:??:???:history *:gh *:make"
 shopt -s histappend # append commands to history file, rather than overwrite it
 
 # \[ \] to indicate a special string amid them.
@@ -122,13 +122,15 @@ up() {
 rm() {
     # move file(s) to $trash (/tmp/.rm.trash/) directory
     local trash="/tmp/.rm.trash"
-    mkdir -p $trash
+    [[ ! -e $trash ]] && mkdir -p $trash
     local f
     for f in "$@"; do
         if [[ -e "$f" ]]; then
             suffix="$(cut -d' ' -f1 <(sha256sum <(ls -ld "$f"))).$(date +%F_%H%M%S).bak"
-            f=${f%%/}       # remove the end '/', if it's a directory
+            f=${f%%/}       # remove the suffix '/', if it's a directory
             mv "$f" "$trash/${f##*/}.$suffix"
+        else
+            echo "rm: connot remove '$f': No such file or directory"
         fi
     done
 }
@@ -170,7 +172,8 @@ shrinkpdf() {
 }
 
 host=''
-if [[ "$(grep -o '(.*)' <(who -m))" != "" ]]; then
+# from network login?
+if grep -q '(.*)' <(who -m); then
     host="$(hostname) "
 fi
 prompt_color="$white"
@@ -348,7 +351,7 @@ has_cmd ruby && {
     add-path "$HOME/.gem/ruby/$RUBY_VERSION.0/bin"
 }
 
-export PYTHONSTARTUP=~/.config/init.py
+#export PYTHONSTARTUP=~/.config/init.py
 [[ $MAKEFLAGS != *-j4* ]] && export MAKEFLAGS+='-j4'
 # enable 256colors
 export TERM=xterm-256color
@@ -363,14 +366,18 @@ for fun in "${unexport_cmds[@]}"; do
 done
 unset unexport_cmds
 
-[[ -r $HOME/.profile ]] && source $HOME/.profile
+# TODO 正确处理 bash 配置文件加载顺序
+export EDITOR=vim
+export SYSTEMD_EDITOR=$EDITOR
 
 CHROOT=/var/lib/archbuild/
 
 vmctl() {
     is_vm_running() {
+        local runningvms
         local vm
-        for vm in $(awk -F'"' '{print $2}' <(vboxmanage list runningvms)); do
+        readarray -t runningvms < <(awk -F'"' '{print $2}' <(vboxmanage list runningvms))
+        for vm in "${runningvms[@]}"; do
             if [[ "$vm" == "$1" ]]; then
                 return 0
             fi
@@ -379,8 +386,10 @@ vmctl() {
     }
 
     has_vm() {
+        local vms
         local vm
-        for vm in $(awk -F'"' '{print $2}' <(vboxmanage list vms)); do
+        readarray -t vms < <(awk -F'"' '{print $2}' <(vboxmanage list vms))
+        for vm in "${vms[@]}"; do
             if [[ "$vm" == "$1" ]]; then
                 return 0
             fi
@@ -392,9 +401,11 @@ vmctl() {
         local idx=1
         local running=
         local vm
-        for vm in $(awk -F'"' '{print $2}' <(vboxmanage list vms)); do
+        local vms
+        readarray -t vms < <(awk -F'"' '{print $2}' <(vboxmanage list vms))
+        for vm in "${vms[@]}"; do
             running=
-            if is_vm_running $vm; then
+            if is_vm_running "$vm"; then
                 running="running"
             fi
             echo -e "$idx. $vm\t$running"
@@ -420,28 +431,28 @@ vmctl() {
 
     case "$cmd" in
         "start")
-            if is_vm_running $vmname; then
+            if is_vm_running "$vmname"; then
                 echo "Virtual Machine $vmname is running"
             else
-                vboxmanage startvm $vmname --type headless
+                vboxmanage startvm "$vmname" --type headless
             fi
             ;;
         "restart")
-            if is_vm_running $vmname; then
-                vboxmanage controlvm $vmname reset
+            if is_vm_running "$vmname"; then
+                vboxmanage controlvm "$vmname" reset
             else
                 echo "Virtual Machine $vmname is not running or doesn't exist"
             fi
             ;;
         "stop")
-            if is_vm_running $vmname; then
-                vboxmanage controlvm $vmname savestate
+            if is_vm_running "$vmname"; then
+                vboxmanage controlvm "$vmname" savestate
             else
                 echo "Virtual Machine $vmname is not running or doesn't exist"
             fi
             ;;
         "status")
-            if is_vm_running $vmname; then
+            if is_vm_running "$vmname"; then
                 echo "Virtual Machine $vmname is running"
             elif has_vm $vmname; then
                 echo "Virtual Machine $vmname isn't running"
@@ -457,8 +468,8 @@ vmctl() {
             ;;
         *)
             # not cmd, maybe vmname
-            if has_vm $cmd; then
-                vboxmanage startvm $cmd --type headless
+            if has_vm "$cmd"; then
+                vboxmanage startvm "$cmd" --type headless
             else
                 print_useage
             fi

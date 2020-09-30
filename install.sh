@@ -13,7 +13,7 @@ InstallBash() {
 # vim
 InstallVim() {
     # NOTE 不能写成rm -r ~/.vim/这样会把原始文件一起删除掉，这是软链接的坑
-    rm -r ~/.vim
+    rm -rf ~/.vim
     ln -s ${CURR_PATH}/vim/vim     ~/.vim
 }
 
@@ -36,7 +36,7 @@ InstallUrxvt() {
 }
 
 InstallConfig() {
-    rm -r ~/.config
+    rm -rf ~/.config
     ln -s ${CURR_PATH}/config ~/.config
 }
 
