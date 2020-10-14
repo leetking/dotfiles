@@ -34,16 +34,42 @@ set fileencoding=utf-8
 "set encoding=utf-8
 "set completeopt=longest,menuone,preview
 set completeopt=longest,menu
-"set novisualbell
 "if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
 "            \ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
 "            \ $TERM == "vte-256color" || $TERM == "screen-256color"
 "    set t_Co=256
-"    colorscheme desert
 "endif
-set t_Co=256
-colorscheme desert
+"set t_Co=256
+" enable true color if available
+if has("termguicolors")
+    set termguicolors
+endif
 
+" patch default colors if no 3rd theme specified
+highlight TabLineFill ctermfg=235 ctermbg=none guifg=Grey15
+highlight TabLine     term=none cterm=none ctermfg=250 ctermbg=235
+                    \ gui=none guifg=Grey74 guibg=Grey15
+highlight VertSplit   ctermfg=236
+highlight TabLineSel  term=bold cterm=bold gui=bold
+highlight CursorLine  cterm=none ctermbg=239 guibg=Grey40
+highlight CursorLineNr  cterm=none
+highlight Comment     term=italic cterm=italic gui=italic
+highlight ColorColumn ctermbg=239 guifg=Maroon guibg=Grey40
+
+set fillchars=vert:\ 
+set cursorline
+set colorcolumn=+1
+set laststatus=2
+" highlight the white spaces end of line
+match TabLineFill /\s\+$/
+2match Todo /\<WARN>\|\<NOTE\>\|\<TODO\>/
+" for VTE compatible terminal set the shape of cursor at insert mode and
+" normal mode
+let &t_SI = "\<Esc>[6 q"
+let &t_SR = "\<Esc>[4 q"
+let &t_EI = "\<Esc>[2 q"
+
+nmap <leader>k :call Sdcv(expand("<cword>"))<CR>
 
 "set shortmess=atI
 "set lines=28  columns=200
@@ -152,28 +178,6 @@ function! Sdcv(word)
     1s/^/\=expl/
     1
 endfunc
-nmap <leader>k :call Sdcv(expand("<cword>"))<CR>
-
-highlight TabLineFill ctermfg=235 ctermbg=none guifg=Grey15
-highlight TabLine     term=none cterm=none ctermfg=250 ctermbg=235
-                    \ gui=none guifg=Grey74 guibg=Grey15
-highlight VertSplit   ctermfg=236
-highlight TabLineSel  term=bold cterm=bold gui=bold
-highlight CursorLine  cterm=none ctermbg=239 guibg=Grey40
-highlight CursorLineNr  cterm=none
-highlight Comment     term=italic cterm=italic gui=italic
-highlight ColorColumn ctermbg=239 guifg=Maroon guibg=Grey40
-set fillchars=vert:\ 
-set cursorline
-set colorcolumn=+1
-" highlight the white spaces end of line
-match MatchParen /\s\+$/
-2match Todo /\<NOTE\>\|\<TODO\>/
-" for VTE compatible terminal set the shape of cursor at insert mode and
-" normal mode
-let &t_SI = "\<Esc>[6 q"
-let &t_SR = "\<Esc>[4 q"
-let &t_EI = "\<Esc>[2 q"
 
 " disable auto switch inputmethod for fcitx
 let g:enable_toggle_input = 0
@@ -209,11 +213,15 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.local/share/vim/plugged')
-    Plug 'vim-airline/vim-airline'
     Plug 'scrooloose/nerdtree'
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     "Plug 'jackguo380/vim-lsp-cxx-highlight'
     Plug 'kien/ctrlp.vim'
+
+    Plug 'itchyny/lightline.vim'
+    Plug 'itchyny/vim-gitbranch'
+    " a true color theme
+    Plug 'jacoborus/tender.vim'
 
     Plug 'lervag/vimtex'
 
