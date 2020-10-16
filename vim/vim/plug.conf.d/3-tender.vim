@@ -1,1 +1,0 @@
-../plug.conf.avail/tender.vim

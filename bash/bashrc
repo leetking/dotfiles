@@ -13,16 +13,6 @@ HISTTIMEFORMAT="%y-%m-%d %T "
 HISTIGNORE="&:?:??:???:history *:gh *:make"
 shopt -s histappend # append commands to history file, rather than overwrite it
 
-#black=$'\[\e[1;30m\]'
-#red=$'\[\e[1;31m\]'
-#green=$'\[\e[1;32m\]'
-#yellow=$'\[\e[1;33m\]'
-#blue=$'\[\e[1;34m\]'
-#magenta=$'\[\e[1;35m\]'
-#cyan=$'\[\e[1;36m\]'
-#white=$'\[\e[1;37m\]'
-#normal=$'\[\e[m\]'
-
 # why add $, see https://unix.stackexchange.com/questions/304133/what-is-the-difference-between-single-quoted-string-and-double-quoted-strin
 black=$'\e[1;30m'
 red=$'\e[1;31m'
@@ -173,7 +163,7 @@ shrinkpdf() {
 
 host=''
 # from network login?
-if grep -q '(.*)' <(who -m); then
+if grep -Pq '\(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\)' <(who -m); then
     host="$(hostname) "
 fi
 prompt_color="$white"
@@ -423,6 +413,7 @@ vmctl() {
     local arg_cnt=$#
     local cmd="$1"
     local vmname="$2"
+    local option="$3"
 
     if [[ $# == 0 ]]; then
         print_vms
@@ -433,6 +424,8 @@ vmctl() {
         "start")
             if is_vm_running "$vmname"; then
                 echo "Virtual Machine $vmname is running"
+            elif [[ "$option" == "--gui" ]]; then
+                vboxmanage startvm "$vmname"
             else
                 vboxmanage startvm "$vmname" --type headless
             fi

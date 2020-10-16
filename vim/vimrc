@@ -12,7 +12,7 @@ set nofoldenable
 set mouse=a
 filetype on         "侦测文件类型
 syntax enable       "语法高亮
-let mapleader=","
+let mapleader=','
 map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
@@ -23,20 +23,19 @@ nmap <Tab>  :tabnext<CR>
 nmap <S-Tab>  :tabprevious<CR>
 vmap <M-j> :m'>+<CR>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<CR>`>my`<mzgv`yo`z
-"1 tab == 4 spaces
-"set tabstop=8      " how much <Space> to SHOW as <Tab>
-set softtabstop=4
 set expandtab
 set shiftwidth=4
+set tabstop=4
+set softtabstop=4
 set smarttab
 set fileencodings=ucs-bom,utf-8,gb18030,gb2312,bgk,default,latin1
 set fileencoding=utf-8
 "set encoding=utf-8
 "set completeopt=longest,menuone,preview
 set completeopt=longest,menu
-"if $TERM == "xterm" || $TERM == "rxvt" || $TERM == "xterm-256color" ||
-"            \ $TERM == "rxvt-unicode" || $TERM == "dumb" ||
-"            \ $TERM == "vte-256color" || $TERM == "screen-256color"
+"if $TERM == 'xterm' || $TERM == 'rxvt' || $TERM == 'xterm-256color' ||
+"            \ $TERM == 'rxvt-unicode' || $TERM == 'dumb' ||
+"            \ $TERM == 'vte-256color' || $TERM == 'screen-256color'
 "    set t_Co=256
 "endif
 "set t_Co=256
@@ -55,6 +54,7 @@ highlight CursorLine  cterm=none ctermbg=239 guibg=Grey40
 highlight CursorLineNr  cterm=none
 highlight Comment     term=italic cterm=italic gui=italic
 highlight ColorColumn ctermbg=239 guifg=Maroon guibg=Grey40
+"colorscheme desert
 
 set fillchars=vert:\ 
 set cursorline
@@ -68,8 +68,6 @@ match TabLineFill /\s\+$/
 let &t_SI = "\<Esc>[6 q"
 let &t_SR = "\<Esc>[4 q"
 let &t_EI = "\<Esc>[2 q"
-
-nmap <leader>k :call Sdcv(expand("<cword>"))<CR>
 
 "set shortmess=atI
 "set lines=28  columns=200
@@ -168,42 +166,54 @@ autocmd FileType lua            call s:SetLuaOptions()
 autocmd FileType javascript     call s:SetJSOptions()
 autocmd FileType tex            call s:SetTexOptions()
 
-let s:SDCV_BUF_NAME = "sdcv-tmp"
-function! Sdcv(word)
-    let expl = system("sdcv -n ".a:word)
-    "let expl=system('ldcv '.a:word)
-    tabdo if expand("%") ==# s:SDCV_BUF_NAME | q! | endif
-    execute "tabnew" s:SDCV_BUF_NAME
+let s:sdcv_buf_name = 'sdcv-tmp'
+function Sdcv(word) abort
+    let expl = system('sdcv -n ' . a:word)
+    tabdo if expand('%') ==# s:sdcv_buf_name | q! | endif
+    execute 'tabnew' s:sdcv_buf_name
     setlocal buftype=nofile bufhidden=hide noswapfile
     1s/^/\=expl/
     1
 endfunc
 
-" disable auto switch inputmethod for fcitx
-let g:enable_toggle_input = 0
-function! Fcitx2en()
-    let _ = system("fcitx-remote -c")
-endfunc
-function! Fcitx2zh()
-    let _ = system("fcitx-remote -o")
-endfunc
-function! AutoSwitchInput()
-    if g:enable_toggle_input == 1
-        set timeoutlen=150
-        "自动退出插入模式
-        autocmd InsertLeave * call Fcitx2en()
-        "自动进入插入模式
-        autocmd InsertEnter * call Fcitx2zh()
+function s:close_sdcv_tab() abort
+    " TODO improve it
+    if expand('%') == s:sdcv_buf_name && tabpagenr('$') == 1 && winnr('$') == 1
+        q!
     endif
-endfunc
-call AutoSwitchInput()
+endfunction
+
+nmap <leader>k :call Sdcv(expand('<cword>'))<CR>
+autocmd TabClosed * call s:close_sdcv_tab()
+
+
+"" disable auto switch inputmethod for fcitx
+"let g:enable_toggle_input = 0
+"function! Fcitx2en()
+"    call system("fcitx-remote -c")
+"endfunc
+"function! Fcitx2zh()
+"    call system('fcitx-remote -o')
+"endfunc
+"function! AutoSwitchInput()
+"    if g:enable_toggle_input == 1
+"        set timeoutlen=150
+"        "自动退出插入模式
+"        autocmd InsertLeave * call Fcitx2en()
+"        "自动进入插入模式
+"        autocmd InsertEnter * call Fcitx2zh()
+"    endif
+"endfunc
+"call AutoSwitchInput()
 
 " save as root
 command W w !sudo tee % > /dev/null
 nmap <F5> :redraw!<CR>
-let g:markdown_fenced_languages = ['c', 'cpp', 'lua', 'python', 'css', 'java',
-      \ 'javascript']
+let g:markdown_fenced_languages = [
+     \ 'c', 'cpp', 'lua', 'python', 'css', 'java', 'javascript',
+     \ ]
 
+autocmd FileType json syntax match Comment +\/\/.\+$+
 
 " use vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -222,6 +232,7 @@ call plug#begin('~/.local/share/vim/plugged')
     Plug 'itchyny/vim-gitbranch'
     " a true color theme
     Plug 'jacoborus/tender.vim'
+    Plug 'morhetz/gruvbox'
 
     Plug 'lervag/vimtex'
 
@@ -231,26 +242,27 @@ call plug#begin('~/.local/share/vim/plugged')
 
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'yianwillis/vimcdoc'
+
+    " my custom plugs
+    Plug '$HOME/.vim/custom.plugs/localrc'
 call plug#end()
 
 " set for gui
-if has("gui_running")
+if has('gui_running')
     set columns=82
     set guicursor=a:blinkon0
     set guioptions=
     " set gui font
-    if has("gui_win32")
+    if has('gui_win32')
         set guifont=consolas:h12
     else
-        if has("gui_gtk2") || has("gui_gtk3")
+        if has('gui_gtk2') || has('gui_gtk3')
             set guifont=Monaco\ 9
         else
             set guifont=Monaco:h9
         endif
     endif
 endif
-
-autocmd FileType json syntax match Comment +\/\/.\+$+
 
 " import configure file of plugins
 source $HOME/.vim/plug.conf.vim
