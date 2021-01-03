@@ -60,6 +60,18 @@ alias gma='git commit -a'
 alias gmaa='git commit -a --amend'
 }
 
+sub() {
+    uniq -u <(sort -n "$1" "$2" "$2")
+}
+
+union() {
+    uniq <(sort -n "$1" "$2")
+}
+
+intersect() {
+    uniq -d <(sort -n "$1" "$2")
+}
+
 
 clip() {
     # clip [pattern] [file]
@@ -75,6 +87,7 @@ clip() {
 
 up() {
     # up [file]
+    # TODO implement in Python
     local host="https://paste.ubuntu.com"
     local expiration="year"
     local url
@@ -138,7 +151,7 @@ mergepdf() {
     # > mergepdf <pdf-filelist> <output.pdf>
     local inputlist="${@:1:$#-1}"
     local output="${@:$#}"
-    gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile="$output" "${inputlist[@]}"
+    gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile="$output" "$(echo ${inputlist[@]})"
 }
 
 shrinkpdf() {

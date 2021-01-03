@@ -73,6 +73,10 @@ else
                 ExistOrQuit "${1%%.acm}.cc"
                 cp $INSTALL_PATH/template/acm.cc $WORK_PATH/"${1%%.acm}.cc"
                 ;;
+            ltc)
+                ExistOrQuit "${1%%.ltc}.cc"
+                cp $INSTALL_PATH/template/ltc.cc $WORK_PATH/"${1%%.ltc}.cc"
+                ;;
             *)
                 echo "NewFile: Cant support template of \"${1##*.}\"."
                 Usage
