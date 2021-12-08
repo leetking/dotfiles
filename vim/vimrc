@@ -88,7 +88,7 @@ set expandtab
 " normal file
 function! s:SetNormalOptions()
     "set spell
-    set omnifunc=
+    setlocal omnifunc=
 endfunc
 
 function! s:SetLuaOptions()
@@ -97,12 +97,12 @@ function! s:SetLuaOptions()
 endfunc
 
 function! s:SetLispOptions()
-    set nocindent
-    set autoindent
-    set lisp
+    setlocal nocindent
+    setlocal autoindent
+    setlocal lisp
     " scheme is a link to chez-scheme
     setlocal makeprg=scheme\ --script\ %
-    set textwidth=79 fo+=Mm
+    setlocal textwidth=79 fo+=Mm
 endfunc
 
 function! s:SetPythonOptions()
@@ -111,31 +111,31 @@ endfunc
 
 function! s:SetRubyOptions()
     setlocal makeprg=ruby\ %
-    set textwidth=79 fo+=Mm
+    setlocal textwidth=79 fo+=Mm
     imap <C-Space> <C-X><C-O>
 endfunc
 
 function! s:SetCCppOptions()
-    set textwidth=79 fo+=Mm
-    set makeprg=$HOME/.vim/makeprg.sh\ %:p:.
+    setlocal textwidth=79 fo+=Mm
+    setlocal makeprg=$HOME/.vim/makeprg.sh\ %:p:.
 endfunc
 
 function! s:SetMakeOptions()
-    set textwidth=79 fo+=Mm
-    set makeprg=make
+    setlocal textwidth=79 fo+=Mm
+    setlocal makeprg=make
 endfunc
 
 function! s:SetJavaOptions()
-    set textwidth=79 fo+=Mm
-    set omnifunc=javacomplete#Complete
-    set makeprg=$HOME/.vim/makeprg.sh\ %:p:.
+    setlocal textwidth=79 fo+=Mm
+    setlocal omnifunc=javacomplete#Complete
+    setlocal makeprg=$HOME/.vim/makeprg.sh\ %:p:.
 endfunc
 
 function! s:SetHtmlXml()
-    set tabstop=2
-    set shiftwidth=2
-    set smarttab
-    set autoindent
+    setlocal tabstop=2
+    setlocal shiftwidth=2
+    setlocal smarttab
+    setlocal autoindent
     "configure emmet
     let g:user_emmet_install_global=0
     EmmetInstall
@@ -145,7 +145,7 @@ endfunc
 
 " javaScript
 function! s:SetJSOptions()
-    set textwidth=79 fo+=Mm
+    setlocal textwidth=79 fo+=Mm
     setlocal makeprg=node\ %
 endfunc
 

@@ -1,10 +1,10 @@
-!.gitignore
 .*
 *~
 obsolete/
 csdatabase/
 states/
 sdcv/stardict-*
+vim/autoload/plug.vim.old
 
 config/
 !config/awesome/

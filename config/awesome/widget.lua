@@ -132,19 +132,19 @@ local function volume()
     local obj = wibox.widget.textbox()
     --local notify
     obj.muted = false
-    obj.volume = nil
+    obj.volume = 0
 
     obj.update_status = function(this)
         popen("amixer sget Master", function(out)
             this.muted = (nil ~= out:find("%[off%]"))
-            this.volume = tonumber(out:match("(%d+)%%"))
+            this.volume = tonumber(out:match("(%d+)%%")) or 0
         end)
     end
     obj.update = function(this)
         this:update_status()
         local color = ""
-        local icon
-        if this.muted then
+        local icon = "?"
+        if this.muted or not this.volume then
             icon = ""
         elseif this.volume >= 70 then
             icon = ""

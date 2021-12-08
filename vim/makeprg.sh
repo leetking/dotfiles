@@ -17,7 +17,7 @@ CXX=g++
 #which clang   > /dev/null 2>&1 && CC=clang
 #which clang++ > /dev/null 2>&1 && CXX=clang++
 COPTS_COM="-O0 -pedantic -Wall -Wformat -lm -g -DDEBUG -fsanitize=address"
-CXXOPTS="$COPTS_COM -std=c++11"
+CXXOPTS="$COPTS_COM -std=c++14"
 COPTS="$COPTS_COM -std=gnu99"
 
 # 编译c/c++
