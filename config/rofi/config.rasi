@@ -2,5 +2,5 @@ configuration {
     terminal: ""alacritty"";
     ssh-command: "{terminal} -e {ssh-client} {host} [-p {port}]";
     matching: "fuzzy";
-    theme: "/usr/share/rofi/themes/android_notification.rasi";
 }
+@theme "/usr/share/rofi/themes/android_notification.rasi"

@@ -1,8 +1,8 @@
-gtk-theme-name = "Zukitwo"
+#gtk-theme-name = "Zukitwo"
+gtk-theme-name = "Materia-light-compact"
 gtk-icon-theme-name = "Papirus"
 gtk-cursor-theme-name = "Capitaine Cursors"
 gtk-cursor-theme-size = 24
-#gtk-icon-theme-name = "Arc"
 style "user-font" {
 	font_name = "Noto Sans UI Regular 10"
 }
