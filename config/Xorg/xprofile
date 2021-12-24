@@ -1,0 +1,11 @@
+# Xorg environment
+# environment variables for fcitx input
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS="@im=fcitx"
+#export GTK_IM_MODULE=fcitx5
+#export QT_IM_MODULE=fcitx5
+#export XMODIFIERS="@im=fcitx5"
+# set and expor the environment BROWSER for xdg-open
+export BROWSER=firefox
+export QT_STYLE_OVERRIDE=kvantum
