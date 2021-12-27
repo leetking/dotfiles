@@ -105,6 +105,7 @@ myawesomemenu = {
    { "edit config", ("%s -e %q"):format(terminal, editor .. " " .. awesome.conffile) },
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end },
+   { "hibernate", function() awful.spawn("systemctl hybrid-sleep") end },
    { "shutdown", function() awful.spawn("shutdown -h now") end },
 }
 

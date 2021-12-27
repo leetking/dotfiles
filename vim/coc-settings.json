@@ -20,7 +20,7 @@
     },
 
     "python": {
-      "command": "pyls",
+      "command": "pylsp",
       "args": ["-v", "--log-file", "/tmp/lsp_python.log"],
       "filetypes": ["python"],
       "trace.server": "verbose",
