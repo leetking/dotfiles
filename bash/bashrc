@@ -36,7 +36,7 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias sdcv='sdcv --color'
-}
+} # has_cmd dircolors
 alias tree='tree -F -C --charset=ascii'
 alias ll='ls -hl'
 alias la='ls -A'
@@ -58,7 +58,7 @@ alias gd='git diff -w'
 alias gdm='git diff -w master'
 alias gma='git commit -a'
 alias gmaa='git commit -a --amend'
-}
+} # has_cmd git
 
 sub() {
     uniq -u <(sort -n "$1" "$2" "$2")
@@ -73,6 +73,7 @@ intersect() {
 }
 
 
+has_cmd xclip && {
 clip() {
     # clip [pattern] [file]
     if [[ -e "$1" ]]; then
@@ -84,10 +85,11 @@ clip() {
         xclip -selection clipboard <(sed -n "$1p" $2)
     fi
 }
+} # has_cmd xclip
 
 up() {
     # up [file]
-    # TODO implement in Python
+    # TODO implement in Python and put into ~/.local/bin
     local host="https://paste.ubuntu.com"
     local expiration="year"
     local url
@@ -355,7 +357,7 @@ has_cmd ruby && {
 }
 
 #export PYTHONSTARTUP=~/.config/init.py
-[[ $MAKEFLAGS != *-j4* ]] && export MAKEFLAGS+='-j4'
+[[ $MAKEFLAGS != *-j* ]] && export MAKEFLAGS+=" -j$(nproc)"
 # enable 256colors
 export TERM=xterm-256color
 # PROMPT_COMMAND is invoked before displaying PS1
@@ -363,18 +365,13 @@ export TERM=xterm-256color
 export PS1="$cyan\$host\$(gen_short_workpath)$yellow\$(find_git_branch)$prompt_color\\$ $normal"
 export PS4="+$cyan\${BASH_SOURCE##*/}$normal:$red\$LINENO$normal: "
 
-unexport_cmds=("has_cmd")
-for fun in "${unexport_cmds[@]}"; do
-    eval "unset $fun"
-done
-unset unexport_cmds
-
 # TODO 正确处理 bash 配置文件加载顺序
 export EDITOR=vim
 export SYSTEMD_EDITOR=$EDITOR
 
 CHROOT=/var/lib/archbuild/
 
+has_cmd vboxmanage && {
 vmctl() {
     is_vm_running() {
         local runningvms
@@ -427,6 +424,8 @@ vmctl() {
     local cmd="$1"
     local vmname="$2"
     local option="$3"
+
+    has_cmd vboxmanage
 
     if [[ $# == 0 ]]; then
         print_vms
@@ -482,6 +481,14 @@ vmctl() {
             ;;
     esac
 }
+}   # has_cmd vboxmanage
+
+unexport_cmds=("has_cmd")
+for fun in "${unexport_cmds[@]}"; do
+    eval "unset $fun"
+done
+unset unexport_cmds
+
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag
