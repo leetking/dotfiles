@@ -152,6 +152,7 @@ endfunc
 " Tex
 function! s:SetTexOptions()
     setlocal makeprg=xelatex\ -halt-on-error\ %
+    setlocal textwidth=80 fo+=Mm
 endfunc
 
 autocmd FileType text           call s:SetNormalOptions()

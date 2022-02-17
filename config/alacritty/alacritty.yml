@@ -3,6 +3,7 @@ env:
 
 window:
   dynamic_title: true
+  opacity: 0.85
   dimensions:
     columns: 0
     lines: 0
@@ -147,8 +148,6 @@ bell:
   # Disable the visual bell.
   duration: 0
   color: '0xffffff'
-
-background_opacity: 0.85
 
 mouse:
   double_click: { threshold: 300 }

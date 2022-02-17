@@ -71,7 +71,7 @@ local function brightnessctl()
     end
 
     function obj.min(_)
-        awful.spawn("brightnessctl set 100%")
+        awful.spawn("brightnessctl set 5%")
     end
 
     return obj

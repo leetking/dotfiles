@@ -1,5 +1,11 @@
-#$pdf_previewer = 'zathura';
-$pdf_viewer = 'zathura';
+$pdf_previewer = 'zathura';
+$ps_previewer = 'zathura';
+$dvi_previewer = 'zathura';
+
+# $pdf_mode, default <??>
+# 1: tex -> pdf
+# 2: tex -> ps -> pdf
+$pdf_mode = 1;
 
 ## If you don't specify @default_files, all .tex files in the current directory will be used.
 #@default_files = ()
