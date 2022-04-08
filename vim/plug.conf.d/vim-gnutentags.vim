@@ -1,1 +1,0 @@
-../plug.conf.avail/vim-gnutentags.vim

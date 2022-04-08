@@ -30,7 +30,7 @@ makeccpp() {
     for i in ${_makefilelist}; do
         if [ -e "$i" ]; then
             ${_make} -f "$i" ${OPTS}
-            exit 0
+            exit $?
         fi
     done
 
@@ -69,7 +69,7 @@ makeccpp() {
             ${_cc} -o "${FILENAME%.*}" "${FILENAME}" $opts
             ;;
     esac
-    exit 0
+    exit $?
 }
 
 # 编译java，目前就采用gradle
@@ -80,7 +80,7 @@ makejava() {
     for i in ${_builds}; do
         if [ -e "$i" ]; then
             ${_gradle} ${OPTS}
-            exit 0
+            exit $?
         fi
     done
 
@@ -131,7 +131,7 @@ makejava() {
             ${_cc} -d . "${FILENAME}"
             ;;
     esac
-    exit 0
+    exit $?
 }
 
 case "${FILENAME##*.}" in
