@@ -17,12 +17,14 @@ map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
-nmap <M-j> mz:m+<CR>`z
-nmap <M-k> mz:m-2<CR>`z
-nmap <Tab>  :tabnext<CR>
-nmap <S-Tab>  :tabprevious<CR>
-vmap <M-j> :m'>+<CR>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<CR>`>my`<mzgv`yo`z
+nmap <silent> <M-j> mz:m+<CR>`z
+nmap <silent> <M-k> mz:m-2<CR>`z
+nmap <silent> <Tab>  :tabnext<CR>
+nmap <silent> <S-Tab>  :tabprevious<CR>
+nmap <silent> gn :cn<CR>
+nmap <silent> gp :cp<CR>
+vmap <silent> <M-j> :m'>+<CR>`<my`>mzgv`yo`z
+vmap <silent> <M-k> :m'<-2<CR>`>my`<mzgv`yo`z
 set expandtab
 set shiftwidth=4
 set tabstop=4
@@ -242,6 +244,8 @@ call plug#begin('~/.local/share/vim/plugged')
     "Plug 'hail2u/vim-css3-syntax'
 
     Plug 'ludovicchabant/vim-gutentags'
+    Plug 'skywind3000/gutentags_plus'
+
     Plug 'yianwillis/vimcdoc'
 
     " my custom plugs
