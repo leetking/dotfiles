@@ -1,14 +1,11 @@
 let g:coc_global_extensions = ['coc-json', 'coc-vimlsp']
 "let g:coc_global_extensions = ['coc-json', 'coc-vimlsp', 'coc-tsserver']
 
-"set updatetime=1000
-set updatetime=500
-if has('patch8.1.1068')
-    " Use `complete_info` if your (Neo)Vim version supports it.
-    inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-    imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
+"set updatetime=4000
+set updatetime=300
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -27,10 +24,11 @@ inoremap <silent><expr> <C-Space> coc#refresh()
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
+
 function! s:show_documentation()
-    if index(['vim', 'help'], &filetype) >= 0
-        execute 'h '.expand('<cword>')
+    if CocAction('hasProvider', 'hover')
+        call CocActionAsync('doHover')
     else
-        call CocAction('doHover')
+        call feedkeys('K', 'in')
     endif
 endfunction
