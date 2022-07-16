@@ -1,5 +1,5 @@
 " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
-let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+let g:gutentags_project_root = g:project_marks
 " 所生成的数据文件的名称
 let g:gutentags_ctags_tagfile = '.tags'
 " 将自动生成的 tags 文件全部放入 ~/.cache/vim/tags/ 目录中，避免污染工程目录
@@ -9,6 +9,8 @@ let g:gutentags_cache_dir = s:tags_dir
 if !isdirectory(s:tags_dir)
    silent! call mkdir(s:tags_dir, 'p')
 endif
+
+let g:gutentags_define_advanced_commands = 1
 
 let g:gutentags_modules = []
 "if executable('ctags')

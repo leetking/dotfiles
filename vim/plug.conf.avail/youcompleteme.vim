@@ -1,5 +1,5 @@
 let g:ycm_min_num_of_chars_for_completion = 2
-let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_common_conf.py'
+let g:ycm_global_ycm_extra_conf = expand('~/.vim/ycm_common_conf.py')
 let g:ycm_error_symbol = '✘'
 let g:ycm_warning_symbol = '⚠'
 let g:ycm_complete_in_comments = 1
