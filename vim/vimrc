@@ -229,6 +229,7 @@ call plug#begin('~/.local/share/vim/plugged')
     "Plug 'scrooloose/nerdtree'
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     "Plug 'jackguo380/vim-lsp-cxx-highlight'
+    "Plug 'junegunn/fzf'    " 在 Arch 上和 fzf 包一起安装了
     Plug 'junegunn/fzf.vim'
 
     Plug 'itchyny/lightline.vim'
