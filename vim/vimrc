@@ -5,7 +5,9 @@ set ruler
 "set ignorecase
 "set smartcase
 set incsearch
-set matchtime=5
+set matchtime=3
+set hlsearch
+nnoremap <silent> <esc><esc> :silent! nohlsearch<CR>
 set history=500
 set wildmenu
 set nofoldenable
@@ -30,7 +32,8 @@ set shiftwidth=4
 set tabstop=4
 set softtabstop=4
 set smarttab
-set fileencodings=ucs-bom,utf-8,gb18030,gb2312,bgk,default,latin1
+" gb18030 > gbk > gb2312
+set fileencodings=ucs-bom,utf-8,gb18030,gbk,gb2312,default,latin1
 set fileencoding=utf-8
 "set encoding=utf-8
 "set completeopt=longest,menuone,preview
