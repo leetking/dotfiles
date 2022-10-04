@@ -1,0 +1,2 @@
+! remove Caps_Lock
+keycode  66 = Shift_L NoSymbol Caps_Lock
