@@ -1,5 +1,13 @@
 let s:project_marks = ['.git', '.root', '.svn']
 
+" 通过环境变量设置 fzf 的 finder
+" 这里使用 find 不寻找 symbolic (-P)，只寻找文件
+let $FZF_DEFAULT_COMMAND = 'find -P -type f'
+
+" Use gitfiles in .git project
+let s:fzf_use_gitfiles = 1
+" TODO use_gitfiles and read submodule files
+
 " does file or directory exist?
 function s:path_exists(path) abort
     return ! empty(glob(a:path))
@@ -11,7 +19,7 @@ function s:detect_project()
     let path = orig_path
     let prev = ''
     while path !=# prev
-        if s:path_exists(path . '/.git')
+        if s:fzf_use_gitfiles && s:path_exists(path . '/.git')
             return {'type': 'git', 'root': path}
         endif
         for mark in project_marks
@@ -42,7 +50,7 @@ function Ripgrep(...)
     if argc < 3
         let pats = argv[0]
         let path = s:detect_project()['root']
-    elseif ! s:path_exists(argv[-2])
+    elseif '@' != argv[-2] && ! s:path_exists(argv[-2])
         let pats = join(argv[:-2], ' ')
         let path = s:detect_project()['root']
     else
@@ -50,6 +58,10 @@ function Ripgrep(...)
         " is a file, use its absolute directory
         if filereadable(argv[-2]) || filewritable(argv[-2])
             let path = fnamemodify(argv[-2], ':p:h')
+        " :Rg pats @
+        elseif '@' == argv[-2]
+            let path = expand('%:p:h')
+        " normal directory, support relative path
         else
             let path = argv[-2]
         endif
@@ -58,7 +70,11 @@ function Ripgrep(...)
     call fzf#vim#grep(rgcmd . shellescape(pats), 1, {'dir': path}, full)
 endfunction
 
+nmap <silent> <C-p> :call FzfFiles()<CR>
 command! -bang -nargs=+ -complete=file Rg call Ripgrep(<f-args>, <bang>0)
 
-
-nmap <C-p> :call FzfFiles()<CR>
+" TODO gp only search proto file, add enum|message
+nmap <silent> gf :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR><CR>
+nmap <silent> g. :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR> .<CR>
+nmap <silent> g@ :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR> @<CR>
+nmap <silent> gp :Rg <C-R>='message\s+' . expand('<cword>') . '\b'<CR><CR>
