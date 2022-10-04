@@ -251,6 +251,9 @@ call plug#begin('~/.local/share/vim/plugged')
     Plug 'skywind3000/gutentags_plus'
 
     Plug 'yianwillis/vimcdoc'
+    " TODO Wait it support float window in vim8.1+
+    " Discusss https://github.com/rhysd/git-messenger.vim/issues/30
+    Plug 'rhysd/git-messenger.vim'
 
     " my custom plugs
     Plug '$HOME/.vim/custom.plugs/localrc'
