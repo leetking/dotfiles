@@ -3,9 +3,6 @@ let g:coc_global_extensions = ['coc-json', 'coc-vimlsp']
 
 "set updatetime=4000
 set updatetime=300
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
