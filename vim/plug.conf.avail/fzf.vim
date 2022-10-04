@@ -70,11 +70,19 @@ function Ripgrep(...)
     call fzf#vim#grep(rgcmd . shellescape(pats), 1, {'dir': path}, full)
 endfunction
 
+function RipgrepProto(...)
+    let saved_fzf_default_command = $FZF_DEFAULT_COMMAND
+    let $FZF_DEFAULT_COMMAND = 'find -P -type f -and -name "*.proto"'
+    " forward args
+    "call Ripgrep(...)
+    let $FZF_DEFAULT_COMMAND = saved_fzf_default_command
+endfunction
+
 nmap <silent> <C-p> :call FzfFiles()<CR>
 command! -bang -nargs=+ -complete=file Rg call Ripgrep(<f-args>, <bang>0)
 
-" TODO gp only search proto file, add enum|message
+" TODO gp only search proto file
 nmap <silent> gf :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR><CR>
 nmap <silent> g. :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR> .<CR>
 nmap <silent> g@ :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR> @<CR>
-nmap <silent> gp :Rg <C-R>='message\s+' . expand('<cword>') . '\b'<CR><CR>
+nmap <silent> gp :Rg <C-R>='(message\|enum)\s+' . expand('<cword>') . '\b'<CR><CR>
