@@ -30,7 +30,8 @@ if executable('gtags') && executable('gtags-cscope')
     let $GTAGSCONF = expand('~/.vim/gtags.conf')
     " c/c++,yacc,java,php4,asm 使用 global, 其他语言使用 universal ctags + pyments
     let $GTAGSLABEL = 'native-pygments'
-    "let g:gutentags_gtags_options_file = expand('~/.vim/gtags-options.txt')
+    " 设置 gtags 的参数，默认文件为项目下的 .gutgtags 文件
+    let g:gutentags_gtags_options_file = expand('~/.vim/gtags-options.txt')
     " 使用 cscope 代替 tags 跳转
     set cscopetag
     " 先使用 cstag 失败再使用 tag
