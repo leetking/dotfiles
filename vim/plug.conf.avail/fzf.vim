@@ -80,6 +80,7 @@ endfunction
 
 nmap <silent> <C-p> :call FzfFiles()<CR>
 command! -bang -nargs=+ -complete=file Rg call Ripgrep(<f-args>, <bang>0)
+command! -bang -nargs=+ -complete=file Rp call RipgrepProto(<f-args>, <bang>0)
 
 nmap <silent> gf :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR><CR>
 nmap <silent> g. :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR> .<CR>
