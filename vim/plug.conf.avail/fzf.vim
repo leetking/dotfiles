@@ -70,19 +70,29 @@ function Ripgrep(...)
     call fzf#vim#grep(rgcmd . shellescape(pats), 1, {'dir': path}, full)
 endfunction
 
-function RipgrepProto(...)
-    let saved_fzf_default_command = $FZF_DEFAULT_COMMAND
-    let $FZF_DEFAULT_COMMAND = 'find -P -type f -and -name "*.proto"'
-    " forward args with full = 0
-    call call('Ripgrep', a:000 + [0])
-    let $FZF_DEFAULT_COMMAND = saved_fzf_default_command
+function RipgrepProto(pat, full)
+    let path = s:detect_project()['root']
+    let rgcmd = "rg --column --line-number --no-heading --color=always --smart-case --type protobuf "
+    call fzf#vim#grep(rgcmd . shellescape(a:pat), 1, {'dir': path}, a:full)
 endfunction
 
+" TODO: buffers, most recent used files in the project, other files
+" fzf 支持 sourcelist
+" 显示最近打开文件和 Buffer
+function! s:mru_and_buffers()
+    return extend(
+            \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'),
+            \ filter(copy(v:oldfiles), "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"))
+endfunction
+
+command! -bang -nargs=0 Mru call fzf#run(fzf#wrap({'source':  s:mru_and_buffers()}, <bang>0))
+
 nmap <silent> <C-p> :call FzfFiles()<CR>
+nmap <silent> <C-m> :Mru<CR>
 command! -bang -nargs=+ -complete=file Rg call Ripgrep(<f-args>, <bang>0)
 command! -bang -nargs=+ -complete=file Rp call RipgrepProto(<f-args>, <bang>0)
 
-nmap <silent> gf :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR><CR>
-nmap <silent> g. :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR> .<CR>
-nmap <silent> g@ :Rg <C-R>='\b' . expand('<cword>') . '\b'<CR> @<CR>
-nmap <silent> gp :call RipgrepProto('(message\|enum)\s+' . expand('<cword>') . '\b')<CR>
+nmap <silent> gf :Rg <C-r>='\b' . expand('<cword>') . '\b'<CR><CR>
+nmap <silent> g. :Rg <C-r>='\b' . expand('<cword>') . '\b'<CR> .<CR>
+nmap <silent> g@ :Rg <C-r>='\b' . expand('<cword>') . '\b'<CR> @<CR>
+nmap <silent> gp :Rp <C-r>='(message\|enum)\s+' . expand('<cword>') . '\b'<CR><CR>
