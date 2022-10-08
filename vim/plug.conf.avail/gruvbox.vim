@@ -1,2 +1,3 @@
 set background=dark
-autocmd VimEnter * colorscheme gruvbox
+"autocmd VimEnter * colorscheme gruvbox
+colorscheme gruvbox
