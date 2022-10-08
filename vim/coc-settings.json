@@ -1,4 +1,8 @@
 {
+   // 禁用自动选择第一个补全项
+   "suggest.noselect": true,
+   // 允许自动选择补全的参数
+   //"suggest.enablePreselect": true,
   "languageserver": {
     "ccls": {
       "command": "ccls",
