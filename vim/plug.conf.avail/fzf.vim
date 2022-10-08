@@ -88,7 +88,8 @@ endfunction
 command! -bang -nargs=0 Mru call fzf#run(fzf#wrap({'source':  s:mru_and_buffers()}, <bang>0))
 
 nmap <silent> <C-p> :call FzfFiles()<CR>
-nmap <silent> <C-m> :Mru<CR>
+" <C-m> == Enter
+"nmap <silent> <C-m> :Mru<CR>
 command! -bang -nargs=+ -complete=file Rg call Ripgrep(<f-args>, <bang>0)
 command! -bang -nargs=+ -complete=file Rp call RipgrepProto(<f-args>, <bang>0)
 
