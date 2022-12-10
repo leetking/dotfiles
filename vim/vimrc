@@ -12,6 +12,7 @@ set history=500
 set wildmenu
 set nofoldenable
 set mouse=a
+set ttymouse=sgr    " Windows Terminal 下使用鼠标
 filetype on         "侦测文件类型
 syntax enable       "语法高亮
 let mapleader=','
@@ -38,6 +39,8 @@ set fileencoding=utf-8
 "set encoding=utf-8
 "set completeopt=longest,menuone,preview
 set completeopt=longest,menu
+call mkdir(expand("~/.cache/vim/swap"), 'p')
+set directory=~/.cache/vim/swap//
 "if $TERM == 'xterm' || $TERM == 'rxvt' || $TERM == 'xterm-256color' ||
 "            \ $TERM == 'rxvt-unicode' || $TERM == 'dumb' ||
 "            \ $TERM == 'vte-256color' || $TERM == 'screen-256color'
