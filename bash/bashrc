@@ -4,9 +4,13 @@ if [[ $- != *i* ]]; then
 fi
 
 
-HISTSIZE=-1         # unlimited size
-HISTFILESIZE=-1
+# ref: https://stackoverflow.com/questions/9457233/unlimited-bash-history
+# bash 4.3 及其之后支持-1表明不限制history大小
+export HISTSIZE=
+export HISTFILESIZE=
 HISTTIMEFORMAT="%y-%m-%d %T "
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"    # 每条命令执行之后写入历史
+export HISTFILE=~/.bash_eternal_history
 #HISTIGNORE="ls:l:ll:la:vim:v:vi:gh:cd:..:py:history"
 #&: means suppress duplicated entries
 #?: ignore one character input, ?? and so on
@@ -53,12 +57,12 @@ has_cmd neomutt && alias mutt='neomutt'
 #}
 #has_cmd bear && alias make='bear make'
 
-has_cmd git && {
-alias gd='git diff -w'
-alias gdm='git diff -w master'
-alias gma='git commit -a'
-alias gmaa='git commit -a --amend'
-} # has_cmd git
+#has_cmd git && {
+#alias pull='git pull'
+#alias push='git push'
+#alias sw='git switch'
+#alias sc='git sc'
+#} # has_cmd git
 
 sub() {
     uniq -u <(sort -n "$1" "$2" "$2")
