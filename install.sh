@@ -8,6 +8,7 @@ CURR_PATH=$(cd `dirname $0`; pwd -P)
 InstallBash() {
     ln -sf ${CURR_PATH}/bash/bashrc  ~/.bashrc
     ln -sf ${CURR_PATH}/bash/inputrc ~/.inputrc
+    ln -sf ${CURR_PATH}/bash/LS_COLORS  ~/.LS_COLORS
 }
 
 # vim
