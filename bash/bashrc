@@ -493,6 +493,8 @@ for fun in "${unexport_cmds[@]}"; do
 done
 unset unexport_cmds
 
+# load fzf key bindings
+[ -r /usr/share/fzf/key-bindings.bash ] && . /usr/share/fzf/key-bindings.bash
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag
