@@ -17,9 +17,19 @@ fi
 export HISTFILESIZE=
 export HISTSIZE=
 HISTTIMEFORMAT="%y-%m-%d %T "
-PROMPT_COMMAND="history -a; $PROMPT_COMMAND"    # 每条命令执行之后写入历史
 # 指定另外的 bash_history 防止意外的 bash 进程截断默认 history 文件
 export HISTFILE=~/.bash_eternal_history
+__history_last_modified_ts=0
+refresh_history() {
+    local now_ts=$(stat -c '%Y' $HISTFILE)
+    history -a
+    if (($now_ts > $__history_last_modified_ts)); then
+        # 读取可能其他人修改过
+        history -r $HISTFILE
+        __history_last_modified_ts=$(stat -c '%Y' $HISTFILE)
+    fi
+}
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"    # 每条命令执行之后写入历史
 #HISTIGNORE="ls:l:ll:la:vim:v:vi:gh:cd:..:py:history"
 #&: means suppress duplicated entries
 #?: ignore one character input, ?? and so on
@@ -45,7 +55,7 @@ alias la='ls -A'
 alias l='ls -CF'
 alias v='vim'
 alias py='ipython3'
-has_cmd bat && alias cat='bat'
+has_cmd bat && alias cat='bat --plain'
 has_cmd proxychains && alias ldcv='proxychains -q ldcv'
 has_cmd ccal && alias cal='ccal -u'
 has_cmd neomutt && alias mutt='neomutt'
@@ -504,7 +514,15 @@ done
 unset unexport_cmds
 
 # load fzf key bindings
-[[ -r /usr/share/fzf/key-bindings.bash ]] && . /usr/share/fzf/key-bindings.bash
+[[ -r /usr/share/fzf/key-bindings.bash ]] && {
+    source /usr/share/fzf/key-bindings.bash
+    # 搜索历史之前先刷新历史
+    # CTRL-R - Paste the selected command from history into the command line
+    FZF_CTRL_R_OPTS="--reverse --no-separator --no-sort"
+    bind -m emacs-standard -x '"\C-r": refresh_history && __fzf_history__'
+    bind -m vi-command -x '"\C-r": refresh_history && __fzf_history__'
+    bind -m vi-insert -x '"\C-r": refresh_history && __fzf_history__'
+}
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag
