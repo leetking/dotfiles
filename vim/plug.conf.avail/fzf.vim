@@ -15,7 +15,7 @@ endfunction
 
 function s:detect_project()
     let project_marks = get(g:, 'project_marks', s:project_marks)
-    let orig_path = expand('%:p:h')
+    let orig_path = expand('%:p:~:h')
     let path = orig_path
     let prev = ''
     while path !=# prev
@@ -67,13 +67,13 @@ function Ripgrep(...)
         endif
     endif
     let rgcmd = "rg --column --line-number --no-heading --color=always --smart-case "
-    call fzf#vim#grep(rgcmd . shellescape(pats), 1, {'dir': path}, full)
+    call fzf#vim#grep(rgcmd . shellescape(pats), 1, fzf#vim#with_preview({'dir': path}), full)
 endfunction
 
 function RipgrepProto(pat, full)
     let path = s:detect_project()['root']
     let rgcmd = "rg --column --line-number --no-heading --color=always --smart-case --type protobuf "
-    call fzf#vim#grep(rgcmd . shellescape(a:pat), 1, {'dir': path}, a:full)
+    call fzf#vim#grep(rgcmd . shellescape(a:pat), 1, fzf#vim#with_preview({'dir': path}), a:full)
 endfunction
 
 " TODO: buffers, most recent used files in the project, other files

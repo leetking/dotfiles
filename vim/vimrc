@@ -120,6 +120,8 @@ endfunc
 function! s:SetRubyOptions()
     setlocal makeprg=ruby\ %
     setlocal textwidth=79 fo+=Mm
+    setlocal tabstop=2
+    setlocal shiftwidth=2
     imap <C-Space> <C-X><C-O>
 endfunc
 

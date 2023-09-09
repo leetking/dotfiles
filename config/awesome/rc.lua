@@ -65,16 +65,16 @@ local modkey = "Mod4"
 awful.layout.layouts = {
     --awful.layout.suit.floating,
     awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
+    --awful.layout.suit.tile.left,
+    --awful.layout.suit.tile.bottom,
+    --awful.layout.suit.tile.top,
+    --awful.layout.suit.fair,
+    --awful.layout.suit.fair.horizontal,
     --awful.layout.suit.spiral,
     --awful.layout.suit.spiral.dwindle,
-    --awful.layout.suit.max,
+    awful.layout.suit.max,
     --awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier,
+    --awful.layout.suit.magnifier,
     --awful.layout.suit.corner.nw,
     -- awful.layout.suit.corner.ne,
     -- awful.layout.suit.corner.sw,
@@ -362,7 +362,7 @@ awful.key({modkey}, ",",
                 textbox      = awful.screen.focused().prompt.widget,
                 bg_cursor    = '#cccccc',
                 exe_callback = function(input)
-                    awful.spawn.easy_async_with_shell(("ldcv \"%s\""):format(input),  function(stdout)
+                    awful.spawn.easy_async_with_shell(("sdcv \"%s\""):format(input),  function(stdout)
                         local notify = awful.screen.focused().prompt.notify
                         if notify then
                             naughty.destroy(notify)
