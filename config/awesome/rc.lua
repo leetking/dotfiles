@@ -51,7 +51,7 @@ beautiful.init(gears.filesystem.get_dir("config") .. "themes/A/init.lua")
 -- This is used later as the default terminal and editor to run.
 --local terminal = "termite"
 local terminal = "alacritty"
-local editor = os.getenv("EDITOR")
+local editor = os.getenv("EDITOR") or "vim"
 --editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.

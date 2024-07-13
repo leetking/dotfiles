@@ -110,6 +110,12 @@
       // not start server at home directory, since it won't work.
       "ignoredRootPaths": ["~"],
       "filetypes": ["tex", "latex", "bib", "plaintex", "context"]
+    },
+
+    "ruby": {
+      "command": "solargraph",
+      "args": ["stdio"],
+      "filetypes": [ "rb", "ruby", "ru" ]
     }
 
     //"flow": {

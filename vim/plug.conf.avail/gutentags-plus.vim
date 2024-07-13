@@ -5,7 +5,9 @@ let g:gutentags_plus_switch = 1
 " 禁止 gutentags 自动添加 cscope db
 "let g:gutentags_auto_add_gtags_cscope = 0
 
-set cscopequickfix=s-,c-,g-,a-
+if !has('nvim')
+    set cscopequickfix=s-,c-,g-,a-
+end
 
 nmap <silent> gr :GscopeFind s <C-R>=expand('<cword>')<CR><CR>
 nmap <silent> gd :GscopeFind g <C-R>=expand('<cword>')<CR><CR>

@@ -32,12 +32,14 @@ if executable('gtags') && executable('gtags-cscope')
     let $GTAGSLABEL = 'native-pygments'
     " 设置 gtags 的参数，默认文件为项目下的 .gutgtags 文件
     let g:gutentags_gtags_options_file = expand('~/.vim/gtags-options.txt')
-    " 使用 cscope 代替 tags 跳转
-    set cscopetag
-    " 先使用 cstag 失败再使用 tag
-    set cscopetagorder=0
-    " 这些查找显示在 QuickFix 中
-    set cscopequickfix=s-,c-,g-,a-
+    if !has('nvim')
+        " 使用 cscope 代替 tags 跳转
+        set cscopetag
+        " 先使用 cstag 失败再使用 tag
+        set cscopetagorder=0
+        " 这些查找显示在 QuickFix 中
+        set cscopequickfix=s-,c-,g-,a-
+    end
     nmap <silent> gr :cscope find s <C-R>=expand('<cword>')<CR><CR>
     nmap <silent> gd :cscope find g <C-R>=expand('<cword>')<CR><CR>
 endif

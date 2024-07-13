@@ -1,3 +1,7 @@
+if has('nvim')
+    finish
+end
+
 set nocompatible
 set backspace=indent,eol,start
 set number
@@ -12,7 +16,10 @@ set history=500
 set wildmenu
 set nofoldenable
 set mouse=a
-set ttymouse=sgr    " Windows Terminal 下使用鼠标
+if !has('nvim')
+    set ttymouse=sgr    " Windows Terminal 下使用鼠标
+    "set ttyscroll=3     " 降低 Windows Terminal 下滚动延时
+end
 filetype on         "侦测文件类型
 syntax enable       "语法高亮
 let mapleader=','
@@ -29,6 +36,7 @@ nmap <silent> gp :cp<CR>
 vmap <silent> <M-j> :m'>+<CR>`<my`>mzgv`yo`z
 vmap <silent> <M-k> :m'<-2<CR>`>my`<mzgv`yo`z
 set expandtab
+set nofixendofline  " 不要自动在最后一样添加eof符号
 set shiftwidth=4
 set tabstop=4
 set softtabstop=4
@@ -248,7 +256,7 @@ call plug#begin('~/.local/share/vim/plugged')
 
     Plug 'lervag/vimtex'
 
-    "Plug 'mattn/emmet-vim'
+    Plug 'mattn/emmet-vim'
     "Plug 'othree/html5.vim'
     "Plug 'hail2u/vim-css3-syntax'
 
@@ -259,6 +267,7 @@ call plug#begin('~/.local/share/vim/plugged')
     " TODO Wait it support float window in vim8.1+
     " Discusss https://github.com/rhysd/git-messenger.vim/issues/30
     Plug 'rhysd/git-messenger.vim'
+    Plug 'preservim/nerdcommenter'
 
     " my custom plugs
     Plug '$HOME/.vim/custom.plugs/localrc'

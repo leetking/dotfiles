@@ -2,11 +2,21 @@ let s:project_marks = ['.git', '.root', '.svn']
 
 " 通过环境变量设置 fzf 的 finder
 " 这里使用 find 不寻找 symbolic (-P)，只寻找文件
-let $FZF_DEFAULT_COMMAND = 'find -P -type f'
+"let $FZF_DEFAULT_COMMAND = 'find -P -type f'
+let $FZF_DEFAULT_COMMAND = 'fd --type f'
+let $FZF_DEFAULT_OPTS = '--no-separator'
 
 " Use gitfiles in .git project
 let s:fzf_use_gitfiles = 1
 " TODO use_gitfiles and read submodule files
+
+" :Buffers 自动跳转到buffer
+let g:fzf_buffers_jump = 1
+" :help drop
+let g:fzf_action = {
+    \ 'ctrl-t': 'tab drop',
+    \ 'ctrl-x': 'split',
+    \ 'ctrl-v': 'vsplit' }
 
 " does file or directory exist?
 function s:path_exists(path) abort

@@ -1,0 +1,214 @@
+#enable_experimental_conpty_backend = false
+live_config_reload = true
+
+[bell]
+animation = "EaseOutExpo"
+color = "0xffffff"
+duration = 0
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.bright]
+black = "0x686868"
+blue = "0x59C2FF"
+cyan = "0x95E6CB"
+green = "0xC2D94C"
+magenta = "0xFFEE99"
+red = "0xF07178"
+white = "0xFFFFFF"
+yellow = "0xFFB454"
+
+[colors.normal]
+black = "0x01060E"
+blue = "0x53BDFA"
+cyan = "0x90E1C6"
+green = "0x91B362"
+magenta = "0xFAE994"
+red = "0xEA6C73"
+white = "0xC7C7C7"
+yellow = "0xF9AF4F"
+
+[colors.primary]
+background = "0x0A0E14"
+foreground = "0xB3B1AD"
+
+[cursor]
+style = "Block"
+unfocused_hollow = true
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 11.0
+
+[font.bold]
+family = "Migu 1M"
+style = "Bold"
+
+[font.glyph_offset]
+x = 0
+y = 0
+
+[font.italic]
+family = "Migu 1M"
+style = "Italic"
+
+[font.normal]
+family = "Migu 1M"
+style = "Regular"
+
+[font.offset]
+x = 0
+y = 0
+
+[[keyboard.bindings]]
+action = "Paste"
+key = "V"
+mods = "Super"
+
+[[keyboard.bindings]]
+action = "Copy"
+key = "C"
+mods = "Super"
+
+[[keyboard.bindings]]
+action = "ToggleFullscreen"
+key = "F11"
+
+[mouse]
+hide_when_typing = true
+
+[[mouse.bindings]]
+action = "PasteSelection"
+mouse = "Middle"
+
+#[mouse.double_click]
+#threshold = 300
+
+#[mouse.hints]
+#modifiers = "None"
+
+#[mouse.hints.launcher]
+#args = []
+#program = "xdg-open"
+
+#[mouse.triple_click]
+#threshold = 300
+
+#[schemes.afterglow.bright]
+#black = "0x636363"
+#blue = "0x7eaac7"
+#cyan = "0x86d3ce"
+#green = "0x909d63"
+#magenta = "0xaa6292"
+#red = "0xbc5653"
+#white = "0xf7f7f7"
+#yellow = "0xebc17a"
+#
+#[schemes.afterglow.cursor]
+#cursor = "0xd9d9d9"
+#text = "0x2c2c2c"
+#
+#[schemes.afterglow.dim]
+#black = "0x232323"
+#blue = "0x556b79"
+#cyan = "0x5c8482"
+#green = "0x5e6547"
+#magenta = "0x6e4962"
+#red = "0x74423f"
+#white = "0x828282"
+#yellow = "0x8b7653"
+#
+#[schemes.afterglow.normal]
+#black = "0x1c1c1c"
+#blue = "0x7eaac7"
+#cyan = "0x86d3ce"
+#green = "0x909d63"
+#magenta = "0xaa6292"
+#red = "0xbc5653"
+#white = "0xcacaca"
+#yellow = "0xebc17a"
+#
+#[schemes.afterglow.primary]
+#background = "0x2c2c2c"
+#bright_background = "0x3a3a3a"
+#bright_foreground = "0xd9d9d9"
+#dim_background = "0x202020"
+#dim_foreground = "0xdbdbdb"
+#foreground = "0xd6d6d6"
+#
+#[schemes.ayu_dark.bright]
+#black = "0x686868"
+#blue = "0x59C2FF"
+#cyan = "0x95E6CB"
+#green = "0xC2D94C"
+#magenta = "0xFFEE99"
+#red = "0xF07178"
+#white = "0xFFFFFF"
+#yellow = "0xFFB454"
+#
+#[schemes.ayu_dark.normal]
+#black = "0x01060E"
+#blue = "0x53BDFA"
+#cyan = "0x90E1C6"
+#green = "0x91B362"
+#magenta = "0xFAE994"
+#red = "0xEA6C73"
+#white = "0xC7C7C7"
+#yellow = "0xF9AF4F"
+#
+#[schemes.ayu_dark.primary]
+#background = "0x0A0E14"
+#foreground = "0xB3B1AD"
+#
+#[schemes.tender.bright]
+#black = "0x4c4c4c"
+#blue = "0xb3deef"
+#cyan = "0x73cef4"
+#green = "0xc9d05c"
+#magenta = "0xd3b987"
+#red = "0xf43753"
+#white = "0xfeffff"
+#yellow = "0xffc24b"
+#
+#[schemes.tender.normal]
+#black = "0x282828"
+#blue = "0xb3deef"
+#cyan = "0x73cef4"
+#green = "0xc9d05c"
+#magenta = "0xd3b987"
+#red = "0xf43753"
+#white = "0xeeeeee"
+#yellow = "0xffc24b"
+#
+#[schemes.tender.primary]
+#background = "0x282828"
+#foreground = "0xeeeeee"
+
+[scrolling]
+history = 20000
+multiplier = 3
+
+[selection]
+save_to_clipboard = true
+semantic_escape_chars = "#/,│`|:\"' ()[]{}<>"
+
+[window]
+decorations = "full"
+dynamic_padding = true
+dynamic_title = true
+opacity = 0.85
+
+[window.class]
+general = "Alacritty"
+instance = "Alacritty"
+
+[window.dimensions]
+columns = 0
+lines = 0
+
+[window.padding]
+x = 0
+y = 0

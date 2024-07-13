@@ -186,7 +186,7 @@ shrinkpdf() {
     gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/ebook \
         -sOutputFile="$output" "$input"
 }
-}
+} # has_cmd gs
 
 # define 3/4-bit colors
 black=$'\[\e[30m\]'
@@ -358,30 +358,29 @@ dump-path() {
     echo "${PATH//:/$'\n'}"
 }
 
-# grep history
-gh() {
-    grep $@ <(history)
-}
+## grep history
+#gh() {
+#    grep $@ <(history)
+#}
 
 # Add other rocks tree: $HOME/.local
 has_cmd lua && {
-    alias luai='lua -e "package.path=package.path..\";$HOME/.config/init.lua\"" -i -linit'
-    LUA_VERSION=$(lua -e 'print(_VERSION:match("%d.%d"))')
-    LUA_PATH=$(lua -e 'print(package.path)')
-    LUA_CPATH=$(lua -e 'print(package.cpath)')
-    lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?.lua"
-    lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?/init.lua"
-    lua_add-cpath "$HOME/.local/lib/lua/$LUA_VERSION/?.so"
-
-    export LUA_PATH LUA_CPATH
-}
+alias luai='lua -e "package.path=package.path..\";$HOME/.config/init.lua\"" -i -linit'
+LUA_VERSION=$(lua -e 'print(_VERSION:match("%d.%d"))')
+export LUA_PATH=$(lua -e 'print(package.path)')
+export LUA_CPATH=$(lua -e 'print(package.cpath)')
+lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?.lua"
+lua_add-path  "$HOME/.local/share/lua/$LUA_VERSION/?/init.lua"
+lua_add-cpath "$HOME/.local/lib/lua/$LUA_VERSION/?.so"
+#export LUA_PATH LUA_CPATH
+} # has_cmd lua
 
 # Binaries of Python package for this user
 add-path "$HOME/.local/bin"
 # Binaries of Ruby gem for this user
 has_cmd ruby && {
-    RUBY_VERSION=$(grep -o '[[:digit:]]\.[[:digit:]]' <(ruby -v))
-    add-path "$HOME/.gem/ruby/$RUBY_VERSION.0/bin"
+RUBY_VERSION=$(grep -o '[[:digit:]]\.[[:digit:]]' <(ruby -v))
+add-path "$HOME/.gem/ruby/$RUBY_VERSION.0/bin"
 }
 
 #export PYTHONSTARTUP=~/.config/init.py
@@ -507,22 +506,32 @@ vmctl() {
 }
 }   # has_cmd vboxmanage
 
-unexport_cmds=("has_cmd")
-for fun in "${unexport_cmds[@]}"; do
-    eval "unset $fun"
-done
-unset unexport_cmds
-
 # load fzf key bindings
-[[ -r /usr/share/fzf/key-bindings.bash ]] && {
-    source /usr/share/fzf/key-bindings.bash
-    # 搜索历史之前先刷新历史
-    # CTRL-R - Paste the selected command from history into the command line
-    FZF_CTRL_R_OPTS="--reverse --no-separator --no-sort"
-    bind -m emacs-standard -x '"\C-r": refresh_history && __fzf_history__'
-    bind -m vi-command -x '"\C-r": refresh_history && __fzf_history__'
-    bind -m vi-insert -x '"\C-r": refresh_history && __fzf_history__'
-}
+has_cmd fzf && {
+fzf_key_binding_files=(
+    "$HOME/.dotfiles/bash/key-bindings.bash"
+    "/usr/share/fzf/key-bindings.bash"
+)
+for file in "${fzf_key_binding_files[@]}"; do
+    [[ -r "$file" ]] && {
+        source "$file"
+        # 搜索历史之前先刷新历史
+        # CTRL-R - Paste the selected command from history into the command line
+        FZF_CTRL_R_OPTS="--reverse --no-separator --no-sort"
+        bind -m emacs-standard -x '"\C-r": refresh_history && __fzf_history__'
+        bind -m vi-command -x '"\C-r": refresh_history && __fzf_history__'
+        bind -m vi-insert -x '"\C-r": refresh_history && __fzf_history__'
+        break
+    }
+done
+} # has_cmd fzf
+
+unset has_cmd
+#unexport_cmds=("has_cmd")
+#for fun in "${unexport_cmds[@]}"; do
+#    eval "unset $fun"
+#done
+#unset unexport_cmds
 
 # Own shell scripts. #tools-tag
 add-path "/home/ltk/.dotfiles/tools/bin" #tools-tag
