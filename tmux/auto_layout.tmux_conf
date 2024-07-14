@@ -1,6 +1,0 @@
-#自动化布局
-selectp -t 0    #选中第0个窗格
-splitw -h -p 50  #将其分成左右两个
-selectp -t 1     #选中第一个，也就是右边那个
-splitw -v -p 50  #将其分成上下两个
-selectp -t 0     #选回第一个
