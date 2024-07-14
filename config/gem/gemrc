@@ -1,0 +1,19 @@
+# yaml-like的简单配置格式
+# ref https://yaml.org/spec/1.2.2/
+# --- 用于标记指令和文档内容，---之后为文档正式内容
+# TODO gemrc的解析貌似有问题，会忽略注释把有冒号的行视为kay-value
+# 有问题代码https://github.com/rubygems/rubygems/blame/e71bef01f2f57055176c625e6f5eb468bd1f6c9a/lib/rubygems/yaml_serializer.rb#L44
+# gem 实际支持 ~/.config/gem/gemrc 路径的配置
+# 配置文件格式 https://guides.rubygems.org/command-reference/#gem-environment
+---
+:backtrace: false
+:bulk_threshold: 1000
+:sources:
+  - https://gems.ruby-china.com/
+  #- https://rubygems.org/
+  #- https://mirrors.tuna.tsinghua.edu.cn/rubygems/
+:update_sources: true
+:verbose: true
+:concurrent_downloads: 16
+# 前面没有冒号:的表示命令参数
+install: --user-install
