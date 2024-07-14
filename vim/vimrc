@@ -1,6 +1,6 @@
 if has('nvim')
     finish
-end
+endif
 
 set nocompatible
 set backspace=indent,eol,start
@@ -19,7 +19,7 @@ set mouse=a
 if !has('nvim')
     set ttymouse=sgr    " Windows Terminal 下使用鼠标
     "set ttyscroll=3     " 降低 Windows Terminal 下滚动延时
-end
+endif
 filetype on         "侦测文件类型
 syntax enable       "语法高亮
 let mapleader=','

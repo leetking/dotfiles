@@ -7,7 +7,7 @@ let g:gutentags_plus_switch = 1
 
 if !has('nvim')
     set cscopequickfix=s-,c-,g-,a-
-end
+endif
 
 nmap <silent> gr :GscopeFind s <C-R>=expand('<cword>')<CR><CR>
 nmap <silent> gd :GscopeFind g <C-R>=expand('<cword>')<CR><CR>
