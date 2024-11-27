@@ -1,2 +1,3 @@
 export EDITOR=vim
 export SYSTEMD_EDITOR=$EDITOR
+export WECHAT_DATA_DIR=$HOME/.local/share/Wechat

@@ -334,10 +334,10 @@ end,
 
 -- Prompt
 awful.key({modkey}, ";",
-        function() awful.spawn("rofi -show run") end,
+        function() awful.spawn("rofi -show run -show-icons") end,
         {description = "run rofi to launcher a app", group = "rofi"}),
 awful.key({modkey}, "'",
-        function() awful.spawn("rofi -show window") end,
+        function() awful.spawn("rofi -show window -show-icons") end,
         {description = "switch a window", group = "rofi"}),
 awful.key({modkey}, "/",
         function() awful.spawn("rofi -show ssh") end,

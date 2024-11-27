@@ -1,5 +1,5 @@
 configuration {
-    terminal: ""alacritty"";
+    terminal: "alacritty";
     ssh-command: "{terminal} -e {ssh-client} {host} [-p {port}]";
     matching: "fuzzy";
 }

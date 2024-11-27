@@ -1,3 +1,6 @@
 require 'irb/completion'
+#require 'reline'
+require 'irb/theme/tokyonight/night'
+
 IRB.conf[:AUTO_INDENT] = true
 IRB.conf[:SAVE_HISTORY] = 5000

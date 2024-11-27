@@ -391,6 +391,7 @@ export TERM=xterm-256color
 # TODO 正确处理 bash 配置文件加载顺序
 export EDITOR=vim
 export SYSTEMD_EDITOR=$EDITOR
+export WECHAT_DATA_DIR=$HOME/.local/share/Wechat
 
 CHROOT=/var/lib/archbuild/
 
