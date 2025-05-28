@@ -29,24 +29,35 @@ map <C-k> <C-w>k
 map <C-l> <C-w>l
 nmap <silent> <M-j> mz:m+<CR>`z
 nmap <silent> <M-k> mz:m-2<CR>`z
-nmap <silent> <Tab>  :tabnext<CR>
+nmap <silent> <leader><Tab>  :tabnext<CR>
 nmap <silent> <S-Tab>  :tabprevious<CR>
 nmap <silent> gn :cn<CR>
 nmap <silent> gp :cp<CR>
 vmap <silent> <M-j> :m'>+<CR>`<my`>mzgv`yo`z
 vmap <silent> <M-k> :m'<-2<CR>`>my`<mzgv`yo`z
+
 set expandtab
-set nofixendofline  " 不要自动在最后一样添加eof符号
+set tabstop=8
+set softtabstop=8
 set shiftwidth=4
-set tabstop=4
-set softtabstop=4
+" smarttab leading的tab会expandtab，其他tab不会
 set smarttab
+" 显示不可见字符
+"set list
+" 显示tab为>-，显示尾部空白为点.
+set listchars=tab:>-,trail:.
+"case与switch对齐 TODO 但是注释没对齐
+set cinoptions=:0,l1,g0,N-s,E-s,t0
+set cindent
+set smartindent
+set autoindent
+set nofixendofline  " 不要自动在最后一样添加eof符号
+
 " gb18030 > gbk > gb2312
 set fileencodings=ucs-bom,utf-8,gb18030,gbk,gb2312,default,latin1
 set fileencoding=utf-8
 "set encoding=utf-8
-"set completeopt=longest,menuone,preview
-set completeopt=longest,menu
+set completeopt=menuone,noselect,longest,popup
 call mkdir(expand("~/.cache/vim/swap"), 'p')
 set directory=~/.cache/vim/swap//
 "if $TERM == 'xterm' || $TERM == 'rxvt' || $TERM == 'xterm-256color' ||
@@ -87,19 +98,14 @@ let &t_EI = "\<Esc>[2 q"
 
 "set shortmess=atI
 "set lines=28  columns=200
-set foldmethod=indent
-"set foldmethod=syntax|manual
+" 开启文本折叠
 set foldenable
-nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+" 折叠方式采用缩进
+set foldmethod=indent
 set foldlevel=9
-set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.png,.jpg
 
-set cinoptions=:0                 "case与switch对齐 TODO 但是注释没对齐
-set cindent
-set smartindent
-set autoindent
-"set list listchars=tab:>-
-set expandtab
+" 文件名匹配时这些后缀文件被忽略
+set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.png,.jpg
 
 " normal file
 function! s:SetNormalOptions()
@@ -289,6 +295,8 @@ if has('gui_running')
         endif
     endif
 endif
+
+let g:coc_disable_startup_warning = 1
 
 let g:project_marks = ['.git', '.svn', '.root', '.hg']
 

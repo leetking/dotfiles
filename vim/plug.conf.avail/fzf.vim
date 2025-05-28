@@ -13,6 +13,7 @@ let s:fzf_use_gitfiles = 1
 " :Buffers 自动跳转到buffer
 let g:fzf_buffers_jump = 1
 " :help drop
+" 'ctrl-q': 'fill_quickfix',
 let g:fzf_action = {
     \ 'ctrl-t': 'tab drop',
     \ 'ctrl-x': 'split',

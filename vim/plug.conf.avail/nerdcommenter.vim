@@ -8,3 +8,6 @@ let g:NERDTrimTrailingWhitespace = 1
 let g:NERDToggleCheckAllLines = 1
 " 注释对齐到左端
 let g:NERDDefaultAlign = 'left'
+
+nmap <silent> gcc <Plug>NERDCommenterToggle
+vmap <silent> gcc <Plug>NERDCommenterToggle

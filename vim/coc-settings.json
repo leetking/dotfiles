@@ -3,6 +3,12 @@
    "suggest.noselect": true,
    // 允许自动选择补全的参数
    //"suggest.enablePreselect": true,
+   "suggest.useTreeSitter": true,
+   // 配置片段触发条件
+   //"snippets.ultisnips.enable": true,
+   //"snippets.extends": {
+   //    "python": ["django"]
+   //}
   "languageserver": {
     "ccls": {
       "command": "ccls",
@@ -22,7 +28,6 @@
         //}
       }
     },
-
     "python": {
       "command": "pylsp",
       "args": ["-v", "--log-file", "/tmp/lsp_python.log"],
